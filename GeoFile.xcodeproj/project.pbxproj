@@ -1,0 +1,686 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		720B8C971AC8964D00064B86 /* pictureSpadePart1.png in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C921AC8964D00064B86 /* pictureSpadePart1.png */; };
+		720B8C981AC8964D00064B86 /* pictureOverview.png in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C931AC8964D00064B86 /* pictureOverview.png */; };
+		720B8C991AC8964D00064B86 /* doctest.docx in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C941AC8964D00064B86 /* doctest.docx */; };
+		720B8C9A1AC8964D00064B86 /* pictureSpade.png in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C951AC8964D00064B86 /* pictureSpade.png */; };
+		720B8C9B1AC8964D00064B86 /* pdftest.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C961AC8964D00064B86 /* pdftest.pdf */; };
+		720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */; };
+		727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */; };
+		727A21311AF039E50067BC4A /* SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21301AF039E50067BC4A /* SharedInstance.swift */; };
+		727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21321AF042690067BC4A /* StaticFunctions.swift */; };
+		729A56901AE819500034418E /* TreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A568F1AE819500034418E /* TreeView.swift */; };
+		729A56941AE9A4690034418E /* ProjectLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56931AE9A4690034418E /* ProjectLeaf.swift */; };
+		729A56961AE9A4AE0034418E /* FilepointLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56951AE9A4AE0034418E /* FilepointLeaf.swift */; };
+		729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */; };
+		729A569A1AEB08250034418E /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56991AEB08250034418E /* CustomButton.swift */; };
+		729A569E1AEC26930034418E /* CustomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A569D1AEC26930034418E /* CustomViewController.swift */; };
+		729A56A01AEC36E60034418E /* CV-mal.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 729A569F1AEC36E60034418E /* CV-mal.pdf */; };
+		72A297241ADA98BE00F8D584 /* Measure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A297231ADA98BE00F8D584 /* Measure.swift */; };
+		72A297261ADB473700F8D584 /* Angle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A297251ADB473700F8D584 /* Angle.swift */; };
+		72A297281ADFA7D200F8D584 /* Drawntext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A297271ADFA7D200F8D584 /* Drawntext.swift */; };
+		72A598771AD0ABD400918CCD /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598761AD0ABD400918CCD /* TestViewController.swift */; };
+		72A5987B1AD2BF5D00918CCD /* ProjectListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5987A1AD2BF5D00918CCD /* ProjectListViewController.swift */; };
+		72A5987E1AD3E8FB00918CCD /* red-pushpin.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A5987C1AD3E8FB00918CCD /* red-pushpin.png */; };
+		72A5987F1AD3E8FB00918CCD /* lightblue.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A5987D1AD3E8FB00918CCD /* lightblue.png */; };
+		72A598821AD4A2F300918CCD /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598811AD4A2F300918CCD /* Project.swift */; };
+		72A598841AD5534300918CCD /* NewProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598831AD5534300918CCD /* NewProjectView.swift */; };
+		72A598861AD5FCCA00918CCD /* EditProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598851AD5FCCA00918CCD /* EditProjectView.swift */; };
+		72A598881AD6827A00918CCD /* StaticValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598871AD6827A00918CCD /* StaticValues.swift */; };
+		72A5988B1AD83A5D00918CCD /* Filepoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5988A1AD83A5D00918CCD /* Filepoint.swift */; };
+		72A5988F1AD97C0100918CCD /* DrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5988E1AD97C0100918CCD /* DrawView.swift */; };
+		72A598911AD97D6C00918CCD /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598901AD97D6C00918CCD /* Line.swift */; };
+		72C105D41ACDECCE006CC14A /* FileAndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C105D31ACDECCE006CC14A /* FileAndPoints.swift */; };
+		72CAF4351AE7DD3300B4072B /* TreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF4341AE7DD3300B4072B /* TreeViewController.swift */; };
+		72DDE7381AE27795002DC630 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DDE7371AE27795002DC630 /* CameraView.swift */; };
+		72FE6A2B1AC0234B00FF792D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FE6A2A1AC0234B00FF792D /* AppDelegate.swift */; };
+		72FE6A2E1AC0234B00FF792D /* GeoFile.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72FE6A2C1AC0234B00FF792D /* GeoFile.xcdatamodeld */; };
+		72FE6A301AC0234B00FF792D /* MapOverviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FE6A2F1AC0234B00FF792D /* MapOverviewViewController.swift */; };
+		72FE6A331AC0234B00FF792D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72FE6A311AC0234B00FF792D /* Main.storyboard */; };
+		72FE6A351AC0234B00FF792D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72FE6A341AC0234B00FF792D /* Images.xcassets */; };
+		72FE6A381AC0234B00FF792D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 72FE6A361AC0234B00FF792D /* LaunchScreen.xib */; };
+		72FE6A441AC0234B00FF792D /* GeoFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FE6A431AC0234B00FF792D /* GeoFileTests.swift */; };
+		72FE6A4E1AC0271E00FF792D /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A4D1AC0271E00FF792D /* GoogleMaps.framework */; };
+		72FE6A501AC027F100FF792D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A4F1AC027F100FF792D /* AVFoundation.framework */; };
+		72FE6A521AC027FF00FF792D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A511AC027FF00FF792D /* CoreData.framework */; };
+		72FE6A541AC0280800FF792D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A531AC0280800FF792D /* CoreLocation.framework */; };
+		72FE6A561AC0282200FF792D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A551AC0282200FF792D /* SystemConfiguration.framework */; };
+		72FE6A581AC0283D00FF792D /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A571AC0283D00FF792D /* ImageIO.framework */; };
+		72FE6A5D1AC02BA300FF792D /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A5C1AC02BA300FF792D /* CoreText.framework */; };
+		72FE6A5F1AC02BC800FF792D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A5E1AC02BC800FF792D /* GLKit.framework */; };
+		72FE6A611AC02BFF00FF792D /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A601AC02BFF00FF792D /* libc++.dylib */; };
+		72FE6A631AC02C0C00FF792D /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A621AC02C0C00FF792D /* libicucore.dylib */; };
+		72FE6A651AC02C1D00FF792D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A641AC02C1D00FF792D /* libz.dylib */; };
+		72FE6A671AC02C2800FF792D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A661AC02C2800FF792D /* OpenGLES.framework */; };
+		72FE6A691AC02C3C00FF792D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72FE6A681AC02C3C00FF792D /* QuartzCore.framework */; };
+		72FE6A6C1AC0420E00FF792D /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 72FE6A6B1AC0420D00FF792D /* GoogleMaps.bundle */; };
+		72FE6A6E1AC0492400FF792D /* FilepointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FE6A6D1AC0492400FF792D /* FilepointViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		72FE6A3E1AC0234B00FF792D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 72FE6A1D1AC0234B00FF792D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72FE6A241AC0234B00FF792D;
+			remoteInfo = GeoFile;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		720B8C921AC8964D00064B86 /* pictureSpadePart1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureSpadePart1.png; path = pictures/pictureSpadePart1.png; sourceTree = "<group>"; };
+		720B8C931AC8964D00064B86 /* pictureOverview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverview.png; path = pictures/pictureOverview.png; sourceTree = "<group>"; };
+		720B8C941AC8964D00064B86 /* doctest.docx */ = {isa = PBXFileReference; lastKnownFileType = file; name = doctest.docx; path = pictures/doctest.docx; sourceTree = "<group>"; };
+		720B8C951AC8964D00064B86 /* pictureSpade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureSpade.png; path = pictures/pictureSpade.png; sourceTree = "<group>"; };
+		720B8C961AC8964D00064B86 /* pdftest.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = pdftest.pdf; path = pictures/pdftest.pdf; sourceTree = "<group>"; };
+		720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHelper.swift; sourceTree = "<group>"; };
+		727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointListViewController.swift; sourceTree = "<group>"; };
+		727A21301AF039E50067BC4A /* SharedInstance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedInstance.swift; sourceTree = "<group>"; };
+		727A21321AF042690067BC4A /* StaticFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticFunctions.swift; sourceTree = "<group>"; };
+		729A568F1AE819500034418E /* TreeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeView.swift; sourceTree = "<group>"; };
+		729A56931AE9A4690034418E /* ProjectLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectLeaf.swift; sourceTree = "<group>"; };
+		729A56951AE9A4AE0034418E /* FilepointLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointLeaf.swift; sourceTree = "<group>"; };
+		729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopNavigationBarView.swift; sourceTree = "<group>"; };
+		729A56991AEB08250034418E /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
+		729A569D1AEC26930034418E /* CustomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomViewController.swift; sourceTree = "<group>"; };
+		729A569F1AEC36E60034418E /* CV-mal.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "CV-mal.pdf"; path = "pictures/CV-mal.pdf"; sourceTree = "<group>"; };
+		72A297231ADA98BE00F8D584 /* Measure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Measure.swift; sourceTree = "<group>"; };
+		72A297251ADB473700F8D584 /* Angle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Angle.swift; sourceTree = "<group>"; };
+		72A297271ADFA7D200F8D584 /* Drawntext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawntext.swift; sourceTree = "<group>"; };
+		72A598761AD0ABD400918CCD /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		72A598781AD2A93000918CCD /* GeoFile 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 2.xcdatamodel"; sourceTree = "<group>"; };
+		72A598791AD2AB4200918CCD /* GeoFile 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 3.xcdatamodel"; sourceTree = "<group>"; };
+		72A5987A1AD2BF5D00918CCD /* ProjectListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectListViewController.swift; sourceTree = "<group>"; };
+		72A5987C1AD3E8FB00918CCD /* red-pushpin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "red-pushpin.png"; path = "pictures/red-pushpin.png"; sourceTree = "<group>"; };
+		72A5987D1AD3E8FB00918CCD /* lightblue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lightblue.png; path = pictures/lightblue.png; sourceTree = "<group>"; };
+		72A598801AD49FFB00918CCD /* GeoFile 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 4.xcdatamodel"; sourceTree = "<group>"; };
+		72A598811AD4A2F300918CCD /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		72A598831AD5534300918CCD /* NewProjectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewProjectView.swift; sourceTree = "<group>"; };
+		72A598851AD5FCCA00918CCD /* EditProjectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProjectView.swift; sourceTree = "<group>"; };
+		72A598871AD6827A00918CCD /* StaticValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticValues.swift; sourceTree = "<group>"; };
+		72A598891AD836FA00918CCD /* GeoFile 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 5.xcdatamodel"; sourceTree = "<group>"; };
+		72A5988A1AD83A5D00918CCD /* Filepoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filepoint.swift; sourceTree = "<group>"; };
+		72A5988C1AD8516C00918CCD /* GeoFile 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 6.xcdatamodel"; sourceTree = "<group>"; };
+		72A5988D1AD9536C00918CCD /* GeoFile 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 7.xcdatamodel"; sourceTree = "<group>"; };
+		72A5988E1AD97C0100918CCD /* DrawView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawView.swift; sourceTree = "<group>"; };
+		72A598901AD97D6C00918CCD /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		72C105D31ACDECCE006CC14A /* FileAndPoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileAndPoints.swift; sourceTree = "<group>"; };
+		72CAF4341AE7DD3300B4072B /* TreeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeViewController.swift; sourceTree = "<group>"; };
+		72DDE7371AE27795002DC630 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		72FE6A251AC0234B00FF792D /* GeoFile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoFile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		72FE6A291AC0234B00FF792D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		72FE6A2A1AC0234B00FF792D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		72FE6A2D1AC0234B00FF792D /* GeoFile.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GeoFile.xcdatamodel; sourceTree = "<group>"; };
+		72FE6A2F1AC0234B00FF792D /* MapOverviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapOverviewViewController.swift; sourceTree = "<group>"; };
+		72FE6A321AC0234B00FF792D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		72FE6A341AC0234B00FF792D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		72FE6A371AC0234B00FF792D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		72FE6A3D1AC0234B00FF792D /* GeoFileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeoFileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		72FE6A421AC0234B00FF792D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		72FE6A431AC0234B00FF792D /* GeoFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoFileTests.swift; sourceTree = "<group>"; };
+		72FE6A4D1AC0271E00FF792D /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = "GoogleMaps-iOS-1.9.2/GoogleMaps.framework"; sourceTree = "<group>"; };
+		72FE6A4F1AC027F100FF792D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		72FE6A511AC027FF00FF792D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		72FE6A531AC0280800FF792D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		72FE6A551AC0282200FF792D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		72FE6A571AC0283D00FF792D /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		72FE6A591AC02AC300FF792D /* GeoFile-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GeoFile-Bridging-Header.h"; sourceTree = "<group>"; };
+		72FE6A5C1AC02BA300FF792D /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		72FE6A5E1AC02BC800FF792D /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		72FE6A601AC02BFF00FF792D /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		72FE6A621AC02C0C00FF792D /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		72FE6A641AC02C1D00FF792D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		72FE6A661AC02C2800FF792D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		72FE6A681AC02C3C00FF792D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		72FE6A6B1AC0420D00FF792D /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = "GoogleMaps-iOS-1.9.2/GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle"; sourceTree = SOURCE_ROOT; };
+		72FE6A6D1AC0492400FF792D /* FilepointViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		72FE6A221AC0234B00FF792D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72FE6A541AC0280800FF792D /* CoreLocation.framework in Frameworks */,
+				72FE6A691AC02C3C00FF792D /* QuartzCore.framework in Frameworks */,
+				72FE6A671AC02C2800FF792D /* OpenGLES.framework in Frameworks */,
+				72FE6A651AC02C1D00FF792D /* libz.dylib in Frameworks */,
+				72FE6A631AC02C0C00FF792D /* libicucore.dylib in Frameworks */,
+				72FE6A611AC02BFF00FF792D /* libc++.dylib in Frameworks */,
+				72FE6A5F1AC02BC800FF792D /* GLKit.framework in Frameworks */,
+				72FE6A5D1AC02BA300FF792D /* CoreText.framework in Frameworks */,
+				72FE6A581AC0283D00FF792D /* ImageIO.framework in Frameworks */,
+				72FE6A561AC0282200FF792D /* SystemConfiguration.framework in Frameworks */,
+				72FE6A521AC027FF00FF792D /* CoreData.framework in Frameworks */,
+				72FE6A501AC027F100FF792D /* AVFoundation.framework in Frameworks */,
+				72FE6A4E1AC0271E00FF792D /* GoogleMaps.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72FE6A3A1AC0234B00FF792D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		720B8C911AC8938F00064B86 /* pictures */ = {
+			isa = PBXGroup;
+			children = (
+				729A569F1AEC36E60034418E /* CV-mal.pdf */,
+				72A5987C1AD3E8FB00918CCD /* red-pushpin.png */,
+				72A5987D1AD3E8FB00918CCD /* lightblue.png */,
+				720B8C921AC8964D00064B86 /* pictureSpadePart1.png */,
+				720B8C931AC8964D00064B86 /* pictureOverview.png */,
+				720B8C941AC8964D00064B86 /* doctest.docx */,
+				720B8C951AC8964D00064B86 /* pictureSpade.png */,
+				720B8C961AC8964D00064B86 /* pdftest.pdf */,
+			);
+			name = pictures;
+			sourceTree = "<group>";
+		};
+		72A598711AD005FA00918CCD /* DataClasses */ = {
+			isa = PBXGroup;
+			children = (
+				72A598811AD4A2F300918CCD /* Project.swift */,
+				72A5988A1AD83A5D00918CCD /* Filepoint.swift */,
+			);
+			name = DataClasses;
+			sourceTree = "<group>";
+		};
+		72FE6A1C1AC0234B00FF792D = {
+			isa = PBXGroup;
+			children = (
+				72FE6A681AC02C3C00FF792D /* QuartzCore.framework */,
+				72FE6A661AC02C2800FF792D /* OpenGLES.framework */,
+				72FE6A641AC02C1D00FF792D /* libz.dylib */,
+				72FE6A621AC02C0C00FF792D /* libicucore.dylib */,
+				72FE6A601AC02BFF00FF792D /* libc++.dylib */,
+				72FE6A5E1AC02BC800FF792D /* GLKit.framework */,
+				72FE6A5C1AC02BA300FF792D /* CoreText.framework */,
+				72FE6A571AC0283D00FF792D /* ImageIO.framework */,
+				72FE6A551AC0282200FF792D /* SystemConfiguration.framework */,
+				72FE6A531AC0280800FF792D /* CoreLocation.framework */,
+				72FE6A511AC027FF00FF792D /* CoreData.framework */,
+				72FE6A4F1AC027F100FF792D /* AVFoundation.framework */,
+				72FE6A4D1AC0271E00FF792D /* GoogleMaps.framework */,
+				72FE6A271AC0234B00FF792D /* GeoFile */,
+				72FE6A401AC0234B00FF792D /* GeoFileTests */,
+				72FE6A261AC0234B00FF792D /* Products */,
+				72FE6A591AC02AC300FF792D /* GeoFile-Bridging-Header.h */,
+			);
+			sourceTree = "<group>";
+		};
+		72FE6A261AC0234B00FF792D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				72FE6A251AC0234B00FF792D /* GeoFile.app */,
+				72FE6A3D1AC0234B00FF792D /* GeoFileTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		72FE6A271AC0234B00FF792D /* GeoFile */ = {
+			isa = PBXGroup;
+			children = (
+				72A598711AD005FA00918CCD /* DataClasses */,
+				72C105D31ACDECCE006CC14A /* FileAndPoints.swift */,
+				72A5987A1AD2BF5D00918CCD /* ProjectListViewController.swift */,
+				727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */,
+				729A569D1AEC26930034418E /* CustomViewController.swift */,
+				72CAF4341AE7DD3300B4072B /* TreeViewController.swift */,
+				72FE6A6D1AC0492400FF792D /* FilepointViewController.swift */,
+				72FE6A2F1AC0234B00FF792D /* MapOverviewViewController.swift */,
+				72FE6A2A1AC0234B00FF792D /* AppDelegate.swift */,
+				72A598761AD0ABD400918CCD /* TestViewController.swift */,
+				727A21301AF039E50067BC4A /* SharedInstance.swift */,
+				72A598831AD5534300918CCD /* NewProjectView.swift */,
+				72A598851AD5FCCA00918CCD /* EditProjectView.swift */,
+				72A5988E1AD97C0100918CCD /* DrawView.swift */,
+				729A568F1AE819500034418E /* TreeView.swift */,
+				729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */,
+				729A56931AE9A4690034418E /* ProjectLeaf.swift */,
+				729A56951AE9A4AE0034418E /* FilepointLeaf.swift */,
+				72DDE7371AE27795002DC630 /* CameraView.swift */,
+				729A56991AEB08250034418E /* CustomButton.swift */,
+				72FE6A311AC0234B00FF792D /* Main.storyboard */,
+				72FE6A341AC0234B00FF792D /* Images.xcassets */,
+				72FE6A361AC0234B00FF792D /* LaunchScreen.xib */,
+				72FE6A2C1AC0234B00FF792D /* GeoFile.xcdatamodeld */,
+				72FE6A6A1AC041CA00FF792D /* Resources */,
+				72FE6A281AC0234B00FF792D /* Supporting Files */,
+				720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */,
+				72A598871AD6827A00918CCD /* StaticValues.swift */,
+				727A21321AF042690067BC4A /* StaticFunctions.swift */,
+				72A598901AD97D6C00918CCD /* Line.swift */,
+				72A297231ADA98BE00F8D584 /* Measure.swift */,
+				72A297251ADB473700F8D584 /* Angle.swift */,
+				72A297271ADFA7D200F8D584 /* Drawntext.swift */,
+			);
+			path = GeoFile;
+			sourceTree = "<group>";
+		};
+		72FE6A281AC0234B00FF792D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				72FE6A291AC0234B00FF792D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		72FE6A401AC0234B00FF792D /* GeoFileTests */ = {
+			isa = PBXGroup;
+			children = (
+				72FE6A431AC0234B00FF792D /* GeoFileTests.swift */,
+				72FE6A411AC0234B00FF792D /* Supporting Files */,
+			);
+			path = GeoFileTests;
+			sourceTree = "<group>";
+		};
+		72FE6A411AC0234B00FF792D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				72FE6A421AC0234B00FF792D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		72FE6A6A1AC041CA00FF792D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				720B8C911AC8938F00064B86 /* pictures */,
+				72FE6A6B1AC0420D00FF792D /* GoogleMaps.bundle */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		72FE6A241AC0234B00FF792D /* GeoFile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72FE6A471AC0234B00FF792D /* Build configuration list for PBXNativeTarget "GeoFile" */;
+			buildPhases = (
+				72FE6A211AC0234B00FF792D /* Sources */,
+				72FE6A221AC0234B00FF792D /* Frameworks */,
+				72FE6A231AC0234B00FF792D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GeoFile;
+			productName = GeoFile;
+			productReference = 72FE6A251AC0234B00FF792D /* GeoFile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		72FE6A3C1AC0234B00FF792D /* GeoFileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72FE6A4A1AC0234B00FF792D /* Build configuration list for PBXNativeTarget "GeoFileTests" */;
+			buildPhases = (
+				72FE6A391AC0234B00FF792D /* Sources */,
+				72FE6A3A1AC0234B00FF792D /* Frameworks */,
+				72FE6A3B1AC0234B00FF792D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				72FE6A3F1AC0234B00FF792D /* PBXTargetDependency */,
+			);
+			name = GeoFileTests;
+			productName = GeoFileTests;
+			productReference = 72FE6A3D1AC0234B00FF792D /* GeoFileTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		72FE6A1D1AC0234B00FF792D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = knut;
+				TargetAttributes = {
+					72FE6A241AC0234B00FF792D = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					72FE6A3C1AC0234B00FF792D = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = 72FE6A241AC0234B00FF792D;
+					};
+				};
+			};
+			buildConfigurationList = 72FE6A201AC0234B00FF792D /* Build configuration list for PBXProject "GeoFile" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 72FE6A1C1AC0234B00FF792D;
+			productRefGroup = 72FE6A261AC0234B00FF792D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				72FE6A241AC0234B00FF792D /* GeoFile */,
+				72FE6A3C1AC0234B00FF792D /* GeoFileTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		72FE6A231AC0234B00FF792D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72FE6A331AC0234B00FF792D /* Main.storyboard in Resources */,
+				720B8C991AC8964D00064B86 /* doctest.docx in Resources */,
+				720B8C971AC8964D00064B86 /* pictureSpadePart1.png in Resources */,
+				72A5987E1AD3E8FB00918CCD /* red-pushpin.png in Resources */,
+				72FE6A381AC0234B00FF792D /* LaunchScreen.xib in Resources */,
+				72A5987F1AD3E8FB00918CCD /* lightblue.png in Resources */,
+				720B8C9A1AC8964D00064B86 /* pictureSpade.png in Resources */,
+				720B8C981AC8964D00064B86 /* pictureOverview.png in Resources */,
+				720B8C9B1AC8964D00064B86 /* pdftest.pdf in Resources */,
+				72FE6A351AC0234B00FF792D /* Images.xcassets in Resources */,
+				729A56A01AEC36E60034418E /* CV-mal.pdf in Resources */,
+				72FE6A6C1AC0420E00FF792D /* GoogleMaps.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72FE6A3B1AC0234B00FF792D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		72FE6A211AC0234B00FF792D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */,
+				727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */,
+				72A5987B1AD2BF5D00918CCD /* ProjectListViewController.swift in Sources */,
+				720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */,
+				72CAF4351AE7DD3300B4072B /* TreeViewController.swift in Sources */,
+				729A569A1AEB08250034418E /* CustomButton.swift in Sources */,
+				72A5988F1AD97C0100918CCD /* DrawView.swift in Sources */,
+				72A598881AD6827A00918CCD /* StaticValues.swift in Sources */,
+				72A598771AD0ABD400918CCD /* TestViewController.swift in Sources */,
+				72A297281ADFA7D200F8D584 /* Drawntext.swift in Sources */,
+				729A56961AE9A4AE0034418E /* FilepointLeaf.swift in Sources */,
+				72A598861AD5FCCA00918CCD /* EditProjectView.swift in Sources */,
+				72A297261ADB473700F8D584 /* Angle.swift in Sources */,
+				72FE6A301AC0234B00FF792D /* MapOverviewViewController.swift in Sources */,
+				72FE6A2B1AC0234B00FF792D /* AppDelegate.swift in Sources */,
+				72A5988B1AD83A5D00918CCD /* Filepoint.swift in Sources */,
+				729A56901AE819500034418E /* TreeView.swift in Sources */,
+				72A598911AD97D6C00918CCD /* Line.swift in Sources */,
+				72A297241ADA98BE00F8D584 /* Measure.swift in Sources */,
+				72DDE7381AE27795002DC630 /* CameraView.swift in Sources */,
+				729A569E1AEC26930034418E /* CustomViewController.swift in Sources */,
+				72A598821AD4A2F300918CCD /* Project.swift in Sources */,
+				729A56941AE9A4690034418E /* ProjectLeaf.swift in Sources */,
+				727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */,
+				72FE6A6E1AC0492400FF792D /* FilepointViewController.swift in Sources */,
+				72C105D41ACDECCE006CC14A /* FileAndPoints.swift in Sources */,
+				72FE6A2E1AC0234B00FF792D /* GeoFile.xcdatamodeld in Sources */,
+				72A598841AD5534300918CCD /* NewProjectView.swift in Sources */,
+				727A21311AF039E50067BC4A /* SharedInstance.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72FE6A391AC0234B00FF792D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72FE6A441AC0234B00FF792D /* GeoFileTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		72FE6A3F1AC0234B00FF792D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72FE6A241AC0234B00FF792D /* GeoFile */;
+			targetProxy = 72FE6A3E1AC0234B00FF792D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		72FE6A311AC0234B00FF792D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				72FE6A321AC0234B00FF792D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		72FE6A361AC0234B00FF792D /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				72FE6A371AC0234B00FF792D /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		72FE6A451AC0234B00FF792D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		72FE6A461AC0234B00FF792D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		72FE6A481AC0234B00FF792D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GoogleMaps-iOS-1.9.2",
+				);
+				INFOPLIST_FILE = GeoFile/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "GeoFile-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		72FE6A491AC0234B00FF792D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GoogleMaps-iOS-1.9.2",
+				);
+				INFOPLIST_FILE = GeoFile/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "GeoFile-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		72FE6A4B1AC0234B00FF792D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = GeoFileTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoFile.app/GeoFile";
+			};
+			name = Debug;
+		};
+		72FE6A4C1AC0234B00FF792D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = GeoFileTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoFile.app/GeoFile";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		72FE6A201AC0234B00FF792D /* Build configuration list for PBXProject "GeoFile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72FE6A451AC0234B00FF792D /* Debug */,
+				72FE6A461AC0234B00FF792D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72FE6A471AC0234B00FF792D /* Build configuration list for PBXNativeTarget "GeoFile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72FE6A481AC0234B00FF792D /* Debug */,
+				72FE6A491AC0234B00FF792D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72FE6A4A1AC0234B00FF792D /* Build configuration list for PBXNativeTarget "GeoFileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72FE6A4B1AC0234B00FF792D /* Debug */,
+				72FE6A4C1AC0234B00FF792D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		72FE6A2C1AC0234B00FF792D /* GeoFile.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				72A5988D1AD9536C00918CCD /* GeoFile 7.xcdatamodel */,
+				72A5988C1AD8516C00918CCD /* GeoFile 6.xcdatamodel */,
+				72A598891AD836FA00918CCD /* GeoFile 5.xcdatamodel */,
+				72A598781AD2A93000918CCD /* GeoFile 2.xcdatamodel */,
+				72A598791AD2AB4200918CCD /* GeoFile 3.xcdatamodel */,
+				72A598801AD49FFB00918CCD /* GeoFile 4.xcdatamodel */,
+				72FE6A2D1AC0234B00FF792D /* GeoFile.xcdatamodel */,
+			);
+			currentVersion = 72A5988D1AD9536C00918CCD /* GeoFile 7.xcdatamodel */;
+			path = GeoFile.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 72FE6A1D1AC0234B00FF792D /* Project object */;
+}

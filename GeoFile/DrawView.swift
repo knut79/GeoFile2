@@ -1,0 +1,779 @@
+//
+//  DrawView.swift
+//  GeoFile
+//
+//  Created by knut on 11/04/15.
+//  Copyright (c) 2015 knut. All rights reserved.
+//
+
+import Foundation
+
+protocol DrawViewProtocol {
+    
+    func setMeasurementText(label:UILabel)
+    func setAngleText(label:UILabel)
+    func setDrawntextText(label:UILabel)
+}
+
+class DrawView: UIView{
+    var delegate:DrawViewProtocol?
+    
+    var lines:[Line] = []
+    var measures:[Measure] = []
+    var drawnTexts:[Drawntext] = []
+    var currentMeasure:Measure!
+    var tempMeasureLabelSize:CGRect!
+    var tempMeasureLabel:UILabel!
+    var tempTextLabelSize:CGRect!
+    var tempTextLabel:UILabel!
+    
+    var angles:[Angle] = []
+    var currentAngle:Angle!
+    var tempAngleLabelSize:CGRect!
+    var tempAngleLabel:UILabel!
+    
+    var lastPoint: CGPoint!
+    var middlePoint: CGPoint!
+    var buttonSize:CGRect!
+    var originalImage:UIImage!
+    
+    var freeButton:CustomButton!
+    var measureButton:CustomButton!
+    var angleButton:CustomButton!
+    var textButton:CustomButton!
+    var undoButton:CustomButton!
+    var blackButton:CustomButton!
+    var whiteButton:CustomButton!
+    var undoArtifactList:[drawTypeEnum] = []
+    
+
+    var drawType:drawTypeEnum = .free
+    var colorPicked:drawColorEnum = .white
+
+    //var testLabel:UILabel!
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        buttonSize = CGRectMake(0, 0, 35, 35)
+        tempMeasureLabelSize = CGRectMake(0, 0, 100, 25)
+        tempAngleLabelSize = CGRectMake(0, 0, 100, 25)
+        tempTextLabelSize = CGRectMake(0, 0, 300, 25)
+        
+        freeButton = CustomButton(frame: buttonSize)
+        freeButton.setTitle("✒", forState: .Normal)
+        freeButton.addTarget(self, action: "freeDraw", forControlEvents: .TouchUpInside)
+
+        
+        measureButton = CustomButton(frame: buttonSize)
+        measureButton.setTitle("📏", forState: .Normal)
+        measureButton.addTarget(self, action: "measureDraw", forControlEvents: .TouchUpInside)
+        
+        angleButton = CustomButton(frame: buttonSize)
+        angleButton.setTitle("📐", forState: .Normal)
+        angleButton.addTarget(self, action: "angleDraw", forControlEvents: .TouchUpInside)
+        
+        textButton = CustomButton(frame: buttonSize)
+        textButton.setTitle("📝", forState: .Normal)
+        textButton.addTarget(self, action: "textDraw", forControlEvents: .TouchUpInside)
+        
+        undoButton = CustomButton(frame: buttonSize)
+        undoButton.setTitle("↩️", forState: .Normal)
+        undoButton.addTarget(self, action: "undoDraw", forControlEvents: .TouchUpInside)
+        
+        blackButton = CustomButton(frame: buttonSize)
+        blackButton.setTitle("⚫️", forState: .Normal)
+        blackButton.addTarget(self, action: "blackColor", forControlEvents: .TouchUpInside)
+        
+        whiteButton = CustomButton(frame: buttonSize)
+        whiteButton.setTitle("⚪️", forState: .Normal)
+        whiteButton.addTarget(self, action: "whiteColor", forControlEvents: .TouchUpInside)
+        
+        //println("origin \(self.frame.origin.y)")
+        
+        freeButton.center = CGPointMake(buttonSize.width * 0.75  , self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
+        measureButton.center = CGPointMake(freeButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
+        angleButton.center = CGPointMake(measureButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
+        textButton.center = CGPointMake(angleButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
+        undoButton.center = CGPointMake(textButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
+        
+        blackButton.center = CGPointMake(buttonSize.width * 0.75 , freeButton.frame.minY - buttonSize.height)
+        whiteButton.center = CGPointMake(buttonSize.width * 0.75 , blackButton.frame.minY - buttonSize.height)
+        
+        self.addSubview(freeButton)
+        self.addSubview(measureButton)
+        self.addSubview(angleButton)
+        self.addSubview(textButton)
+        self.addSubview(undoButton)
+        self.addSubview(blackButton)
+        self.addSubview(whiteButton)
+        
+        drawType = .free
+        colorPicked = .white
+        markButtonOnColor()
+        markButtonOnDrawtype()
+        
+        populateNewTempMeasuleLabel()
+        populateNewTempAngleLabel()
+        populateNewTempTextLabel()
+    }
+    
+    func resetDrawingValues()
+    {
+        lines = []
+        measures = []
+        tempMeasureLabel.hidden = true
+        angles = []
+        tempAngleLabel.hidden = true
+        undoArtifactList = []
+    }
+    
+    func hideButtons()
+    {
+        setButtonsHiddenAttr(true)
+    }
+    
+    func showButtons()
+    {
+        setButtonsHiddenAttr(false)
+    }
+    
+    func setButtonsHiddenAttr(isHidden:Bool)
+    {
+        freeButton.hidden = isHidden
+        measureButton.hidden = isHidden
+        angleButton.hidden = isHidden
+        textButton.hidden = isHidden
+        undoButton.hidden = isHidden
+        blackButton.hidden = isHidden
+        whiteButton.hidden = isHidden
+    }
+    
+    func populateNewTempMeasuleLabel()
+    {
+        tempMeasureLabel = UILabel(frame: tempMeasureLabelSize)
+        tempMeasureLabel.text = "?"
+        tempMeasureLabel.textAlignment = NSTextAlignment.Center
+        tempMeasureLabel.backgroundColor = UIColor.clearColor()
+        tempMeasureLabel.hidden = true
+        tempMeasureLabel.userInteractionEnabled = true
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setMeasurementText:")
+        tapRecognizer.numberOfTapsRequired = 1
+        tempMeasureLabel.addGestureRecognizer(tapRecognizer)
+        self.addSubview(tempMeasureLabel)
+    }
+    
+    func populateNewTempAngleLabel()
+    {
+        tempAngleLabel = UILabel(frame: tempAngleLabelSize)
+        tempAngleLabel.text = "?"
+        tempAngleLabel.textAlignment = NSTextAlignment.Center
+        tempAngleLabel.backgroundColor = UIColor.clearColor()
+        tempAngleLabel.hidden = true
+        tempAngleLabel.userInteractionEnabled = true
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setAngleText:")
+        tapRecognizer.numberOfTapsRequired = 1
+        tempAngleLabel.addGestureRecognizer(tapRecognizer)
+        self.addSubview(tempAngleLabel)
+    }
+    
+    
+    func populateNewTempTextLabel()
+    {
+        tempTextLabel = UILabel(frame: tempTextLabelSize)
+        tempTextLabel.text = "Enter text"
+        tempTextLabel.textAlignment = NSTextAlignment.Center
+        tempTextLabel.backgroundColor = UIColor.clearColor()
+        tempTextLabel.hidden = true
+        tempTextLabel.userInteractionEnabled = true
+        tempTextLabel.font = UIFont.boldSystemFontOfSize(12)
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setDrawntextText:")
+        tapRecognizer.numberOfTapsRequired = 1
+        tempTextLabel.addGestureRecognizer(tapRecognizer)
+        self.addSubview(tempTextLabel)
+    }
+    
+    
+    func setImage(image:UIImage)
+    {
+        originalImage = image
+        self.setNeedsDisplay()
+    }
+
+    var touchBegan = false
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        lastPoint = touches.anyObject()?.locationInView(self)
+        touchBegan = true
+        switch(drawType)
+        {
+        case .free:
+            tempMeasureLabel.hidden = true
+            tempAngleLabel.hidden = true
+            tempTextLabel.hidden = true
+        case .measure:
+            tempMeasureLabel.textColor = getUIColor(colorPicked)
+            break
+        case .angle:
+            tempAngleLabel.textColor = getUIColor(colorPicked)
+            break
+        case .text:
+            tempTextLabel.textColor = getUIColor(colorPicked)
+            if(drawnTexts.last?.label!.text != tempTextLabel.text)
+            {
+            tempTextLabel.hidden = false
+            tempTextLabel.center = lastPoint
+            //currentMeasure.setLabel(label: tempMeasureLabel)
+            
+            undoArtifactList.append(.text)
+            drawnTexts.append(Drawntext(label: tempTextLabel, color: colorPicked))
+            populateNewTempTextLabel()
+            }
+        default:
+            break
+            
+        }
+    }
+    var angleMidpointSat = false
+    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
+        var newPoint = touches.anyObject()?.locationInView(self)
+        switch(drawType)
+        {
+        case .free:
+            lines.append(Line(start: lastPoint, end: newPoint!, color:colorPicked, touchBegan:touchBegan))
+            lastPoint = newPoint
+        case .measure:
+            tempMeasureLabel.hidden = false
+            currentMeasure = Measure(start: lastPoint, end: newPoint!, color: colorPicked, text: "?")
+
+            break
+        case .angle:
+            if(angleMidpointSat)
+            {
+                tempAngleLabel.hidden = false
+                currentAngle = Angle(start: currentAngle.start ,mid: currentAngle.mid, end:newPoint!, color: colorPicked, text: "?" )
+            }
+            else
+            {
+                tempAngleLabel.hidden = true
+                currentAngle = Angle(start: lastPoint,mid: newPoint!, end:nil, color: colorPicked, text: "?" )
+            }
+        default:
+            break
+            
+        }
+        
+        touchBegan = false
+        
+        
+        self.setNeedsDisplay()
+    }
+    
+    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+        var newPoint = touches.anyObject()?.locationInView(self)
+        switch(drawType)
+        {
+        case .measure:
+            undoArtifactList.append(.measure)
+            //measures.append(Measure(start: lastPoint, end: newPoint!, color: colorPicked, text: "?"))
+            currentMeasure = Measure(start: lastPoint, end: newPoint!, color: colorPicked, text: "?")
+            currentMeasure.setLabel(label: tempMeasureLabel)
+            measures.append(currentMeasure)
+            populateNewTempMeasuleLabel()
+            break
+        case .free:
+            undoArtifactList.append(.free)
+            break
+        case .angle:
+            if(angleMidpointSat)
+            {
+                undoArtifactList.append(.angle)
+                angleMidpointSat = false
+                currentAngle = Angle(start: currentAngle.start ,mid: currentAngle.mid, end:newPoint!, color: colorPicked, text: "?" )
+                currentAngle.setLabel(label: tempAngleLabel)
+                angles.append(currentAngle)
+                populateNewTempAngleLabel()
+            }
+            else
+            {
+                angleMidpointSat = true
+                currentAngle = Angle(start: lastPoint,mid: newPoint!, end:nil, color: colorPicked, text: "?" )
+             }
+        default:
+            break
+            
+        }
+    }
+    
+    func clear()
+    {
+        lines = []
+        
+        for item in measures
+        {
+            item.getLabel().removeFromSuperview()
+        }
+        for item in angles
+        {
+            item.getLabel().removeFromSuperview()
+        }
+        for item in drawnTexts
+        {
+            item.label?.removeFromSuperview()
+        }
+        currentAngle = nil
+        currentMeasure = nil
+        tempAngleLabel.hidden = true
+        tempMeasureLabel.hidden = true
+        tempTextLabel.hidden = true
+        measures = []
+        angles = []
+        setNeedsDisplay()
+        
+        
+    }
+    
+    override func drawRect(rect: CGRect) {
+        
+        if(originalImage == nil)
+        {
+            return
+        }
+        //UIGraphicsBeginImageContext(originalImage.size)
+        //originalImage.drawAtPoint(CGPointMake(0, 0))
+        
+        
+        
+        var context = UIGraphicsGetCurrentContext()
+        //CGContextDrawImage(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage)
+        originalImage.drawInRect(CGRectMake(0, 0, originalImage.size.width, originalImage.size.height))
+        
+        CGContextBeginPath(context)
+        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineWidth(context, 3)
+        for line in lines
+        {
+            setStrokeColor(context,color: line.color)
+            CGContextMoveToPoint(context, line.start.x, line.start.y)
+            CGContextAddLineToPoint(context, line.end.x, line.end.y)
+
+            CGContextStrokePath(context)
+        }
+        for measurement in measures
+        {
+            drawMeasumrement(context,measurement: measurement,label: measurement.getLabel(), color: measurement.color)
+        }
+        for angle in angles
+        {
+            drawAngle(context, angle: angle, label: angle.getLabel(), color: angle.color)
+        }
+        for drawntext in drawnTexts
+        {
+            
+        }
+        
+        
+        //temp drawing of measure
+        if(drawType == .measure)
+        {
+            if(currentMeasure != nil)
+            {
+                drawMeasumrement(context,measurement: currentMeasure,label: tempMeasureLabel, color: colorPicked)
+            }
+        }
+        if(drawType == .angle)
+        {
+            if(currentAngle != nil)
+            {
+                drawAngle(context, angle: currentAngle, label: tempAngleLabel, color: colorPicked)
+            }
+        }
+    }
+    
+    func drawAngle(context:CGContext,angle:Angle,label:UILabel,color:drawColorEnum)
+    {
+        
+        CGContextBeginPath(context)
+        setStrokeColor(context,color: color)
+        CGContextSetLineCap(context, kCGLineCapRound)
+        
+        CGContextMoveToPoint(context, angle.start.x, angle.start.y)
+        CGContextAddLineToPoint(context, angle.mid.x, angle.mid.y)
+        CGContextStrokePath(context)
+        
+        if(angle.end != nil)
+        {
+            CGContextMoveToPoint(context, angle.mid.x, angle.mid.y)
+            CGContextAddLineToPoint(context, angle.end!.x, angle.end!.y)
+            CGContextStrokePath(context)
+            
+            
+            var startAngle = (pointPairToBearingDegrees(angle.start,endingPoint: angle.mid) + 180.0) % 360.0
+            var endAngle = pointPairToBearingDegrees(angle.mid,endingPoint: angle.end!)
+            
+            
+            var degToRadEnd = ((CGFloat(M_PI) * endAngle ) / 180.0)
+            var degToRadStart = ((CGFloat(M_PI) * startAngle ) / 180.0)
+            
+            
+            
+            var clockwiseDraw = IsClockwise([angle.start,angle.mid,angle.end!])
+            
+            var radiusForDrawingArc:CGFloat = 40
+            
+            var arcToDraw = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
+            arcToDraw.stroke()
+            
+            
+            var arcForPositionLabel = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc * 1.5, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
+            
+            
+            var _angle = angleOfPointsToFixedPoint(angle.start, p2: angle.end!, fixed:angle.mid)
+            
+            if(_angle > 180.0)
+            {
+                _angle = (_angle - 360.0) * -1
+            }
+            println("angle \(_angle)")
+            
+            
+            var midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);
+            var approximateMidPointCenter = CGPointMake(CGRectGetMidX(midPointPathFrame), CGRectGetMidY(midPointPathFrame));
+            
+            if(angle.hardSetText == false)
+            {
+                label.text =  "\(Int(_angle))°"
+            }
+            label.center = approximateMidPointCenter
+        }
+    }
+
+    func drawMeasumrement(context:CGContext,measurement:Measure,label:UILabel, color:drawColorEnum)
+    {
+        CGContextBeginPath(context)
+        setStrokeColor(context,color: color)
+        CGContextSetLineCap(context, kCGLineCapRound)
+        
+        CGContextMoveToPoint(context, measurement.start.x, measurement.start.y)
+        
+        CGContextAddLineToPoint(context, measurement.end.x, measurement.end.y)
+        
+        CGContextStrokePath(context)
+        var angle = angleOfPointsToFixedPoint(measurement.start, p2: measurement.end)
+        //CGContextRotateCTM(context, angle)
+        var drawingFromLeftToRight = measurement.start.x < measurement.end.x
+        drawDisclosureIndicator(context, x: measurement.start.x, y: measurement.start.y, pointRight: drawingFromLeftToRight ? false : true)
+        drawDisclosureIndicator(context, x: measurement.end.x, y: measurement.end.y, pointRight: drawingFromLeftToRight ? true : false)
+        //var label = measurement.getLabel()
+        label.center = getPointBetweenPoints(measurement.start, p2: measurement.end, offset: CGPointMake(10, -10))
+        
+        println("degrees \(angle)")
+        label.transform = CGAffineTransformIdentity
+        label.transform = CGAffineTransformMakeRotation(angle * CGFloat(M_PI) / 180.0)
+  
+    }
+
+    func IsClockwise(vertices:[CGPoint]) -> Bool
+    {
+
+        var area:CGFloat = 0
+        for (var i = 0; i < (vertices.count); i++)
+        {
+            var j = (i + 1) % vertices.count;
+            area += vertices[i].x * vertices[j].y;
+            area -= vertices[j].x * vertices[i].y;
+        
+        }
+        return (area < 0);
+    }
+    
+    func pointPairToBearingDegrees(startingPoint:CGPoint, endingPoint:CGPoint) -> CGFloat
+    {
+        var originPoint = CGPointMake(endingPoint.x - startingPoint.x, endingPoint.y - startingPoint.y); // get origin point to origin by subtracting end from start
+        var bearingRadians = atan2f(Float(originPoint.y), Float(originPoint.x)); // get bearing in radians
+        var bearingDegrees = bearingRadians * (180.0 / Float(M_PI)); // convert to degrees
+        bearingDegrees = (bearingDegrees > 0.0 ? bearingDegrees : (360.0 + bearingDegrees)); // correct discontinuity
+        return CGFloat(bearingDegrees);
+    }
+
+    
+    func setStrokeColor(context: CGContext,color:drawColorEnum)
+    {
+        switch(color)
+        {
+        case .black:
+            CGContextSetRGBStrokeColor(context, 0, 0, 0, 1)
+        case .white:
+            CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
+        default:
+            CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
+        }
+    }
+    
+    func angleOfPointsToFixedPoint(p1:CGPoint, p2:CGPoint,  fixed:CGPoint? = nil) -> CGFloat
+    {
+        var fixedPoint = getFixedPoint(p1,p2: p2)
+        if( fixed != nil)
+        {
+            fixedPoint = (fixed!,shouldTurn180:false)
+        }
+
+        
+        let v1 = CGVector(dx: p1.x - fixedPoint.point.x, dy: p1.y - fixedPoint.point.y)
+        let v2 = CGVector(dx: p2.x - fixedPoint.point.x, dy: p2.y - fixedPoint.point.y)
+        
+        let angle = atan2(v2.dy, v2.dx) - atan2(v1.dy, v1.dx)
+        
+        var deg = angle * CGFloat(180.0 / M_PI)
+        
+        if deg < 0 { deg += 360.0 }
+        
+        
+        return (deg + (fixedPoint.shouldTurn180 ? 180.0:0.0))
+    }
+    
+    func getFixedPoint(p1:CGPoint, p2:CGPoint) -> (point:CGPoint,shouldTurn180:Bool)
+    {
+
+        if(p1.x < p2.x && p1.y > p2.y)
+        {
+            //upright
+            return (CGPointMake(min(p1.x,p2.x), max(p1.y,p2.y)),false)
+        }
+        else if(p1.x > p2.x && p1.y < p2.y)
+        {
+            //downleft
+            return (CGPointMake(max(p1.x,p2.x), min(p1.y,p2.y)),true)
+        }
+        else if(p1.x > p2.x && p1.y > p2.y)
+        {
+            //upleft
+            return (CGPointMake(max(p1.x,p2.x), max(p1.y,p2.y)),true)
+        }
+        else //if(p1.x > p2.x && p1.y > p2.y)
+        {
+            return (CGPointMake(min(p1.x,p2.x), min(p1.y,p2.y)),false)
+        }
+    }
+
+    
+    func getPointBetweenPoints(p1:CGPoint, p2:CGPoint, offset: CGPoint) -> CGPoint
+    {
+        
+        var point1 = CGPointMake(p1.x + offset.x, p1.y + offset.y)
+        var point2 = CGPointMake(p2.x + offset.x, p2.y + offset.y)
+        
+        //upright or
+        if((p1.x < p2.x && p1.y > p2.y) || (p1.x > p2.x && p1.y < p2.y))
+        {
+            point1 = CGPointMake(p1.x - offset.x, p1.y + offset.y)
+            point2 = CGPointMake(p2.x - offset.x, p2.y + offset.y)
+        }
+        
+        var xVal = (point1.x + point2.x ) / 2
+        var yVal = (point1.y + point2.y) / 2
+
+        return CGPointMake(xVal, yVal)
+
+    }
+    
+    
+    func drawDisclosureIndicator(ctxt:CGContextRef, x:CGFloat, y:CGFloat , pointRight:Bool = true)
+    {
+        let R:CGFloat = 4.5 // "radius" of the arrow head
+        let W:CGFloat = 3.0 // line width
+        CGContextSaveGState(ctxt)
+        
+        if(pointRight)
+        {
+            CGContextMoveToPoint(ctxt, x-R, y-R)
+            CGContextAddLineToPoint(ctxt, x, y)
+            CGContextAddLineToPoint(ctxt, x-R, y+R)
+            
+        }
+        else
+        {
+            CGContextMoveToPoint(ctxt, x+R, y-R)
+            CGContextAddLineToPoint(ctxt, x, y)
+            CGContextAddLineToPoint(ctxt, x+R, y+R)
+        }
+        CGContextSetLineCap(ctxt, kCGLineCapSquare)
+        CGContextSetLineJoin(ctxt, kCGLineJoinMiter)
+        CGContextSetLineWidth(ctxt, W)
+        
+        CGContextStrokePath(ctxt)
+        
+        CGContextRestoreGState(ctxt)
+    }
+    
+    //MARK: Actions
+
+    func setMeasurementText(sender:UITapGestureRecognizer)->Void
+    {
+        delegate?.setMeasurementText(sender.view as UILabel)
+    }
+    
+    func setAngleText(sender:UITapGestureRecognizer)->Void
+    {
+        for angle in angles
+        {
+            if(angle.getLabel() == (sender.view as UILabel))
+            {
+                angle.hardSetText = true
+            }
+        }
+        //(sender.view as UILabel).text = "198 °"
+        delegate?.setAngleText(sender.view as UILabel)
+    }
+    
+    func setDrawntextText(sender:UITapGestureRecognizer)->Void
+    {
+        delegate?.setDrawntextText(sender.view as UILabel)
+    }
+    
+    func freeDraw()
+    {
+        drawType = .free
+        markButtonOnDrawtype()
+    }
+    
+    func measureDraw()
+    {
+        drawType = .measure
+        markButtonOnDrawtype()
+    }
+    
+    func angleDraw()
+    {
+        drawType = .angle
+        markButtonOnDrawtype()
+    }
+    
+    func textDraw()
+    {
+        drawType = .text
+        markButtonOnDrawtype()
+    }
+    
+    func markButtonOnDrawtype()
+    {
+        let markValue:CGFloat = 0.65
+        textButton.alpha = 1
+        angleButton.alpha = 1
+        measureButton.alpha = 1
+        freeButton.alpha = 1
+        switch(drawType)
+        {
+        case .angle:
+            angleButton.alpha = markValue
+        case .free:
+            freeButton.alpha = markValue
+        case .measure:
+            measureButton.alpha = markValue
+        case .text:
+            textButton.alpha = markValue
+        default:
+            break
+        }
+    }
+    
+    func markButtonOnColor()
+    {
+        let markValue:CGFloat = 0.65
+        whiteButton.alpha = 1
+        blackButton.alpha = 1
+        switch(colorPicked)
+        {
+        case .white:
+            whiteButton.alpha = markValue
+        case .black:
+            blackButton.alpha = markValue
+        }
+    }
+    
+    func undoDraw()
+    {
+        drawType = .undo
+        //find last paused line
+        if(undoArtifactList.count > 0)
+        {
+            switch(undoArtifactList.last!)
+            {
+            case .free:
+                undoFreeDraw()
+                break
+            case .measure:
+                undoMeasureDraw()
+                break
+            case .angle:
+                undoAngleDraw()
+                break
+            case .text:
+                undoDrawntextDraw()
+            default:
+                break
+            }
+            undoArtifactList.removeLast()
+        }
+        //println("lines count \(lines.count)")
+    }
+    
+    func undoMeasureDraw()
+    {
+        if(measures.count > 0)
+        {
+            measures.last?.getLabel().removeFromSuperview()
+            measures.removeLast()
+            setNeedsDisplay()
+        }
+    }
+    
+    func undoAngleDraw()
+    {
+        if(angles.count > 0)
+        {
+            angles.last?.getLabel().removeFromSuperview()
+            angles.removeLast()
+            setNeedsDisplay()
+        }
+    }
+    
+    func undoDrawntextDraw()
+    {
+        if(drawnTexts.count > 0)
+        {
+            drawnTexts.last?.label?.removeFromSuperview()
+            drawnTexts.removeLast()
+        }
+    }
+    
+    func undoFreeDraw()
+    {
+        var index = 0
+        for index = (lines.count - 1) ; index > 0; index--
+        {
+            if(lines[index].lastTouchBegan)
+            {
+                break
+            }
+        }
+        if(index >= 0)
+        {
+            lines.removeRange(Range(start: index, end: lines.count))
+        }
+        setNeedsDisplay()
+    }
+    
+    func blackColor()
+    {
+        colorPicked = .black
+        markButtonOnColor()
+    }
+    
+    func whiteColor()
+    {
+        colorPicked = .white
+        markButtonOnColor()
+    }
+}
