@@ -13,6 +13,8 @@ protocol TreeViewProtocol
 {
     func setNewContentSize()
     func jumpToFilepoint()
+    func deleteFilepointNode()
+    func deleteProjectNode()
 }
 
 class TreeView:UIView
@@ -28,6 +30,7 @@ class TreeView:UIView
     var selectedLeaf:UIView!
     
     var jumpToFilepointButton:UIButton!
+    var deleteNodeButton:UIButton!
     
     
     override init(frame: CGRect) {
@@ -41,12 +44,20 @@ class TreeView:UIView
         self.addSubview(selectedLeaf)
         
         jumpToFilepointButton = CustomButton(frame: CGRectMake(0, 0, 75, buttonBarHeight))
-        jumpToFilepointButton.setTitle("Show file", forState: UIControlState.Normal)
+        jumpToFilepointButton.setTitle("Show", forState: UIControlState.Normal)
         jumpToFilepointButton.alpha = 0
         jumpToFilepointButton.layer.cornerRadius = 5
         jumpToFilepointButton.clipsToBounds = true
         jumpToFilepointButton.addTarget(self, action: "jumpToFilepoint", forControlEvents: .TouchUpInside)
         self.addSubview(jumpToFilepointButton)
+        
+        deleteNodeButton = CustomButton(frame: CGRectMake(0, 0, 75, buttonBarHeight))
+        deleteNodeButton.setTitle("Delete", forState: UIControlState.Normal)
+        deleteNodeButton.alpha = 0
+        deleteNodeButton.layer.cornerRadius = 5
+        deleteNodeButton.clipsToBounds = true
+        deleteNodeButton.addTarget(self, action: "deleteNode", forControlEvents: .TouchUpInside)
+        self.addSubview(deleteNodeButton)
         
         fetchProjects()
 
@@ -190,9 +201,9 @@ class TreeView:UIView
             var fromY = firstButtonItem!.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
         
-            //var lastButtonItem = selectedItem == nil ? filepointLeaf.filepointLeafs.last!.button : selectedItem!.button
-            //var lastButtonItem = filepointLeaf.filepointLeafs.last!.button
-            var lastButtonItem = getLastFilepointWithCoordinates(filepointLeaf).button
+
+            //var lastButtonItem = getLastFilepointWithCoordinates(filepointLeaf).button
+            var lastButtonItem = filepointLeaf.filepointLeafs.last!.button
             var toX = lastButtonItem.frame.minX - (horizontalLineLength/2)
             var toY = lastButtonItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
@@ -213,7 +224,6 @@ class TreeView:UIView
                     lastNodeWithCoordinates = filepointLeaf.filepointLeafs[i-1]
                     break
                 }
-                
             }
         }
         return lastNodeWithCoordinates!
@@ -222,23 +232,52 @@ class TreeView:UIView
     
     func fetchProjects()
     {
+        projectLeafs = []
         let fetchRequest = NSFetchRequest(entityName: "Project")
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Project] {
             var i = 0
             for item in fetchResults
             {
-                var _button = UIButton(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
-                _button.setTitle("\(item.title)", forState: UIControlState.Normal)
+                var _button = UILabel(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
+                _button.userInteractionEnabled = true
                 _button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
-                _button.center = CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (_button.frame.size.width/2), (UIScreen.mainScreen().bounds.size.height * 0.1) + ((_button.frame.height  + verticalLineLength) * CGFloat(i)))
-                _button.addTarget(self, action: "projectSelected:", forControlEvents: .TouchUpInside)
+                _button.numberOfLines = 2
+                _button.text = "\(item.title)"
+                _button.center =  CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (_button.frame.size.width/2), (UIScreen.mainScreen().bounds.size.height * 0.1) + ((_button.frame.height  + verticalLineLength) * CGFloat(i)))
+                var singleTapRecognizer = UITapGestureRecognizer(target: self, action: "projectSelected:")
+                singleTapRecognizer.numberOfTapsRequired = 1
+                _button.addGestureRecognizer(singleTapRecognizer)
+                var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "showActionButtonsForProject:")
+                doubleTapRecognizer.numberOfTapsRequired = 2
+                singleTapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
+                _button.addGestureRecognizer(doubleTapRecognizer)
                 projectLeafs.append(ProjectLeaf(_project:item,_button:_button))
                 self.addSubview(_button)
+                
                 i++
             }
 
         }
         self.setNeedsDisplay()
+    }
+    
+    func buildLeafButton(xOffset:CGFloat,yOffset:CGFloat,index:Int,item:Filepoint) -> UIImageView
+    {
+        var filePointItem = item as Filepoint
+        var image = UIImage(data: filePointItem.file!)
+        var _button = UIImageView(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
+        _button.userInteractionEnabled = true
+        _button.image = image
+        _button.center = CGPointMake(xOffset + _button.frame.size.width + horizontalLineLength, yOffset + ((_button.frame.height + verticalLineLength) * CGFloat(index)))
+        var singleTapRecognizer = UITapGestureRecognizer(target: self, action: "filepointSelectedFromFilepoint:")
+        singleTapRecognizer.numberOfTapsRequired = 1
+        _button.addGestureRecognizer(singleTapRecognizer)
+        var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "showActionButtonsForFilepoint:")
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        singleTapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
+        _button.addGestureRecognizer(doubleTapRecognizer)
+        
+        return _button
     }
     
     func fetchFilepointsFromProject()
@@ -247,17 +286,9 @@ class TreeView:UIView
         var i = 0
         for item in currentProjectLeaf.project.filepoints
         {
-
-            var filePointItem = item as Filepoint
-            var image = UIImage(data: filePointItem.file!)
             var xOffset = currentProjectLeaf.button.center.x
             var yOffset = currentProjectLeaf.button.center.y
-            var _button = UIButton.buttonWithType(UIButtonType.Custom) as UIButton
-            _button.frame =  CGRectMake(0, 0, leafSize.width, leafSize.height)
-            _button.setImage(image, forState: UIControlState.Normal)
-            _button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
-            _button.center = CGPointMake(xOffset + _button.frame.size.width + horizontalLineLength, yOffset + ((_button.frame.height + verticalLineLength) * CGFloat(i)))
-            _button.addTarget(self, action: "filepointSelectedFromFilepoint:", forControlEvents: .TouchUpInside)
+            var _button = buildLeafButton(xOffset,yOffset: yOffset,index: i,item: item as Filepoint)
             currentProjectLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
             self.addSubview(_button)
             i++
@@ -273,35 +304,21 @@ class TreeView:UIView
         {
             if((item as Filepoint).x != 0 && (item as Filepoint).y != 0)
             {
-            var filePointItem = item as Filepoint
-            var image = UIImage(data: filePointItem.file!)
-            var xOffset = filepointLeaf.button.center.x
-            var yOffset = filepointLeaf.button.center.y
-            var _button = UIButton.buttonWithType(UIButtonType.Custom) as UIButton
-            _button.frame =  CGRectMake(0, 0, 60, 40)
-            _button.setImage(image, forState: UIControlState.Normal)
-            _button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
-            _button.center = CGPointMake(xOffset + _button.frame.size.width + horizontalLineLength, yOffset +  ((_button.frame.height + verticalLineLength) * CGFloat(i)))
-            _button.addTarget(self, action: "filepointSelectedFromFilepoint:", forControlEvents: .TouchUpInside)
-            filepointLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
-            self.addSubview(_button)
-            i++
+                var xOffset = filepointLeaf.button.center.x
+                var yOffset = filepointLeaf.button.center.y
+                var _button = buildLeafButton(xOffset,yOffset: yOffset,index: i,item: item as Filepoint)
+                filepointLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
+                self.addSubview(_button)
+                i++
             }
         }
         for item in filepointLeaf.filepoint.filepoints
         {
             if((item as Filepoint).x == 0 && (item as Filepoint).y == 0)
             {
-                var filePointItem = item as Filepoint
-                var image = UIImage(data: filePointItem.file!)
                 var xOffset = filepointLeaf.button.center.x
                 var yOffset = filepointLeaf.button.center.y
-                var _button = UIButton.buttonWithType(UIButtonType.Custom) as UIButton
-                _button.frame =  CGRectMake(0, 0, 60, 40)
-                _button.setImage(image, forState: UIControlState.Normal)
-                _button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
-                _button.center = CGPointMake(xOffset + _button.frame.size.width + horizontalLineLength, yOffset +  ((_button.frame.height + verticalLineLength) * CGFloat(i)))
-                _button.addTarget(self, action: "filepointSelectedFromFilepoint:", forControlEvents: .TouchUpInside)
+                var _button = buildLeafButton(xOffset,yOffset: yOffset,index: i,item: item as Filepoint)
                 filepointLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
                 self.addSubview(_button)
                 i++
@@ -317,8 +334,10 @@ class TreeView:UIView
    
     
     
-    func findSelecedFilepointLeaf(filepointLeaf:FilepointLeaf, buttonPushed:UIButton)
+    func findSelecedFilepointLeaf(filepointLeaf:FilepointLeaf, buttonPushed:UIImageView)
     {
+        fadeoutActionButtons()
+        
         var filepointLeafs = filepointLeaf.filepointLeafs
         for var i = 0 ; i < filepointLeafs.count ; i++
         {
@@ -337,13 +356,20 @@ class TreeView:UIView
     }
     
     
-    func filepointSelectedFromFilepoint(sender:AnyObject)
+    func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
     {
-       
+        fadeoutActionButtons()
+        
+        var button = (sender as UITapGestureRecognizer).view
+        filepointSelectedFromFilepoint(button as UIImageView)
+    }
+    
+    func filepointSelectedFromFilepoint(button:UIImageView)
+    {
         var filepointLeafs = currentProjectLeaf.filepointLeafs
         for var i = 0 ;  i < filepointLeafs.count ; i++
         {
-            if(filepointLeafs[i].button == (sender as UIButton))
+            if(filepointLeafs[i].button == button )
             {
                 currentFilepointLeaf = filepointLeafs[i]
                 selectedLeaf.hidden = false
@@ -351,18 +377,11 @@ class TreeView:UIView
             }
             else
             {
-                findSelecedFilepointLeaf(filepointLeafs[i],buttonPushed: (sender as UIButton))
+                findSelecedFilepointLeaf(filepointLeafs[i],buttonPushed: (button as UIImageView))
             }
         }
         
         currentFilepointLeaf.selected = true
-
-        self.bringSubviewToFront(jumpToFilepointButton)
-        var jumpToFilepointButtonY = currentFilepointLeaf.button.center.y > self.frame.height / 2 ? currentFilepointLeaf.button.center.y - currentFilepointLeaf.button.frame.height : currentFilepointLeaf.button.center.y + currentFilepointLeaf.button.frame.height
-        var jumpToFilepointButtonX = currentFilepointLeaf.button.center.x > self.frame.width / 2 ? currentFilepointLeaf.button.center.x - currentFilepointLeaf.button.frame.width : currentFilepointLeaf.button.center.x + currentFilepointLeaf.button.frame.width
-        jumpToFilepointButton.alpha = 0.75
-        jumpToFilepointButton.center = CGPointMake(jumpToFilepointButtonX,jumpToFilepointButtonY)
-        
         
         //remove all buttons
         removeProjectLeafs()
@@ -372,15 +391,70 @@ class TreeView:UIView
         setNeedsDisplay()
     }
     
+    func findButtonForFilepointAndSelectIt(filepointToCheck:Filepoint, filepointLeafs:[FilepointLeaf]? = nil)
+    {
+        var _filepointsLeafs = filepointLeafs ?? currentProjectLeaf.filepointLeafs
+
+        for item in _filepointsLeafs
+        {
+            if(item.filepoint.objectID == filepointToCheck.objectID)
+            {
+                filepointSelectedFromFilepoint(item.button)
+            }
+            else
+            {
+                findButtonForFilepointAndSelectIt(filepointToCheck, filepointLeafs: item.filepointLeafs)
+            }
+        }
+    }
     
-    func projectSelected(sender:AnyObject)
+    func showActionButtonsForProject(sender:AnyObject)
+    {
+        //TODO: should handle doubletap of nodes that are not selected
+        if(currentProjectLeaf != nil)
+        {
+            self.bringSubviewToFront(deleteNodeButton)
+            var buttonY = currentProjectLeaf.button.center.y > self.frame.height / 2 ? currentProjectLeaf.button.center.y - currentProjectLeaf.button.frame.height : currentProjectLeaf.button.center.y + currentProjectLeaf.button.frame.height
+            var buttonX = currentProjectLeaf.button.center.x > self.frame.width / 2 ? currentProjectLeaf.button.center.x - currentProjectLeaf.button.frame.width : currentProjectLeaf.button.center.x + currentProjectLeaf.button.frame.width
+            deleteNodeButton.alpha = 0.75
+            deleteNodeButton.center = CGPointMake(buttonX,buttonY)
+        }
+    }
+    
+    func showActionButtonsForFilepoint(sender:AnyObject)
+    {
+        //TODO: should handle doubletap of nodes that are not selected
+        if(currentFilepointLeaf != nil)
+        {
+            self.bringSubviewToFront(deleteNodeButton)
+            var jumpToFilepointButtonY = currentFilepointLeaf.button.center.y > self.frame.height / 2 ? currentFilepointLeaf.button.center.y - currentFilepointLeaf.button.frame.height : currentFilepointLeaf.button.center.y + currentFilepointLeaf.button.frame.height
+            var jumpToFilepointButtonX = currentFilepointLeaf.button.center.x > self.frame.width / 2 ? currentFilepointLeaf.button.center.x - currentFilepointLeaf.button.frame.width : currentFilepointLeaf.button.center.x + currentFilepointLeaf.button.frame.width
+            deleteNodeButton.alpha = 0.75
+            deleteNodeButton.center = CGPointMake(jumpToFilepointButtonX,jumpToFilepointButtonY)
+            
+            self.bringSubviewToFront(jumpToFilepointButton)
+            jumpToFilepointButton.alpha = 0.75
+            jumpToFilepointButton.center = CGPointMake(deleteNodeButton.center.x,deleteNodeButton.center.y - deleteNodeButton.frame.height - 2 )
+        }
+    }
+    
+    
+    func projectSelected(sender:UITapGestureRecognizer)
+    {
+        currentFilepointLeaf = nil
+        fadeoutActionButtons()
+        projectSelected(sender.view as UILabel)
+
+    }
+    
+    func projectSelected(button:UILabel)
     {
         //remove all buttons
         removeProjectLeafs()
         
         for var i = 0 ;  i < projectLeafs.count ; i++
         {
-            if(projectLeafs[i].button == (sender as UIButton))
+            if(projectLeafs[i].button == (button as UILabel))
             {
                 currentProjectLeaf = projectLeafs[i]
                 selectedLeaf.hidden = false
@@ -391,20 +465,10 @@ class TreeView:UIView
             projectLeafs[i].button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         }
         
-        
-        //(sender as UIButton).backgroundColor = UIColor.redColor()
-        
         currentProjectLeaf.selected = true
         jumpToFilepointButton.alpha = 0
         
         fetchFilepointsFromProject()
-        
-        /*
-        self.bringSubviewToFront(jumpToFilepointButton)
-        jumpToFilepointButton.alpha = 0.75
-        var jumpToFilepointButtonY = currentProjectLeaf.button.center.y > self.frame.height / 2 ? currentProjectLeaf.button.center.y - currentProjectLeaf.button.frame.height : currentProjectLeaf.button.center.y + currentProjectLeaf.button.frame.height
-        jumpToFilepointButton.center = CGPointMake(currentProjectLeaf.button.center.x + currentProjectLeaf.button.frame.width ,jumpToFilepointButtonY)
-        */
         
         //expandFrame(CGPointMake(projectLeafs.last!.button.frame.maxX, projectLeafs.last!.button.frame.maxY))//   projectButtons.last?.frame.maxX, projectButtons.last?.frame.maxY!))
         setNeedsDisplay()
@@ -518,6 +582,7 @@ class TreeView:UIView
         {
             if(isOnBranchWith(filepointLeaf.filepoint, onBranchWith:currentFilepointLeaf.filepoint))
             {
+                
                 buildForNode(filepointLeaf)
             }
         }
@@ -526,10 +591,12 @@ class TreeView:UIView
     func buildForNode(filepointLeaf:FilepointLeaf)
     {
         fetchFilepointsFromFilepoint(filepointLeaf)
+        println("filepointLeaf.filepoint id is \(filepointLeaf.filepoint.objectID)")
         for filepointLeafItem in filepointLeaf.filepointLeafs
         {
             if(isOnBranchWith(filepointLeafItem.filepoint, onBranchWith:currentFilepointLeaf.filepoint))
             {
+                println("parent id is \(filepointLeafItem.filepoint.parent?.objectID)")
                 buildForNode(filepointLeafItem)
             }
         }
@@ -551,6 +618,20 @@ class TreeView:UIView
         return false
     }
 
+    func removeProjectLeafs_AndProjectButtons()
+    {
+        for var i = 0 ;  i < projectLeafs.count ; i++
+        {
+            for var y = 0 ;  y < projectLeafs[i].filepointLeafs.count ; y++
+            {
+                removeFilepointLeaf(projectLeafs[i].filepointLeafs[y])
+            }
+            projectLeafs[i].button.removeFromSuperview()
+            projectLeafs[i].filepointLeafs = []
+        }
+        projectLeafs = []
+        selectedLeaf.hidden = true
+    }
     
     func removeProjectLeafs()
     {
@@ -572,6 +653,36 @@ class TreeView:UIView
         }
         filepointLeaf.filepointLeafs = []
         filepointLeaf.button.removeFromSuperview()
+    }
+    
+    func deleteNode()
+    {
+        
+        if(currentFilepointLeaf != nil)
+        {
+            delegate?.deleteFilepointNode()
+            
+        }
+        else if (currentProjectLeaf != nil)
+        {
+            delegate?.deleteProjectNode()
+            
+
+            
+        }
+    }
+    
+    func save() {
+        var error : NSError?
+        if(managedObjectContext!.save(&error) ) {
+            println(error?.localizedDescription)
+        }
+    }
+    
+    func fadeoutActionButtons()
+    {
+        jumpToFilepointButton.alpha = 0
+        deleteNodeButton.alpha = 0
     }
     
     func jumpToFilepoint()

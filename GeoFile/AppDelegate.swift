@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GMSServices.provideAPIKey("AIzaSyCyht3DFB8Tg0wsQ5A7mV-lxpY6d1aClH8");
 
         application.statusBarHidden =  true
-
+        UIApplication.sharedApplication().statusBarHidden = true
         return true
     }
 

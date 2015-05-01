@@ -53,7 +53,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
         if(passingFilepoint != nil)
         {
-            visibleContentView.currentFilepointLeaf = FilepointLeaf(_filePoint:passingFilepoint!,_button:UIButton(),_parent:nil)
+            visibleContentView.currentFilepointLeaf = FilepointLeaf(_filePoint:passingFilepoint!,_button:UIImageView(),_parent:nil)
             
             visibleContentView.buildNodesUpToSelectedNode_V2()
             visibleContentView.setNeedsDisplay()
@@ -80,7 +80,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        visibleContentView.jumpToFilepointButton.alpha = 0
+        visibleContentView.fadeoutActionButtons()
+
     }
     
     
@@ -112,7 +113,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     func addImageToProject(image:UIImage,projectLeaf:ProjectLeaf)
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
-        var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"filepoint title",file:imageData, project:projectLeaf.project)
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+        var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, project:projectLeaf.project)
         projectLeaf.project.addFilepointToProject(newfilepointItem)
         save()
         
@@ -121,7 +123,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     func addImageToFilepoint(image:UIImage,filepointLeaf:FilepointLeaf)
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
-        var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"filepoint title",file:imageData)
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+        var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
         filepointLeaf.filepoint.addFilepointToFilepoint(newfilepointItem)
         save()
     }
@@ -337,6 +340,73 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
         let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
         self.performSegueWithIdentifier("showFilepoint", sender: nil)
+    }
+    
+    func deleteProjectNode()
+    {
+        var titlePrompt = UIAlertController(title: "Delete",
+            message: "Sure you want to delete this project and all its content",
+            preferredStyle: .Alert)
+        
+        titlePrompt.addAction(UIAlertAction(title: "Ok",
+            style: .Default,
+            handler: { (action) -> Void in
+                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.project)
+                self.save()
+                self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
+                self.visibleContentView!.fetchProjects()
+                self.visibleContentView!.setNeedsDisplay()
+                
+                
+        }))
+        titlePrompt.addAction(UIAlertAction(title: "Cancel",
+            style: .Default,
+            handler: nil))
+        
+        
+        self.presentViewController(titlePrompt,
+            animated: true,
+            completion: nil)
+        
+        visibleContentView.fadeoutActionButtons()
+    }
+    
+    func deleteFilepointNode()
+    {
+        var titlePrompt = UIAlertController(title: "Delete",
+            message: "Sure you want to delete this image and all its content",
+            preferredStyle: .Alert)
+        
+        titlePrompt.addAction(UIAlertAction(title: "Ok",
+            style: .Default,
+            handler: { (action) -> Void in
+                var parent = self.visibleContentView!.currentFilepointLeaf.filepoint.parent
+                //println("aaaa parentID \(parent!.objectID) ")
+                //println("aaaa basenodeD \(self.visibleContentView!.currentFilepointLeaf!.filepoint.objectID) ")
+                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint)
+                self.save()
+                if(parent == nil)
+                {
+                    self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
+                    self.visibleContentView!.fetchProjects()
+                }
+                else
+                {
+                    self.visibleContentView!.findButtonForFilepointAndSelectIt(parent!)
+                }
+                
+                
+        }))
+        titlePrompt.addAction(UIAlertAction(title: "Cancel",
+            style: .Default,
+            handler: nil))
+        
+        
+        self.presentViewController(titlePrompt,
+            animated: true,
+            completion: nil)
+        
+        visibleContentView.fadeoutActionButtons()
     }
 
     

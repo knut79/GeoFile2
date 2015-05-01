@@ -11,11 +11,11 @@ import Foundation
 class ProjectLeaf
 {
     var project:Project
-    var button:UIButton!
+    var button:UILabel!
     var selected:Bool = false
     var filepointLeafs:[FilepointLeaf]
     
-    init(_project:Project, _button:UIButton)
+    init(_project:Project, _button:UILabel)
     {
         project = _project
         button = _button

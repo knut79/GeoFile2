@@ -19,8 +19,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     var gmaps: GMSMapView?
     var project: Project?
     //var topNavigationBar:TopNavigationView!
-    var addProjectButton:UIButton!
-    var saveEditProjectButton:UIButton!
+    var addProjectButton:CustomButton!
+    var saveEditProjectButton:CustomButton!
     var newProjectView:NewProjectView?
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
@@ -359,7 +359,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectView!.removeFromSuperview()
         addProjectButton.removeFromSuperview()
         
-        var saveNewProjectButton = UIButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        var saveNewProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveNewProjectButton.setTitle("Save", forState: .Normal)
         saveNewProjectButton.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         saveNewProjectButton.addTarget(self, action: "saveNewProject:", forControlEvents: .TouchUpInside)
@@ -423,7 +423,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectmarker.icon = UIImage(named: "red-pushpin")
         newProjectmarker.map = gmaps
         
-        var saveNewProjectButton = UIButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        var saveNewProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveNewProjectButton.setTitle("Save", forState: .Normal)
         saveNewProjectButton.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         saveNewProjectButton.addTarget(self, action: "saveNewProjectWithCurrentLocation:", forControlEvents: .TouchUpInside)

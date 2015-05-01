@@ -39,9 +39,11 @@ class CameraView: UIView
     var confirmImageButton:CustomButton!
     
     
+    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+
     
     /*
     convenience init(frame: CGRect, delegate:CameraProtocol) {
@@ -51,6 +53,7 @@ class CameraView: UIView
         self.delegate?.initForCameraAndPickerView()
     }
 */
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -100,8 +103,6 @@ class CameraView: UIView
             }
         }
         
-        
-
     }
     
     func takeImageFromCamera(){

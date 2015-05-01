@@ -138,6 +138,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         self.setFileLevel()
     }
     
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        UIApplication.sharedApplication().statusBarHidden = true
+    }
     
     override func prefersStatusBarHidden() -> Bool {
         return true
@@ -384,7 +387,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         currentTappedTag = sender.view!.tag
         var pointObj = self.findPointLabelOnTag(currentTappedTag)
         
-        if(pointObj!.1!.file? != nil)
+        if(pointObj!.1 != nil && pointObj!.1!.file? != nil)
         {
             //println("currentFilepoint objID \(currentFilepoint?.objectID) with \(currentFilepoint?.filepoints.count) filepoints")
             //println("changing to filepoint objID \(pointObj!.1!.objectID) with \(pointObj!.1!.filepoints.count) filepoints")
@@ -733,7 +736,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         //if( (touches.anyObject() as UILabel) == pointLabel )
         if(isInnView)
         {
-            println("inside touchmoved")
+            //println("inside touchmoved")
             var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1].0
             let point = touches.anyObject()!.locationInView(self.view)
             pointLabel.center = CGPointMake(point.x - xOffset, point.y - yOffset)
@@ -763,7 +766,6 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         //if( (touches.anyObject() as UILabel) == pointLabel )
         if(isInnView)
         {
-            println("inside touchended")
             //remove label from buttonbar over to overviewImageView, witch is out scrollwindow
             pointLabel.removeFromSuperview()
             pointLabel.transform = CGAffineTransformMakeRotation(0.0 * CGFloat(Float(M_PI)) / 180.0)
@@ -824,10 +826,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     {
         if(imageData != nil)
         {
-            println("imagedata is not")
-            //_? why are we doing both
-            //var newFileItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, project: project)
-            addImageToFileObject(imageData!)
+            addImageToFileObject(imageData!,sourceText: "From camera")
         }
         else
         {
@@ -843,7 +842,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         cameraView.removeFromSuperview()
     }
     
-    func addImageToFileObject(imageData:NSData)
+    func addImageToFileObject(imageData:NSData, sourceText:String)
     {
         // Update the array containing the table view row data
         var pointObj = self.findPointLabelOnTag(self.currentTappedTag)
@@ -854,7 +853,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         println("trying to set image for filepoint with objID \(newfilepointItem!.objectID)")
         println("x and y values are  \(newfilepointItem!.x) \(newfilepointItem!.y)")
         newfilepointItem?.file = imageData
-        
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+        newfilepointItem?.title = "\(sourceText) \(timestamp)"
         self.currentFilepoint?.addFilepointToFilepoint(newfilepointItem!)
         self.save()
 
@@ -865,15 +865,13 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         
         self.backOneLevelButton.alpha = 1.0
         self.backOneLevelButton.enabled = true
-        
-        
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         var image = info[UIImagePickerControllerOriginalImage] as UIImage
         dismissViewControllerAnimated(true, completion: nil)
         var imageData =  UIImageJPEGRepresentation(image,1.0) as NSData
-        addImageToFileObject(imageData)
+        addImageToFileObject(imageData,sourceText: "From picture library")
         cameraView.removeFromSuperview()
     }
     

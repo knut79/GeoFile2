@@ -27,13 +27,6 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     override func viewDidLoad() {
         super.viewDidLoad()
         
-
-        /*
-        topNavigationBar = TopNavigationView(frame:CGRectMake(0, 0 ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        topNavigationBar.showForViewtype(.list)
-        topNavigationBar.delegate = self
-        self.view.addSubview(topNavigationBar)*/
-        
         topNavigationBar.showForViewtype(.list)
         
         projectsTableView.frame = CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2))
@@ -85,8 +78,23 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let projectItem = projectItems[indexPath.row]
         project = projectItem
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
-        self.performSegueWithIdentifier("showFilepoint", sender: nil)
+        if(project?.filepoints.count > 0)
+        {
+            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
+            self.performSegueWithIdentifier("showFilepoint", sender: nil)
+        }
+        else
+        {
+            var titlePrompt = UIAlertController(title: "Cant navigate",
+                message: "No image set for project",
+                preferredStyle: .Alert)
+            titlePrompt.addAction(UIAlertAction(title: "OK",
+                    style: .Default,
+                    handler: nil))
+            self.presentViewController(titlePrompt,
+                animated: true,
+                completion: nil)
+        }
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -97,7 +105,32 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if(editingStyle == .Delete ) {
-
+            let projectItem = projectItems[indexPath.row]
+            
+            var titlePrompt = UIAlertController(title: "Delete",
+                message: "Sure you want to delete this project",
+                preferredStyle: .Alert)
+            
+            titlePrompt.addAction(UIAlertAction(title: "Ok",
+                style: .Default,
+                handler: { (action) -> Void in
+                    self.managedObjectContext!.deleteObject(projectItem)
+                    
+                    self.save()
+                    
+                    self.fetchProjects()
+                    
+                    self.projectsTableView.reloadData()
+                    
+            }))
+            titlePrompt.addAction(UIAlertAction(title: "Cancel",
+                style: .Default,
+                handler: nil))
+            
+            
+            self.presentViewController(titlePrompt,
+                animated: true,
+                completion: nil)
         }
     }
     
@@ -167,6 +200,10 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     var editPosition = false
     func editProjectPosition()
     {
+        let projectItem = projectItems[currentProjectItemIndex]
+        projectItem.title = editProjectView.titleTextBox.text
+        save()
+        
         editPosition = true
         let mapViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
         self.performSegueWithIdentifier("showProjectInMap", sender: nil)
@@ -183,22 +220,23 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         let projectItem = projectItems[currentProjectItemIndex]
         projectItem.title = editProjectView.titleTextBox.text
         save()
+        projectsTableView.reloadData()
         editProjectView.removeFromSuperview()
     }
     
     
     func fetchProjects() {
-
+        projectItems = []
         let fetchRequest = NSFetchRequest(entityName: "Project")
 
         if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Project] {
             
             for item in fetchResults
             {
-                if(item.filepoints.count > 0)
-                {
+                //if(item.filepoints.count > 0)
+                //{
                     projectItems.append(item)
-                }
+                //}
             }
         }
     }
