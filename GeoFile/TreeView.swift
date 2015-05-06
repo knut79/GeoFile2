@@ -13,8 +13,11 @@ protocol TreeViewProtocol
 {
     func setNewContentSize()
     func jumpToFilepoint()
+    func showOverlay()
+    func setEditOverlay()
     func deleteFilepointNode()
     func deleteProjectNode()
+    func deleteOverlayNode()
 }
 
 class TreeView:UIView
@@ -25,12 +28,15 @@ class TreeView:UIView
     var delegate:TreeViewProtocol?
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
     var projectLeafs = [ProjectLeaf]()
+    var overlayNodes = [OverlayNode]()
     var currentFilepointLeaf:FilepointLeaf!
     var currentProjectLeaf:ProjectLeaf!
     var selectedLeaf:UIView!
+    var overlayNode:UILabel!
     
     var jumpToFilepointButton:UIButton!
     var deleteNodeButton:UIButton!
+    var setEditNodeButton:UIButton!
     
     
     override init(frame: CGRect) {
@@ -48,7 +54,7 @@ class TreeView:UIView
         jumpToFilepointButton.alpha = 0
         jumpToFilepointButton.layer.cornerRadius = 5
         jumpToFilepointButton.clipsToBounds = true
-        jumpToFilepointButton.addTarget(self, action: "jumpToFilepoint", forControlEvents: .TouchUpInside)
+        jumpToFilepointButton.addTarget(self, action: "showNode", forControlEvents: .TouchUpInside)
         self.addSubview(jumpToFilepointButton)
         
         deleteNodeButton = CustomButton(frame: CGRectMake(0, 0, 75, buttonBarHeight))
@@ -59,6 +65,19 @@ class TreeView:UIView
         deleteNodeButton.addTarget(self, action: "deleteNode", forControlEvents: .TouchUpInside)
         self.addSubview(deleteNodeButton)
         
+        setEditNodeButton = CustomButton(frame: CGRectMake(0, 0, 75, buttonBarHeight))
+        setEditNodeButton.setTitle("Set/Edit", forState: UIControlState.Normal)
+        setEditNodeButton.alpha = 0
+        setEditNodeButton.layer.cornerRadius = 5
+        setEditNodeButton.clipsToBounds = true
+        setEditNodeButton.addTarget(self, action: "setEditNode", forControlEvents: .TouchUpInside)
+        self.addSubview(setEditNodeButton)
+        
+        
+        //populateTestOverlays()
+        
+        
+        fetchOverlays()
         fetchProjects()
 
     }
@@ -229,6 +248,62 @@ class TreeView:UIView
         return lastNodeWithCoordinates!
     }
 
+    func addOverlayNode()
+    {
+        overlayNode = UILabel(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
+        overlayNode.userInteractionEnabled = true
+        overlayNode.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
+        overlayNode.layer.cornerRadius = 5
+        overlayNode.clipsToBounds = true
+        overlayNode.text = "🌍"
+        overlayNode.textAlignment = NSTextAlignment.Center
+        overlayNode.center =  CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (overlayNode.frame.size.width/2), (UIScreen.mainScreen().bounds.size.height * 0.1))
+        self.addSubview(overlayNode)
+    }
+    
+    func populateTestOverlays()
+    {
+        var image = UIImage(named: "pictureOverview.png")
+        var imageData = UIImageJPEGRepresentation(image,0.0)
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+        var newfilepointItem = Overlay.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
+        save()
+    }
+    
+    func clearOverlays()
+    {
+        for var i = 0 ; i < overlayNodes.count ; i++
+        {
+            overlayNodes[i].removeFromSuperview()
+        }
+        overlayNodes = []
+        
+    }
+    func fetchOverlays()
+    {
+        
+        addOverlayNode()
+        let fetchRequest = NSFetchRequest(entityName: "Overlay")
+        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Overlay] {
+            var i = 1
+            for item in fetchResults
+            {
+                var node = OverlayNode(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
+                node.userInteractionEnabled = true
+                var image = UIImage(data: item.file)
+                node.image = image
+                node.center =  CGPointMake(overlayNode.center.x + ((node.frame.size.width + 4) * CGFloat(i)), overlayNode.center.y)
+                var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "showActionButtonsForOverlay:")
+                doubleTapRecognizer.numberOfTapsRequired = 2
+                node.addGestureRecognizer(doubleTapRecognizer)
+                node.overlay = item
+                overlayNodes.append(node)
+                self.addSubview(node)
+                
+                i++
+            }
+        }
+    }
     
     func fetchProjects()
     {
@@ -243,7 +318,7 @@ class TreeView:UIView
                 _button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
                 _button.numberOfLines = 2
                 _button.text = "\(item.title)"
-                _button.center =  CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (_button.frame.size.width/2), (UIScreen.mainScreen().bounds.size.height * 0.1) + ((_button.frame.height  + verticalLineLength) * CGFloat(i)))
+                _button.center =  CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (_button.frame.size.width/2), (UIScreen.mainScreen().bounds.size.height * 0.2) + ((_button.frame.height  + verticalLineLength) * CGFloat(i)))
                 var singleTapRecognizer = UITapGestureRecognizer(target: self, action: "projectSelected:")
                 singleTapRecognizer.numberOfTapsRequired = 1
                 _button.addGestureRecognizer(singleTapRecognizer)
@@ -406,6 +481,54 @@ class TreeView:UIView
                 findButtonForFilepointAndSelectIt(filepointToCheck, filepointLeafs: item.filepointLeafs)
             }
         }
+    }
+    
+    func unselectAllOverlayNodes()
+    {
+        for var i = 0 ; i < overlayNodes.count ; i++
+        {
+            overlayNodes[i].selected = false
+        }
+    }
+    
+    func getSelectedOverlayNode() -> OverlayNode?
+    {
+        for var i = 0 ; i < overlayNodes.count ; i++
+        {
+            if(overlayNodes[i].selected)
+            {
+                return overlayNodes[i]
+            }
+        }
+        return nil
+    }
+    
+    var actionForOverlay = false
+    func showActionButtonsForOverlay(sender:UITapGestureRecognizer)
+    {
+        var node = sender.view
+        if(node != nil)
+        {
+            actionForOverlay = true
+            self.bringSubviewToFront(deleteNodeButton)
+            var deleteNodeButtonY = node!.center.y + (node!.frame.height * 2)
+            var deleteNodeButtonX = node!.center.x > self.frame.width / 2 ? node!.center.x - node!.frame.width : node!.center.x + node!.frame.width
+            deleteNodeButton.alpha = 0.75
+            deleteNodeButton.center = CGPointMake(deleteNodeButtonX,deleteNodeButtonY)
+            
+            self.bringSubviewToFront(jumpToFilepointButton)
+            jumpToFilepointButton.alpha = 0.75
+            jumpToFilepointButton.center = CGPointMake(deleteNodeButton.center.x,deleteNodeButton.center.y - deleteNodeButton.frame.height - 2 )
+            
+            self.bringSubviewToFront(setEditNodeButton)
+            setEditNodeButton.alpha = 0.75
+            setEditNodeButton.center = CGPointMake(jumpToFilepointButton.center.x,jumpToFilepointButton.center.y - jumpToFilepointButton.frame.height - 2 )
+            
+            unselectAllOverlayNodes()
+            
+            (node as OverlayNode).selected = true
+        }
+        
     }
     
     func showActionButtonsForProject(sender:AnyObject)
@@ -657,8 +780,12 @@ class TreeView:UIView
     
     func deleteNode()
     {
-        
-        if(currentFilepointLeaf != nil)
+        if(actionForOverlay)
+        {
+            actionForOverlay = false
+            delegate?.deleteOverlayNode()
+        }
+        else if(currentFilepointLeaf != nil)
         {
             delegate?.deleteFilepointNode()
             
@@ -683,11 +810,28 @@ class TreeView:UIView
     {
         jumpToFilepointButton.alpha = 0
         deleteNodeButton.alpha = 0
+        setEditNodeButton.alpha = 0
     }
     
-    func jumpToFilepoint()
+    func setEditNode()
     {
-        
-        delegate?.jumpToFilepoint()
+        if(actionForOverlay)
+        {
+            actionForOverlay = false
+            delegate?.setEditOverlay()
+        }
+    }
+    
+    func showNode()
+    {
+        if(actionForOverlay)
+        {
+            actionForOverlay = false
+            delegate?.showOverlay()
+        }
+        else
+        {
+            delegate?.jumpToFilepoint()
+        }
     }
 }

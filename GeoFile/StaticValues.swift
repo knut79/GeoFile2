@@ -8,6 +8,8 @@
 //🎨📝↩❌🔙⚫️⚪️🔵🔴↩️〽️📥 📤✏️〰✒💾
 //❌ ⭕️❗️ ❓✖️ ✔️✅📑📄💠💢
 //♤ ♡ ♢ ♧ 💭 💬
+//↕️ ↔️🔄⤴️ ⤵️
+//🔒 🔓🌍
 enum drawColorEnum
 {
     case white
@@ -45,6 +47,10 @@ func getUIColor(color:drawColorEnum) -> UIColor
 }
 
 let buttonBarHeight:CGFloat = 44
+
+let buttonIconSide:CGFloat = 50
+let buttonIconSideSmall:CGFloat = 40
+//UIScreen.mainScreen().bounds.size.width * 0.5
 
 
 

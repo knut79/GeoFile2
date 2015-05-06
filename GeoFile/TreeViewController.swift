@@ -81,6 +81,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         visibleContentView.fadeoutActionButtons()
+        visibleContentView.unselectAllOverlayNodes()
 
     }
     
@@ -108,6 +109,15 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             xOffset+=100
         }
 
+    }
+    
+    func addImageToOverlays(image:UIImage)
+    {
+        var imageData = UIImageJPEGRepresentation(image,0.0);
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+        var newfilepointItem = Overlay.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
+        save()
+        
     }
     
     func addImageToProject(image:UIImage,projectLeaf:ProjectLeaf)
@@ -138,7 +148,21 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         var touch = touches.anyObject()
         var touchLocation = touch!.locationInView(self.overviewScrollView)
         
+        //check overlay node
         
+        
+        var isInnView = CGRectContainsPoint(visibleContentView.overlayNode.frame,touchLocation)
+        if(isInnView)
+        {
+            println("drop inside overlays")
+
+            addImageToOverlays(currentTouchedImageView!.image!)
+            
+            currentTouchedImageView?.removeFromSuperview()
+            return
+        }
+        
+        //check for project and filepoint nodes
         for projectItem in visibleContentView.projectLeafs
         {
             let projectView = projectItem.button
@@ -409,6 +433,47 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         visibleContentView.fadeoutActionButtons()
     }
 
+    func showOverlay()
+    {
+        //TODO:
+    }
+    
+    func setEditOverlay()
+    {
+        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
+        self.performSegueWithIdentifier("showProjectInMap", sender: nil)
+    }
+
+    func deleteOverlayNode()
+    {
+        var titlePrompt = UIAlertController(title: "Delete",
+            message: "Sure you want to delete this overlay",
+            preferredStyle: .Alert)
+        
+        titlePrompt.addAction(UIAlertAction(title: "Ok",
+            style: .Default,
+            handler: { (action) -> Void in
+                var overlay = self.visibleContentView!.getSelectedOverlayNode()
+                if(overlay != nil)
+                {
+                    self.managedObjectContext?.deleteObject(overlay!.overlay)
+                    self.save()
+                    self.visibleContentView!.clearOverlays()
+                    self.visibleContentView!.fetchOverlays()
+                }
+                
+        }))
+        titlePrompt.addAction(UIAlertAction(title: "Cancel",
+            style: .Default,
+            handler: nil))
+        
+        
+        self.presentViewController(titlePrompt,
+            animated: true,
+            completion: nil)
+        
+        visibleContentView.fadeoutActionButtons()
+    }
     
     override func toTreeView(images:[UIImage]?)
     {
@@ -452,6 +517,11 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             if let projectLeaf = self.visibleContentView.currentProjectLeaf
             {
                 svc.project = projectLeaf.project
+   
+            }
+            if let overlayNode = visibleContentView.getSelectedOverlayNode()
+            {
+                svc.overlayToSet = overlayNode.overlay
             }
             
             

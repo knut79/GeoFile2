@@ -57,7 +57,7 @@ class DrawView: UIView{
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        buttonSize = CGRectMake(0, 0, 35, 35)
+        buttonSize = CGRectMake(0, 0, buttonIconSideSmall, buttonIconSideSmall)
         tempMeasureLabelSize = CGRectMake(0, 0, 100, 25)
         tempAngleLabelSize = CGRectMake(0, 0, 100, 25)
         tempTextLabelSize = CGRectMake(0, 0, 300, 25)

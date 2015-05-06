@@ -12,7 +12,7 @@ import AVFoundation
 import MobileCoreServices
 
 
-class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewProjectProtocol, UIImagePickerControllerDelegate,UINavigationControllerDelegate, CLLocationManagerDelegate, CameraProtocol{
+class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewProjectProtocol, UIImagePickerControllerDelegate,UINavigationControllerDelegate, CLLocationManagerDelegate, CameraProtocol, UIGestureRecognizerDelegate{
     
     
 
@@ -42,10 +42,25 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     var picker:UIImagePickerController!
     var cameraView:CameraView!
     var initialTarget:CLLocationCoordinate2D?
+    var camera:GMSCameraPosition!
     //MARK:
     
 
-
+    var setOverlayButton:CustomButton!
+    var cancelOverlayButton:CustomButton!
+    var southWest = CLLocationCoordinate2DMake(59.93398,10.75746)
+    var northEast = CLLocationCoordinate2DMake(59.93565,10.76048)
+    var bearing:CGFloat = 0
+    var imgView:UIImageView!
+    var lockUnlockButton:UIButton!
+    var rotateButton:UIButton!
+    var resizeButton:UIButton!
+    var mapLocked = false
+    var canRotate = false
+    var canResize = true
+    
+    var overlayToSet:Overlay?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -53,7 +68,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
 
         initialTarget = project != nil ? CLLocationCoordinate2D(latitude: project!.latitude, longitude: project!.longitude) : nil
         var target: CLLocationCoordinate2D = initialTarget ?? CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75)
-        var camera: GMSCameraPosition = GMSCameraPosition(target: target, zoom: 10, bearing: 0, viewingAngle: 0)
+        camera = GMSCameraPosition(target: target, zoom: 10, bearing: 0, viewingAngle: 0)
+        
         
         self.view.backgroundColor = UIColor.whiteColor()
 
@@ -79,6 +95,77 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             self.view.addSubview(gmaps!)
         }
         
+        //test adding view over mapview
+        
+
+        
+
+        if let overlay = overlayToSet
+        {
+            var image = UIImage(data: overlay.file)
+            var scaleFactor = image!.size.width / UIScreen.mainScreen().bounds.size.width
+            imgView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, image!.size.height / scaleFactor))
+            imgView.center = gmaps!.center
+            imgView.alpha = 0.5
+            imgView.image = image
+            imgView.userInteractionEnabled = true
+            imgView.multipleTouchEnabled = true
+            imgView.contentMode = UIViewContentMode.ScaleToFill
+            var pinchRecognizer = UIPinchGestureRecognizer(target: self, action: "scaleImage:")
+            pinchRecognizer.delegate = self
+            imgView.addGestureRecognizer(pinchRecognizer)
+            var rotationRecognizer = UIRotationGestureRecognizer(target: self, action: "rotateImage:")
+            rotationRecognizer.delegate = self
+            imgView.addGestureRecognizer(rotationRecognizer)
+            
+            //adding buttons for overlay
+            var buttonSize = CGRectMake(0, 0, buttonIconSideSmall, buttonIconSideSmall)
+            lockUnlockButton = CustomButton(frame: buttonSize)
+            lockUnlockButton.setTitle("🔓", forState: .Normal)
+            lockUnlockButton.addTarget(self, action: "lockMapToggle:", forControlEvents: .TouchUpInside)
+            
+            gmaps?.settings.scrollGestures = false
+            gmaps?.settings.zoomGestures = false
+            gmaps?.settings.rotateGestures = false
+            mapLocked = true
+            
+            rotateButton = CustomButton(frame: buttonSize)
+            rotateButton.setTitle("🔄", forState: .Normal)
+            rotateButton.addTarget(self, action: "rotateOverlay", forControlEvents: .TouchUpInside)
+            
+            resizeButton = CustomButton(frame: buttonSize)
+            resizeButton.setTitle("↔️", forState: .Normal)
+            resizeButton.addTarget(self, action: "resizeOverlay", forControlEvents: .TouchUpInside)
+            resizeButton.alpha = 0.5
+            resizeButton.enabled = false
+            
+            gmaps?.addSubview(imgView)
+            
+
+            
+            
+            lockUnlockButton.center = CGPointMake(buttonSize.width * 0.75  , gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+            rotateButton.center = CGPointMake(lockUnlockButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+            resizeButton.center = CGPointMake(rotateButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+            gmaps?.addSubview(lockUnlockButton)
+            gmaps?.addSubview(rotateButton)
+            gmaps?.addSubview(resizeButton)
+            
+            
+            setOverlayButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight  ,UIScreen.mainScreen().bounds.size.width / 2, buttonBarHeight))
+            setOverlayButton.setTitle("Set overlay", forState: .Normal)
+            setOverlayButton.addTarget(self, action: "setOverlay", forControlEvents: .TouchUpInside)
+            self.view.addSubview(setOverlayButton)
+            
+            cancelOverlayButton = CustomButton(frame: CGRectMake(UIScreen.mainScreen().bounds.size.width/2, UIScreen.mainScreen().bounds.size.height - buttonBarHeight  ,UIScreen.mainScreen().bounds.size.width / 2, buttonBarHeight))
+            cancelOverlayButton.setTitle("Cancel", forState: .Normal)
+            cancelOverlayButton.addTarget(self, action: "cancelOverlay", forControlEvents: .TouchUpInside)
+            self.view.addSubview(cancelOverlayButton)
+            
+
+        }
+
+        
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -90,6 +177,194 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         fetchProjects()
         
         setMarkers(editProject,atIndex: editProjectAtIndex)
+    }
+    
+    func lockMapToggle(sender:UIButton)
+    {
+        if(mapLocked)
+        {
+            //map is unlocked and picture is hidden
+            gmaps?.settings.scrollGestures = true
+            gmaps?.settings.zoomGestures = true
+            gmaps?.settings.rotateGestures = true
+            mapLocked = false
+            sender.setTitle("🔒", forState: .Normal)
+            //imgView.alpha = 0
+            imgView.alpha = 0.2
+            imgView.userInteractionEnabled = false
+
+        }
+        else
+        {
+            gmaps?.settings.scrollGestures = false
+            gmaps?.settings.zoomGestures = false
+            gmaps?.settings.rotateGestures = false
+            mapLocked = true
+            sender.setTitle("🔓", forState: .Normal)
+            imgView.alpha = 0.5
+            imgView.userInteractionEnabled = true
+        }
+    }
+    
+    func rotateOverlay()
+    {
+        resizeButton.alpha = 1
+        resizeButton.enabled = true
+        rotateButton.alpha = 0.5
+        rotateButton.enabled = false
+        canRotate = true
+        canResize = false
+    }
+    
+    func resizeOverlay()
+    {
+        resizeButton.alpha = 0.5
+        resizeButton.enabled = false
+        rotateButton.alpha = 1
+        rotateButton.enabled = true
+        canRotate = false
+        canResize = true
+    }
+    
+    override func touchesMoved(touches: NSSet, withEvent event: UIEvent)  {
+        
+        var touch = touches.anyObject()
+        //var theImageView = touch?.view
+        if let view = imgView
+        {
+            var touchLocation = touch!.locationInView(self.view)
+            println("inside touchmoved")
+            
+            view.center = CGPointMake(touchLocation.x, touchLocation.y)
+        }
+    }
+    
+    func cancelOverlay()
+    {
+        cancelOverlayButton.removeFromSuperview()
+        setOverlayButton.removeFromSuperview()
+        imgView.removeFromSuperview()
+        gmaps?.settings.scrollGestures = true
+        gmaps?.settings.zoomGestures = true
+        gmaps?.settings.rotateGestures = true
+    }
+    
+    func setOverlay()
+    {
+        let radians = atan2( imgView.transform.b, imgView.transform.a)
+        let degrees = radians * (180 / CGFloat(M_PI) )
+        imgView!.transform = CGAffineTransformRotate(imgView!.transform, radians * -1)
+        
+        
+        /*
+        var currentTransform = imgView.transform
+        var currentTransformScale = imgView.transform
+        imgView.transform = CGAffineTransformIdentity
+        var originalFrame = imgView.frame
+        */
+        
+        northEast = gmaps!.projection.coordinateForPoint(CGPointMake(imgView.frame.minX, imgView.frame.minY))
+        southWest = gmaps!.projection.coordinateForPoint(CGPointMake(imgView.frame.maxX, imgView.frame.maxY))
+        
+        //imgView.transform = currentTransform;
+
+        println("check :  \(imgView.frame.width) \(imgView.frame.height)")
+
+        //test overlay
+        
+        var overlayBounds = GMSCoordinateBounds(coordinate: southWest, coordinate: northEast)
+        if let newOverlayOnMap = overlayToSet
+        {
+            var icon = UIImage(data: newOverlayOnMap.file)
+            
+            var overlay = GMSGroundOverlay(bounds: overlayBounds, icon: icon)
+            
+
+            overlay.bearing = CLLocationDirection(degrees)
+            overlay.map = gmaps
+            
+            newOverlayOnMap.bearing = overlay.bearing
+            newOverlayOnMap.latitudeSW = southWest.latitude
+            newOverlayOnMap.longitudeSW = southWest.longitude
+            newOverlayOnMap.latitudeNE = northEast.latitude
+            newOverlayOnMap.longitudeNE = northEast.longitude
+            save()
+        }
+        cancelOverlay()
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    enum PinchAxis{
+    case PinchAxisNone,PinchAxisHorizontal,PinchAxisVertical
+    }
+    
+    func pinchGestureRecognizerAxis(r:UIPinchGestureRecognizer) ->  PinchAxis
+    {
+        if(r.numberOfTouches() == 2 )
+        {
+            var view = r.view;
+            var touch0 = r.locationOfTouch(0, inView: view) //[r locationOfTouch:0 inView:view];
+            var touch1 = r.locationOfTouch(1, inView: view)
+            var tangent = fabsf( Float(touch1.y - touch0.y) / Float(touch1.x - touch0.x) )
+            return tangent <= 0.2679491924 ? PinchAxis.PinchAxisHorizontal // 15 degrees
+            : (tangent >= 3.7320508076 ? PinchAxis.PinchAxisVertical   // 75 degrees
+            : PinchAxis.PinchAxisNone)
+        }
+        else
+        {
+            return PinchAxis.PinchAxisNone
+        }
+    }
+    
+    func scaleImage(sender: UIPinchGestureRecognizer) {
+        if(canResize){
+            
+            let radians = atan2( imgView.transform.b, imgView.transform.a)
+            let degrees = radians * (180 / CGFloat(M_PI) )
+            imgView!.transform = CGAffineTransformRotate(imgView!.transform, radians * -1)
+            
+            var view = sender.view
+            var axis = pinchGestureRecognizerAxis(sender)
+            switch(axis)
+            {
+            case .PinchAxisHorizontal:
+                var center = view!.center
+                view!.frame.size = CGSizeMake(view!.frame.size.width * sender.scale, view!.frame.size.height)//.width = view!.frame.width * sender.scale
+                view!.center = center
+                //view!.transform = CGAffineTransformScale(view!.transform, sender.scale, 1)
+                break
+            case .PinchAxisVertical:
+                var center = view!.center
+                view!.frame.size = CGSizeMake(view!.frame.size.width, view!.frame.size.height  * sender.scale)
+                view!.center = center
+                //view!.transform = CGAffineTransformScale(view!.transform, 1, sender.scale)
+                break
+            default:
+                //view!.transform = CGAffineTransformScale(view!.transform, sender.scale, sender.scale)
+                break
+            }
+            
+            imgView!.transform = CGAffineTransformRotate(imgView!.transform, radians)
+            sender.scale = 1
+        }
+    }
+    
+    var _lastRotation:CGFloat = 0.0
+    func rotateImage(sender: UIRotationGestureRecognizer) {
+        
+        if(canRotate)
+        {
+            var rotation = 0.0 - (_lastRotation - sender.rotation)
+            
+            var view = sender.view
+            view!.transform = CGAffineTransformRotate(view!.transform, rotation)
+            
+            _lastRotation = sender.rotation
+            
+        }
     }
     
     override func prefersStatusBarHidden() -> Bool {
@@ -122,8 +397,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         println("error \(error.description)")
         
     }
-    
-    
+
     
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedWhenInUse {

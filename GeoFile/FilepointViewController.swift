@@ -362,9 +362,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     {
         addPointButton.enabled = false
         addPointButton.alpha = 0.5
-        addPointButton.frame = CGRectMake(addPointButton.frame.minX, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) * 0.7, addPointButton.frame.height)
+        addPointButton.frame = CGRectMake(addPointButton.frame.minX, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) - buttonBarHeight, addPointButton.frame.height)
         //addPointButton.frame.size.width = UIScreen.mainScreen().bounds.size.width * 0.7
-        var pointLabel = UILabel(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) * 0.30, buttonBarHeight))
+        var pointLabel = UILabel(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, buttonBarHeight, buttonBarHeight))
 
         pointLabel.text = "💢"
         pointLabel.textAlignment = NSTextAlignment.Center
