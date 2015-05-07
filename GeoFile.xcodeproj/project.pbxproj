@@ -28,6 +28,9 @@
 		72A297281ADFA7D200F8D584 /* Drawntext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A297271ADFA7D200F8D584 /* Drawntext.swift */; };
 		72A2A95F1AF8C20C00E4C49F /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A2A95E1AF8C20C00E4C49F /* Overlay.swift */; };
 		72A2A9611AF980C800E4C49F /* OverlayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A2A9601AF980C800E4C49F /* OverlayNode.swift */; };
+		72A2A9651AFA19BD00E4C49F /* pictureOverviewStrechWidth.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A9631AFA19BD00E4C49F /* pictureOverviewStrechWidth.png */; };
+		72A2A9661AFA19BD00E4C49F /* pictureOverviewStrechHeight.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A9641AFA19BD00E4C49F /* pictureOverviewStrechHeight.png */; };
+		72A2A9681AFA1A6100E4C49F /* pictureOverviewSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A9671AFA1A6100E4C49F /* pictureOverviewSmall.png */; };
 		72A598771AD0ABD400918CCD /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A598761AD0ABD400918CCD /* TestViewController.swift */; };
 		72A5987B1AD2BF5D00918CCD /* ProjectListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A5987A1AD2BF5D00918CCD /* ProjectListViewController.swift */; };
 		72A5987E1AD3E8FB00918CCD /* red-pushpin.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A5987C1AD3E8FB00918CCD /* red-pushpin.png */; };
@@ -101,6 +104,9 @@
 		72A2A95E1AF8C20C00E4C49F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		72A2A9601AF980C800E4C49F /* OverlayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayNode.swift; sourceTree = "<group>"; };
 		72A2A9621AF9A2B600E4C49F /* GeoFile 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 10.xcdatamodel"; sourceTree = "<group>"; };
+		72A2A9631AFA19BD00E4C49F /* pictureOverviewStrechWidth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewStrechWidth.png; path = pictures/pictureOverviewStrechWidth.png; sourceTree = "<group>"; };
+		72A2A9641AFA19BD00E4C49F /* pictureOverviewStrechHeight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewStrechHeight.png; path = pictures/pictureOverviewStrechHeight.png; sourceTree = "<group>"; };
+		72A2A9671AFA1A6100E4C49F /* pictureOverviewSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewSmall.png; path = pictures/pictureOverviewSmall.png; sourceTree = "<group>"; };
 		72A598761AD0ABD400918CCD /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		72A598781AD2A93000918CCD /* GeoFile 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 2.xcdatamodel"; sourceTree = "<group>"; };
 		72A598791AD2AB4200918CCD /* GeoFile 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 3.xcdatamodel"; sourceTree = "<group>"; };
@@ -184,6 +190,9 @@
 		720B8C911AC8938F00064B86 /* pictures */ = {
 			isa = PBXGroup;
 			children = (
+				72A2A9671AFA1A6100E4C49F /* pictureOverviewSmall.png */,
+				72A2A9631AFA19BD00E4C49F /* pictureOverviewStrechWidth.png */,
+				72A2A9641AFA19BD00E4C49F /* pictureOverviewStrechHeight.png */,
 				729A569F1AEC36E60034418E /* CV-mal.pdf */,
 				72A5987C1AD3E8FB00918CCD /* red-pushpin.png */,
 				72A5987D1AD3E8FB00918CCD /* lightblue.png */,
@@ -395,8 +404,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				72FE6A331AC0234B00FF792D /* Main.storyboard in Resources */,
+				72A2A9651AFA19BD00E4C49F /* pictureOverviewStrechWidth.png in Resources */,
 				720B8C991AC8964D00064B86 /* doctest.docx in Resources */,
 				720B8C971AC8964D00064B86 /* pictureSpadePart1.png in Resources */,
+				72A2A9681AFA1A6100E4C49F /* pictureOverviewSmall.png in Resources */,
 				72A5987E1AD3E8FB00918CCD /* red-pushpin.png in Resources */,
 				72FE6A381AC0234B00FF792D /* LaunchScreen.xib in Resources */,
 				72A5987F1AD3E8FB00918CCD /* lightblue.png in Resources */,
@@ -404,6 +415,7 @@
 				720B8C981AC8964D00064B86 /* pictureOverview.png in Resources */,
 				720B8C9B1AC8964D00064B86 /* pdftest.pdf in Resources */,
 				72FE6A351AC0234B00FF792D /* Images.xcassets in Resources */,
+				72A2A9661AFA19BD00E4C49F /* pictureOverviewStrechHeight.png in Resources */,
 				729A56A01AEC36E60034418E /* CV-mal.pdf in Resources */,
 				72FE6A6C1AC0420E00FF792D /* GoogleMaps.bundle in Resources */,
 			);

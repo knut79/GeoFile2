@@ -263,7 +263,7 @@ class TreeView:UIView
     
     func populateTestOverlays()
     {
-        var image = UIImage(named: "pictureOverview.png")
+        var image = UIImage(named: "pictureOverviewSmall.png")
         var imageData = UIImageJPEGRepresentation(image,0.0)
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         var newfilepointItem = Overlay.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
