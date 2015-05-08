@@ -13,6 +13,8 @@
 		720B8C9A1AC8964D00064B86 /* pictureSpade.png in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C951AC8964D00064B86 /* pictureSpade.png */; };
 		720B8C9B1AC8964D00064B86 /* pdftest.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C961AC8964D00064B86 /* pdftest.pdf */; };
 		720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */; };
+		720E94D51AFBCDE8007946FA /* Drawingline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94D41AFBCDE8007946FA /* Drawingline.swift */; };
+		720E94D71AFC1EA1007946FA /* FilepointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94D61AFC1EA1007946FA /* FilepointView.swift */; };
 		727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */; };
 		727A21311AF039E50067BC4A /* SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21301AF039E50067BC4A /* SharedInstance.swift */; };
 		727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21321AF042690067BC4A /* StaticFunctions.swift */; };
@@ -86,6 +88,8 @@
 		720B8C951AC8964D00064B86 /* pictureSpade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureSpade.png; path = pictures/pictureSpade.png; sourceTree = "<group>"; };
 		720B8C961AC8964D00064B86 /* pdftest.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = pdftest.pdf; path = pictures/pdftest.pdf; sourceTree = "<group>"; };
 		720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHelper.swift; sourceTree = "<group>"; };
+		720E94D41AFBCDE8007946FA /* Drawingline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawingline.swift; sourceTree = "<group>"; };
+		720E94D61AFC1EA1007946FA /* FilepointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointView.swift; sourceTree = "<group>"; };
 		727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointListViewController.swift; sourceTree = "<group>"; };
 		727A21301AF039E50067BC4A /* SharedInstance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedInstance.swift; sourceTree = "<group>"; };
 		727A21321AF042690067BC4A /* StaticFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticFunctions.swift; sourceTree = "<group>"; };
@@ -107,6 +111,7 @@
 		72A2A9631AFA19BD00E4C49F /* pictureOverviewStrechWidth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewStrechWidth.png; path = pictures/pictureOverviewStrechWidth.png; sourceTree = "<group>"; };
 		72A2A9641AFA19BD00E4C49F /* pictureOverviewStrechHeight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewStrechHeight.png; path = pictures/pictureOverviewStrechHeight.png; sourceTree = "<group>"; };
 		72A2A9671AFA1A6100E4C49F /* pictureOverviewSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewSmall.png; path = pictures/pictureOverviewSmall.png; sourceTree = "<group>"; };
+		72A2A96B1AFBC5D700E4C49F /* GeoFile 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 11.xcdatamodel"; sourceTree = "<group>"; };
 		72A598761AD0ABD400918CCD /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		72A598781AD2A93000918CCD /* GeoFile 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 2.xcdatamodel"; sourceTree = "<group>"; };
 		72A598791AD2AB4200918CCD /* GeoFile 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 3.xcdatamodel"; sourceTree = "<group>"; };
@@ -211,6 +216,7 @@
 				72A598811AD4A2F300918CCD /* Project.swift */,
 				72A5988A1AD83A5D00918CCD /* Filepoint.swift */,
 				72A2A95E1AF8C20C00E4C49F /* Overlay.swift */,
+				720E94D41AFBCDE8007946FA /* Drawingline.swift */,
 			);
 			name = DataClasses;
 			sourceTree = "<group>";
@@ -256,7 +262,9 @@
 				727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */,
 				729A569D1AEC26930034418E /* CustomViewController.swift */,
 				72CAF4341AE7DD3300B4072B /* TreeViewController.swift */,
+				729A568F1AE819500034418E /* TreeView.swift */,
 				72FE6A6D1AC0492400FF792D /* FilepointViewController.swift */,
+				720E94D61AFC1EA1007946FA /* FilepointView.swift */,
 				72FE6A2F1AC0234B00FF792D /* MapOverviewViewController.swift */,
 				72FE6A2A1AC0234B00FF792D /* AppDelegate.swift */,
 				72A598761AD0ABD400918CCD /* TestViewController.swift */,
@@ -264,7 +272,6 @@
 				72A598831AD5534300918CCD /* NewProjectView.swift */,
 				72A598851AD5FCCA00918CCD /* EditProjectView.swift */,
 				72A5988E1AD97C0100918CCD /* DrawView.swift */,
-				729A568F1AE819500034418E /* TreeView.swift */,
 				729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */,
 				729A56931AE9A4690034418E /* ProjectLeaf.swift */,
 				72A2A9601AF980C800E4C49F /* OverlayNode.swift */,
@@ -438,6 +445,7 @@
 				729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */,
 				727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */,
 				72A5987B1AD2BF5D00918CCD /* ProjectListViewController.swift in Sources */,
+				720E94D71AFC1EA1007946FA /* FilepointView.swift in Sources */,
 				720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */,
 				72CAF4351AE7DD3300B4072B /* TreeViewController.swift in Sources */,
 				729A569A1AEB08250034418E /* CustomButton.swift in Sources */,
@@ -451,6 +459,7 @@
 				72A297261ADB473700F8D584 /* Angle.swift in Sources */,
 				72FE6A301AC0234B00FF792D /* MapOverviewViewController.swift in Sources */,
 				72FE6A2B1AC0234B00FF792D /* AppDelegate.swift in Sources */,
+				720E94D51AFBCDE8007946FA /* Drawingline.swift in Sources */,
 				72A5988B1AD83A5D00918CCD /* Filepoint.swift in Sources */,
 				729A56901AE819500034418E /* TreeView.swift in Sources */,
 				72A598911AD97D6C00918CCD /* Line.swift in Sources */,
@@ -691,6 +700,7 @@
 		72FE6A2C1AC0234B00FF792D /* GeoFile.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				72A2A96B1AFBC5D700E4C49F /* GeoFile 11.xcdatamodel */,
 				72A2A9621AF9A2B600E4C49F /* GeoFile 10.xcdatamodel */,
 				72A2A95D1AF8BFE200E4C49F /* GeoFile 9.xcdatamodel */,
 				727A21341AF26F860067BC4A /* GeoFile 8.xcdatamodel */,
@@ -702,7 +712,7 @@
 				72A598801AD49FFB00918CCD /* GeoFile 4.xcdatamodel */,
 				72FE6A2D1AC0234B00FF792D /* GeoFile.xcdatamodel */,
 			);
-			currentVersion = 72A2A9621AF9A2B600E4C49F /* GeoFile 10.xcdatamodel */;
+			currentVersion = 72A2A96B1AFBC5D700E4C49F /* GeoFile 11.xcdatamodel */;
 			path = GeoFile.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

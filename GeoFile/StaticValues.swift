@@ -10,10 +10,9 @@
 //♤ ♡ ♢ ♧ 💭 💬
 //↕️ ↔️🔄⤴️ ⤵️
 //🔒 🔓🌍
-enum drawColorEnum
+enum drawColorEnum: Int
 {
-    case white
-    case black
+    case white = 0,black
 }
 
 enum viewtypeEnum

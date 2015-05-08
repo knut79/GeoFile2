@@ -20,6 +20,7 @@ class Filepoint: NSManagedObject {
     @NSManaged var filetype:Int16
     @NSManaged var project: Project?
     @NSManaged var filepoints: NSSet
+    @NSManaged var lines: NSSet
     
     //added on picture with coordinates on parent filepoint
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData?, x:Float, y:Float) -> Filepoint{
@@ -30,6 +31,7 @@ class Filepoint: NSManagedObject {
         newitem.x = x
         newitem.y = y
         
+        newitem.lines = NSMutableSet()
         return newitem
     }
     
@@ -41,6 +43,8 @@ class Filepoint: NSManagedObject {
         newitem.filepoints = NSMutableSet()
         newitem.x = 0
         newitem.y = 0
+        
+        newitem.lines = NSMutableSet()
         
         return newitem
     }
@@ -54,6 +58,8 @@ class Filepoint: NSManagedObject {
         newitem.project = project
         newitem.x = 0
         newitem.y = 0
+        
+        newitem.lines = NSMutableSet()
         
         return newitem
     }
@@ -69,6 +75,14 @@ extension Filepoint {
         points.addObject(filepoint)
     }
     
+    func addDrawingLineToFilepoint(line:Drawingline) {
+        
+        var lines: NSMutableSet
+        lines = self.mutableSetValueForKey("lines")
+        lines.addObject(line)
+    }
+    
+   
     
     func getNumberOfPoints() -> Int {
         return self.filepoints.count

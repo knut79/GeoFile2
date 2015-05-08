@@ -378,11 +378,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/FilepointViewController.swift"
-            timestampString = "452172101.594425"
+            timestampString = "452727529.905843"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "857"
-            endingLineNumber = "857"
+            startingLineNumber = "808"
+            endingLineNumber = "808"
             landmarkName = "addImageToFileObject(_:sourceText:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/FilepointViewController.swift"
-            timestampString = "452172101.594425"
+            timestampString = "452727529.905843"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "855"
-            endingLineNumber = "855"
+            startingLineNumber = "806"
+            endingLineNumber = "806"
             landmarkName = "addImageToFileObject(_:sourceText:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -576,6 +576,38 @@
             startingLineNumber = "278"
             endingLineNumber = "278"
             landmarkName = "setOverlay()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GeoFile/DrawView.swift"
+            timestampString = "452707953.003443"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "754"
+            endingLineNumber = "754"
+            landmarkName = "undoFreeDraw()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GeoFile/FilepointViewController.swift"
+            timestampString = "452727529.905843"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "543"
+            endingLineNumber = "543"
+            landmarkName = "saveDraw()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
