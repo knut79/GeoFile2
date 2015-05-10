@@ -7,12 +7,15 @@
 //
 //🎨📝↩❌🔙⚫️⚪️🔵🔴↩️〽️📥 📤✏️〰✒💾
 //❌ ⭕️❗️ ❓✖️ ✔️✅📑📄💠💢
+//⭕️ work to be done
+//✔️ All done
+//❗️ Ettersyn
 //♤ ♡ ♢ ♧ 💭 💬
 //↕️ ↔️🔄⤴️ ⤵️
 //🔒 🔓🌍
 enum drawColorEnum: Int
 {
-    case white = 0,black
+    case white = 0,black,red,blue
 }
 
 enum viewtypeEnum
@@ -40,13 +43,20 @@ func getUIColor(color:drawColorEnum) -> UIColor
         return UIColor.whiteColor()
     case .black:
         return UIColor.blackColor()
+    case .red:
+        return UIColor.redColor()
+    case .blue:
+        return UIColor.blueColor()
     default:
         return UIColor.blackColor()
     }
 }
 
-let buttonBarHeight:CGFloat = 44
+let drawingLineWidth:CGFloat = 4
+let drawingArcRadius:CGFloat = 40
+let drawingTextPointSize:CGFloat = 17
 
+let buttonBarHeight:CGFloat = 44
 let buttonIconSide:CGFloat = 50
 let buttonIconSideSmall:CGFloat = 40
 //UIScreen.mainScreen().bounds.size.width * 0.5

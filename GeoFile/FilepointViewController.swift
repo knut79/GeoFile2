@@ -13,37 +13,33 @@ import CoreData
 import AVFoundation
 import MobileCoreServices
 
-class FilepointViewController: CustomViewController, UIImagePickerControllerDelegate,UINavigationControllerDelegate, DrawViewProtocol, CameraProtocol, TopNavigationViewProtocol{
+class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIImagePickerControllerDelegate,UINavigationControllerDelegate, DrawViewProtocol, CameraProtocol, TopNavigationViewProtocol{
 
-    /*
+    
     var currentFilepoint: Filepoint?
     //just because we ned temporary coordinates for a label associated with a filepoint
     var childPointsAndLabels = [(UILabel,Filepoint?)]()
-    */
+    
     var project:Project?
     var frontPicture: Bool = false
-    //var overviewImageView: UIImageView!
-    //var overviewScrollView: UIScrollView!
-    
-    var filepointView:FilepointView!
-    
+    var overviewImageView: FilepointView2!
+    var filepointImageView: UIImageView!
+    var overviewScrollView: UIScrollView!
     var drawView:DrawView!
     var saveDrawButton:CustomButton!
     var cancelDrawButton:CustomButton!
-    //var addPointButton: CustomButton!
+    var addPointButton: CustomButton!
     var drawButton:CustomButton!
     var messageButton:CustomButton!
-
-    //var backOneLevelButton: CustomButton!
+    //var topNavigationBar:TopNavigationView!
+    var backOneLevelButton: CustomButton!
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
     var sameLevelFilepointItems = [Filepoint]()
     
     
     var childFilepointItems = [Filepoint]()
-    
-    var drawingLines = [Drawingline]()
-    
+    //var sameLevelFilepointsTableView = UITableView(frame: CGRectZero, style: .Plain)
     var addFileButton: CustomButton!
     
     var oneLevelFromProject = false
@@ -57,10 +53,8 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         super.viewDidLoad()
         
         var viewFrame = self.view.frame
-        
 
         initForCameraAndPickerView()
-        
         
         drawButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width * 0.5, buttonBarHeight))
         drawButton.setTitle("Draw", forState: .Normal)
@@ -93,7 +87,11 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         backOneLevelButton.setTitle("🔙", forState: .Normal)
         backOneLevelButton.addTarget(self, action: "goBackOneLevel", forControlEvents: .TouchUpInside)
         
-
+        let strechedHeight = UIScreen.mainScreen().bounds.size.height - (addPointButton.frame.size.height + topNavigationBar.frame.size.height + backOneLevelButton.frame.size.height)
+        overviewScrollView = UIScrollView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
+        overviewScrollView.backgroundColor = UIColor.blackColor()
+        //!!! overviewScrollView.autoresizesSubviews = false
+        drawView = DrawView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
 
         self.view.addSubview(cancelDrawButton)
         self.view.addSubview(saveDrawButton)
@@ -101,15 +99,10 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         self.view.addSubview(addPointButton)
         self.view.addSubview(addFileButton)
         self.view.addSubview(backOneLevelButton)
-        
 
-        let strechedHeight = UIScreen.mainScreen().bounds.size.height - (addPointButton.frame.size.height + topNavigationBar.frame.size.height + backOneLevelButton.frame.size.height)
-        //overviewScrollView = UIScrollView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
-        //overviewScrollView.backgroundColor = UIColor.blackColor()
-        filepointView = FilepointView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
         
-        drawView = DrawView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
-        
+        // Reduce the total height by 20 points for the status bar, and 44 points for the bottom button
+        //viewFrame.size.height -= (self.tabBarController!.tabBar.frame.size.height + UIApplication.sharedApplication().statusBarFrame.size.height + addPointButton.frame.size.height)
         viewFrame.size.height -= (addPointButton.frame.size.height)
 
         if(currentFilepoint == nil)
@@ -124,12 +117,14 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         }
         self.fetchFilepointChildren()
 
-        //self.view.addSubview(overviewScrollView)
-        self.view.addSubview(filepointView)
+        self.view.addSubview(overviewScrollView)
         self.view.addSubview(drawView)
         drawView.hidden = true
 
-        filepointView.setFileLevel()
+        self.setFileLevel()
+        
+        self.fetchDrawings()
+        
     }
     
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
@@ -140,7 +135,7 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         return true
     }
     
-    /*
+    
     func cleanChildPointsAndLabelsList()
     {
         childPointsAndLabels = []
@@ -150,10 +145,9 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
     {
         
         
-        //var yVoidOffset = overviewImageView.frame.height < overviewScrollView.frame.height ? (overviewScrollView.frame.height - overviewImageView.frame.height)/2 : 0.0
-        //var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
-        var yVoidOffset = filepointView.frame.height < filepointView.frame.height ? (filepointView.frame.height - filepointView.frame.height)/2 : 0.0
-        var xVoidOffset = filepointView.frame.width < filepointView.frame.width ? (filepointView.frame.width - filepointView.frame.width)/2 : 0.0
+        var yVoidOffset = overviewImageView.frame.height < overviewScrollView.frame.height ? (overviewScrollView.frame.height - overviewImageView.frame.height)/2 : 0.0
+        var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
+
         //println("printing coordinates for \(childFilepointItems.count) filepoints")
         println("printing coordinates for \(currentFilepoint!.filepoints.count) filepoints")
     
@@ -186,7 +180,6 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             childPointsAndLabels.append((pointLabel,item as? Filepoint))
         }
     }
-    */
     
 
     
@@ -222,6 +215,11 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             childFilepointItems.append(item as Filepoint)
         }
     }
+    
+    func fetchDrawings()
+    {
+        
+    }
 
     
     func save() {
@@ -231,14 +229,9 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         }
     }
     
-    func addFile()
-    {
-        
-    }
-    
+
     //MARK: UIActions
 
-    /*
     func removeImageAndPointLabels()
     {
         for label in childPointsAndLabels
@@ -249,17 +242,17 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         overviewImageView.removeFromSuperview()
         self.cleanChildPointsAndLabelsList()
     }
-    */
     
-    /*
     func setFileLevel()
     {
         var image = UIImage(data: currentFilepoint!.file!)
-        overviewImageView = UIImageView(frame: CGRectMake(0, 0, image!.size.width, image!.size.height))
-        overviewImageView.image = image
+        filepointImageView = UIImageView(frame: CGRectMake(0, 0, image!.size.width, image!.size.height))
+        filepointImageView.image = image
+        overviewImageView = FilepointView2(filepoint: currentFilepoint!)
+        overviewImageView.backgroundColor = UIColor.clearColor()
         overviewScrollView.addSubview(overviewImageView)
-        overviewScrollView.contentSize = overviewImageView.frame.size
 
+        overviewScrollView.contentSize = overviewImageView.frame.size
         //populate the childPointsAndLabelsList
         overviewScrollView.delegate = self
 
@@ -272,6 +265,8 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         overviewScrollView.minimumZoomScale = minScale;
         overviewScrollView.maximumZoomScale = 1.0
         overviewScrollView.zoomScale = minScale;
+        
+        
 
         centerScrollViewContents()
         self.fillChildPointsAndLabels()
@@ -301,8 +296,10 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             
             overviewScrollView.addSubview(pointLabel)
         }
+        
+        
     }
-*/
+
     func addPoint()
     {
         addPointButton.enabled = false
@@ -324,8 +321,6 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         childPointsAndLabels.append((pointLabel,nil))
         self.view.addSubview(pointLabel)
     }
-    
-    /*
     var chooseFromCameraButton:UIButton!
     var currentTappedTag:Int = 0
     func pointTapped(sender:UITapGestureRecognizer)->Void
@@ -367,8 +362,7 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             self.view.addSubview(cameraView)
         }
     }
-    */
-    /*
+    
     func goBackOneLevel()
     {
         var image = UIImage(data: currentFilepoint!.file!)
@@ -395,10 +389,15 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             imageViewForAnimation.alpha = 0.2
             }, completion: { (value: Bool) in
                 imageViewForAnimation.removeFromSuperview()
-           
+                
+
+                
         })
+        
+
+        
     }
-    */
+    
     //MARK: DrawViewProtocol
     func setAngleText(label:UILabel)
     {
@@ -504,7 +503,8 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         }
 
         drawView.delegate = self
-        drawView.setImage(makeImage(filepointView.overviewScrollView,xOffset: filepointView.overviewScrollView.contentOffset.x, yOffset: filepointView.overviewScrollView.contentOffset.y))
+        drawView.setImage(makeImage(self.overviewScrollView,xOffset: overviewScrollView.contentOffset.x, yOffset: overviewScrollView.contentOffset.y))
+        drawView.setZoomscale(overviewScrollView.zoomScale)
         drawView.showButtons()
         drawView.resetDrawingValues()
         drawView.hidden = false
@@ -535,45 +535,58 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
     
     func saveDraw()
     {
+        var yVoidOffset = overviewScrollView.contentOffset.y
+        var xVoidOffset = overviewScrollView.contentOffset.x
+        
+       
         drawView.hideButtons()
         for line in drawView.lines
         {
-            var newLine = Drawingline.createInManagedObjectContext(self.managedObjectContext!,startPoint: line.start,endPoint: line.end,color: line.color,lastTouchBegan: line.lastTouchBegan)
+            
+            var start = CGPointMake((line.start.x + xVoidOffset) / overviewScrollView.zoomScale, (line.start.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var end = CGPointMake((line.end.x + xVoidOffset) / overviewScrollView.zoomScale,
+                (line.end.y + yVoidOffset) / overviewScrollView.zoomScale)
+
+            var newLine = Drawingline.createInManagedObjectContext(self.managedObjectContext!,startPoint: start,endPoint: end,color: line.color,lastTouchBegan: line.lastTouchBegan)
             currentFilepoint!.addDrawingLineToFilepoint(newLine)
         }
-        save()
-        /*
-        drawView.hideButtons()
-        var imagepartToSave = makeImage(drawView)
-        var yVoidOffset = overviewImageView.frame.height < overviewScrollView.frame.height ? (overviewScrollView.frame.height - overviewImageView.frame.height)/2 : 0.0
-        var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
-
-        var source = overviewImageView.image
-        var size = source!.size
-        UIGraphicsBeginImageContext(size)
-        var rect = CGRectMake(0, 0, size.width, size.height)
-        source?.drawInRect(rect)
-
-
-        imagepartToSave.drawInRect(CGRectMake(
-            (overviewScrollView.contentOffset.x - xVoidOffset) / overviewScrollView.zoomScale,
-            (overviewScrollView.contentOffset.y - yVoidOffset) / overviewScrollView.zoomScale ,
-            imagepartToSave.size.width / overviewScrollView.zoomScale,
-            imagepartToSave.size.height / overviewScrollView.zoomScale))
         
-        var context = UIGraphicsGetCurrentContext();
-        CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
-        CGContextSetLineWidth(context, 0.0);
-        CGContextStrokeRect(context, rect);
-        var testImg =  UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        overviewImageView.image = testImg
+        for measure in drawView.measures
+        {
+            
+            var start = CGPointMake((measure.start.x + xVoidOffset) / overviewScrollView.zoomScale, (measure.start.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var end = CGPointMake((measure.end.x + xVoidOffset) / overviewScrollView.zoomScale,
+                (measure.end.y + yVoidOffset) / overviewScrollView.zoomScale)
+            
+            var newMeasure = Drawingmeasure.createInManagedObjectContext(self.managedObjectContext!,startPoint: start,endPoint: end,color: measure.color,text: measure.getLabel().text!)
+            currentFilepoint!.addDrawingMeasureToFilepoint(newMeasure)
+        }
         
-        var imageData =  UIImageJPEGRepresentation(testImg,1.0) as NSData
-        currentFilepoint?.file = imageData
+        for angle in drawView.angles
+        {
+            
+            var start = CGPointMake((angle.start.x + xVoidOffset) / overviewScrollView.zoomScale, (angle.start.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var mid = CGPointMake((angle.mid.x + xVoidOffset) / overviewScrollView.zoomScale,
+                (angle.mid.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var end = CGPointMake((angle.end!.x + xVoidOffset) / overviewScrollView.zoomScale,
+                (angle.end!.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var newAngle = Drawingangle.createInManagedObjectContext(self.managedObjectContext!,startPoint: start,midPoint: mid, endPoint: end, color: angle.color,text: angle.getLabel().text!)
+            currentFilepoint!.addDrawingAngleToFilepoint(newAngle)
+        }
+        
+        for text in drawView.drawnTexts
+        {
+            var center = CGPointMake((text.label!.center.x + xVoidOffset) / overviewScrollView.zoomScale,
+                (text.label!.center.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var newText = Drawingtext.createInManagedObjectContext(self.managedObjectContext!,centerPoint: center, color: text.color,text: text.label!.text!, size:Int(drawingTextPointSize))
+            currentFilepoint!.addDrawingTextToFilepoint(newText)
+        }
+        
         save()
+        overviewImageView.setNeedsDisplay()
+        
+
         self.cancelDraw()
-        */
     }
     
     func makeImage(_view:UIView,xOffset:CGFloat = 0.0,yOffset:CGFloat = 0.0) -> UIImage {
@@ -589,12 +602,12 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         
         return viewImage
     }
-    /*
+    
     //MARK: UIScrollViewDelegate
     
     func centerScrollViewContents() {
-        let boundsSize = filepointView.overviewScrollView.bounds.size
-        var contentsFrame = filepointView.overviewImageView.frame
+        let boundsSize = overviewScrollView.bounds.size
+        var contentsFrame = overviewImageView.frame
         
         if contentsFrame.size.width < boundsSize.width {
             contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0
@@ -608,31 +621,34 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             contentsFrame.origin.y = 0.0
         }
         
-        filepointView.overviewImageView.frame = contentsFrame
+        overviewImageView.frame = contentsFrame
     }
     
     func viewForZoomingInScrollView(scrollView: UIScrollView!) -> UIView! {
-        return filepointView.overviewImageView
+        return overviewImageView
     }
 
     func scrollViewDidZoom(scrollView: UIScrollView!) {
 
-        var yVoidOffset = filepointView.overviewImageView.frame.height < filepointView.overviewScrollView.frame.height ? (filepointView.overviewScrollView.frame.height - filepointView.overviewImageView.frame.height)/2 : 0.0
-        var xVoidOffset = filepointView.overviewImageView.frame.width < filepointView.overviewScrollView.frame.width ? (filepointView.overviewScrollView.frame.width - filepointView.overviewImageView.frame.width)/2 : 0.0
+        var yVoidOffset = overviewImageView.frame.height < overviewScrollView.frame.height ? (overviewScrollView.frame.height - overviewImageView.frame.height)/2 : 0.0
+        var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
         
         //for item in currentFilepoint!.filepoints
         for item in childPointsAndLabels
         {
             var label = item.0
             var position = CGPointMake(CGFloat(item.1!.x), CGFloat(item.1!.y))
-            label.center = CGPointMake(position.x * filepointView.overviewScrollView.zoomScale,position.y * filepointView.overviewScrollView.zoomScale)
+            label.center = CGPointMake(position.x * overviewScrollView.zoomScale,position.y * overviewScrollView.zoomScale)
             label.center = CGPointMake(label.center.x + xVoidOffset,label.center.y + yVoidOffset)
         }
 
         centerScrollViewContents()
+        
+        //overviewImageView.setNeedsDisplay()
+        //overviewScrollView.setNeedsDisplay()
     }
     
-*/
+
     
     //NOTE: om man har lyst til å legge label rett på imageview. den vil da skaleres ned med resten av bildet.
     //lables kan ende opp med lite synlig text
@@ -715,18 +731,18 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             //remove label from buttonbar over to overviewImageView, witch is out scrollwindow
             pointLabel.removeFromSuperview()
             pointLabel.transform = CGAffineTransformMakeRotation(0.0 * CGFloat(Float(M_PI)) / 180.0)
-            pointLabel.center = CGPointMake(pointLabel.center.x + filepointView.overviewScrollView.contentOffset.x, pointLabel.center.y + filepointView.overviewScrollView.contentOffset.y - (pointLabel.frame.size.height))
+            pointLabel.center = CGPointMake(pointLabel.center.x + overviewScrollView.contentOffset.x, pointLabel.center.y + overviewScrollView.contentOffset.y - (pointLabel.frame.size.height))
             pointLabel.alpha = 0.75
             //test
             pointLabel.layer.cornerRadius = 8.0
             pointLabel.clipsToBounds = true
             //test end
-            filepointView.overviewImageView.addSubview(pointLabel)
+            overviewImageView.addSubview(pointLabel)
             
-            var realPosition = CGPointMake(pointLabel.center.x / filepointView.overviewScrollView.zoomScale, pointLabel.center.y / filepointView.overviewScrollView.zoomScale)
-            var yVoidOffset = filepointView.overviewImageView.frame.height < filepointView.overviewScrollView.frame.height ? (filepointView.overviewScrollView.frame.height - filepointView.overviewImageView.frame.height)/2 : 0.0
-            var xVoidOffset = filepointView.overviewImageView.frame.width < filepointView.overviewScrollView.frame.width ? (filepointView.overviewScrollView.frame.width - filepointView.overviewImageView.frame.width)/2 : 0.0
-            realPosition = CGPointMake(realPosition.x - (xVoidOffset/filepointView.overviewScrollView.zoomScale), realPosition.y - (yVoidOffset/filepointView.overviewScrollView.zoomScale))
+            var realPosition = CGPointMake(pointLabel.center.x / overviewScrollView.zoomScale, pointLabel.center.y / overviewScrollView.zoomScale)
+            var yVoidOffset = overviewImageView.frame.height < overviewScrollView.frame.height ? (overviewScrollView.frame.height - overviewImageView.frame.height)/2 : 0.0
+            var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
+            realPosition = CGPointMake(realPosition.x - (xVoidOffset/overviewScrollView.zoomScale), realPosition.y - (yVoidOffset/overviewScrollView.zoomScale))
             
             var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"filepoint title",file:nil, x: Float(realPosition.x), y: Float(realPosition.y))
             save()
@@ -736,7 +752,7 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
             
             pointLabel.removeFromSuperview()
             
-            filepointView.overviewScrollView.addSubview(pointLabel)
+            overviewScrollView.addSubview(pointLabel)
             
             addPointButton.enabled = true
             addPointButton.alpha = 1
@@ -791,7 +807,7 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
     func addImageToFileObject(imageData:NSData, sourceText:String)
     {
         // Update the array containing the table view row data
-        var pointObj = self.findPointLabelOnTag(filepointView.currentTappedTag)
+        var pointObj = self.findPointLabelOnTag(self.currentTappedTag)
         var pointLabel = pointObj!.0
         
         //NOTE: we do not add a completly new entity , only picture . Entity is created earlier at addPoint action
@@ -805,9 +821,9 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         self.save()
 
         //remove image and pointlabels before we set new current obj
-        filepointView.removeImageAndPointLabels()
+        self.removeImageAndPointLabels()
         self.currentFilepoint = newfilepointItem
-        filepointView.setFileLevel()
+        self.setFileLevel()
         
         self.backOneLevelButton.alpha = 1.0
         self.backOneLevelButton.enabled = true
@@ -822,7 +838,6 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
     }
     
 
-    /*
     func findPointLabelOnTag(tag:Int) -> (UILabel,Filepoint?)?
     {
         for item in childPointsAndLabels
@@ -834,7 +849,6 @@ class FilepointViewController: CustomViewController, UIImagePickerControllerDele
         }
         return nil
     }
-    */
     
 
     

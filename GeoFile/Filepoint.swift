@@ -21,6 +21,9 @@ class Filepoint: NSManagedObject {
     @NSManaged var project: Project?
     @NSManaged var filepoints: NSSet
     @NSManaged var lines: NSSet
+    @NSManaged var measures: NSSet
+    @NSManaged var angles: NSSet
+    @NSManaged var texts: NSSet
     
     //added on picture with coordinates on parent filepoint
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData?, x:Float, y:Float) -> Filepoint{
@@ -32,6 +35,9 @@ class Filepoint: NSManagedObject {
         newitem.y = y
         
         newitem.lines = NSMutableSet()
+        newitem.measures = NSMutableSet()
+        newitem.texts = NSMutableSet()
+        newitem.angles = NSMutableSet()
         return newitem
     }
     
@@ -45,6 +51,9 @@ class Filepoint: NSManagedObject {
         newitem.y = 0
         
         newitem.lines = NSMutableSet()
+        newitem.measures = NSMutableSet()
+        newitem.texts = NSMutableSet()
+        newitem.angles = NSMutableSet()
         
         return newitem
     }
@@ -60,6 +69,9 @@ class Filepoint: NSManagedObject {
         newitem.y = 0
         
         newitem.lines = NSMutableSet()
+        newitem.measures = NSMutableSet()
+        newitem.texts = NSMutableSet()
+        newitem.angles = NSMutableSet()
         
         return newitem
     }
@@ -80,6 +92,27 @@ extension Filepoint {
         var lines: NSMutableSet
         lines = self.mutableSetValueForKey("lines")
         lines.addObject(line)
+    }
+    
+    func addDrawingMeasureToFilepoint(measure:Drawingmeasure) {
+        
+        var measures: NSMutableSet
+        measures = self.mutableSetValueForKey("measures")
+        measures.addObject(measure)
+    }
+    
+    func addDrawingAngleToFilepoint(angle:Drawingangle) {
+        
+        var angles: NSMutableSet
+        angles = self.mutableSetValueForKey("angles")
+        angles.addObject(angle)
+    }
+    
+    func addDrawingTextToFilepoint(text:Drawingtext) {
+        
+        var texts: NSMutableSet
+        texts = self.mutableSetValueForKey("texts")
+        texts.addObject(text)
     }
     
    

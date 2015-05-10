@@ -49,6 +49,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     var bearing:CGFloat = 0
     var newOverlayToSet:UIImageView!
     var lockUnlockButton:UIButton!
+    var overlayInfoLabel:UILabel!
     var rotateButton:UIButton!
     var resizeButton:UIButton!
     var mapLocked = false
@@ -144,6 +145,12 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         lockUnlockButton.setTitle("🔓", forState: .Normal)
         lockUnlockButton.addTarget(self, action: "lockMapToggle:", forControlEvents: .TouchUpInside)
         
+        overlayInfoLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width / 2, buttonIconSideSmall))
+        overlayInfoLabel.text = "Map is unlocked."
+        overlayInfoLabel.textAlignment = NSTextAlignment.Center
+        overlayInfoLabel.hidden = true
+        
+        
         gmaps?.settings.scrollGestures = false
         gmaps?.settings.zoomGestures = false
         gmaps?.settings.rotateGestures = false
@@ -157,14 +164,18 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         resizeButton.setTitle("↔️", forState: .Normal)
         resizeButton.addTarget(self, action: "resizeOverlay", forControlEvents: .TouchUpInside)
         resizeButton.alpha = 0.5
+        resizeButton.layer.borderColor = UIColor.blackColor().CGColor
+        resizeButton.layer.borderWidth = 2.0;
         resizeButton.enabled = false
         
         gmaps?.addSubview(newOverlayToSet)
         
         lockUnlockButton.center = CGPointMake(buttonSize.width * 0.75  , gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+        overlayInfoLabel.center = CGPointMake(lockUnlockButton.frame.maxX + (overlayInfoLabel.frame.width / 2), lockUnlockButton.center.y)
         rotateButton.center = CGPointMake(lockUnlockButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
         resizeButton.center = CGPointMake(rotateButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
         gmaps?.addSubview(lockUnlockButton)
+        gmaps?.addSubview(overlayInfoLabel)
         gmaps?.addSubview(rotateButton)
         gmaps?.addSubview(resizeButton)
         
@@ -185,18 +196,48 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         if(mapLocked)
         {
             //map is unlocked and picture is hidden
+            overlayInfoLabel.hidden = false
+            resizeButton.alpha = 0
+            resizeButton.enabled = true
+            resizeButton.layer.borderWidth = 0;
+            
+            rotateButton.alpha = 0
+            rotateButton.enabled = true
+            rotateButton.layer.borderWidth = 0;
+            
             gmaps?.settings.scrollGestures = true
             gmaps?.settings.zoomGestures = true
             gmaps?.settings.rotateGestures = false
             mapLocked = false
             sender.setTitle("🔒", forState: .Normal)
-            //newOverlayToSet.alpha = 0
-            newOverlayToSet.alpha = 0.2
+            newOverlayToSet.alpha = 0.3
             newOverlayToSet.userInteractionEnabled = false
 
         }
         else
         {
+            overlayInfoLabel.hidden = true
+            resizeButton.alpha = 1
+            resizeButton.enabled = true
+            resizeButton.layer.borderWidth = 0
+            
+            rotateButton.alpha = 1
+            rotateButton.enabled = true
+            rotateButton.layer.borderWidth = 0
+            if(canRotate)
+            {
+                rotateButton.alpha = 0.5
+                rotateButton.enabled = false
+                rotateButton.layer.borderWidth = 2
+            }
+            else if(canResize)
+            {
+                resizeButton.alpha = 0.5
+                resizeButton.enabled = false
+                resizeButton.layer.borderWidth = 2
+            }
+
+            
             gmaps?.settings.scrollGestures = false
             gmaps?.settings.zoomGestures = false
             gmaps?.settings.rotateGestures = false
@@ -211,8 +252,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     {
         resizeButton.alpha = 1
         resizeButton.enabled = true
+        resizeButton.layer.borderWidth = 0;
+        
+        lockUnlockButton.alpha = 1
+        lockUnlockButton.enabled = true
+        lockUnlockButton.layer.borderWidth = 0;
+        
         rotateButton.alpha = 0.5
         rotateButton.enabled = false
+        rotateButton.layer.borderColor = UIColor.blackColor().CGColor
+        rotateButton.layer.borderWidth = 2.0;
+        
         canRotate = true
         canResize = false
     }
@@ -221,8 +271,16 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     {
         resizeButton.alpha = 0.5
         resizeButton.enabled = false
+        resizeButton.layer.borderColor = UIColor.blackColor().CGColor
+        resizeButton.layer.borderWidth = 2.0;
+        
         rotateButton.alpha = 1
         rotateButton.enabled = true
+        rotateButton.layer.borderWidth = 0;
+        
+        lockUnlockButton.alpha = 1
+        lockUnlockButton.enabled = true
+        lockUnlockButton.layer.borderWidth = 0;
         canRotate = false
         canResize = true
     }
@@ -250,6 +308,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         cancelOverlayButton.removeFromSuperview()
         setOverlayButton.removeFromSuperview()
         newOverlayToSet.removeFromSuperview()
+        overlayInfoLabel.removeFromSuperview()
         gmaps?.settings.scrollGestures = true
         gmaps?.settings.zoomGestures = true
         gmaps?.settings.rotateGestures = true
@@ -489,6 +548,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             else
             {
                 marker.draggable = false
+                //marker.snippet = "\(item.title)";
+                //marker.infoWindowAnchor = CGPointMake(0.5, 0.5);
                 marker.icon = UIImage(named: "flag_icon")
             }
             marker.position = CLLocationCoordinate2DMake(item.latitude, item.longitude)

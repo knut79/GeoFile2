@@ -23,18 +23,6 @@ class Drawntext
         label?.textColor = getUIColor(color)
 
     }
-    
-    /*
-    func setLabel(label _label:UILabel)
-    {
-        label = _label
-        label?.textColor = getUIColor(color)
-    }
-    
-    func getLabel() -> UILabel
-    {
-        return label!
-    }
-    */
+
     
 }

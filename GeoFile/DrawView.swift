@@ -44,19 +44,27 @@ class DrawView: UIView{
     var undoButton:CustomButton!
     var blackButton:CustomButton!
     var whiteButton:CustomButton!
+    var redButton:CustomButton!
+    var blueButton:CustomButton!
+    var chooseColorButton:CustomButton!
+    var choosenColorLabel:UILabel!
     var undoArtifactList:[drawTypeEnum] = []
     
 
     var drawType:drawTypeEnum = .free
     var colorPicked:drawColorEnum = .white
+    
+    var zoomscale:CGFloat = 1
 
     //var testLabel:UILabel!
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override init(frame: CGRect) {
+    override init(frame:CGRect)
+    {
         super.init(frame: frame)
+        
         buttonSize = CGRectMake(0, 0, buttonIconSideSmall, buttonIconSideSmall)
         tempMeasureLabelSize = CGRectMake(0, 0, 100, 25)
         tempAngleLabelSize = CGRectMake(0, 0, 100, 25)
@@ -65,7 +73,7 @@ class DrawView: UIView{
         freeButton = CustomButton(frame: buttonSize)
         freeButton.setTitle("✒", forState: .Normal)
         freeButton.addTarget(self, action: "freeDraw", forControlEvents: .TouchUpInside)
-
+        
         
         measureButton = CustomButton(frame: buttonSize)
         measureButton.setTitle("📏", forState: .Normal)
@@ -83,13 +91,35 @@ class DrawView: UIView{
         undoButton.setTitle("↩️", forState: .Normal)
         undoButton.addTarget(self, action: "undoDraw", forControlEvents: .TouchUpInside)
         
+        
+        
+        chooseColorButton = CustomButton(frame: buttonSize)
+        chooseColorButton.setTitle("🎨", forState: .Normal)
+        chooseColorButton.addTarget(self, action: "chooseColor", forControlEvents: .TouchUpInside)
+
+        
+        choosenColorLabel = UILabel(frame: buttonSize)
+        choosenColorLabel.textAlignment = NSTextAlignment.Center
+        
         blackButton = CustomButton(frame: buttonSize)
         blackButton.setTitle("⚫️", forState: .Normal)
         blackButton.addTarget(self, action: "blackColor", forControlEvents: .TouchUpInside)
+        blackButton.alpha = 0
         
         whiteButton = CustomButton(frame: buttonSize)
         whiteButton.setTitle("⚪️", forState: .Normal)
         whiteButton.addTarget(self, action: "whiteColor", forControlEvents: .TouchUpInside)
+        whiteButton.alpha = 0
+        
+        redButton = CustomButton(frame: buttonSize)
+        redButton.setTitle("🔴", forState: .Normal)
+        redButton.addTarget(self, action: "redColor", forControlEvents: .TouchUpInside)
+        redButton.alpha = 0
+        
+        blueButton = CustomButton(frame: buttonSize)
+        blueButton.setTitle("🔵", forState: .Normal)
+        blueButton.addTarget(self, action: "blueColor", forControlEvents: .TouchUpInside)
+        blueButton.alpha = 0
         
         //println("origin \(self.frame.origin.y)")
         
@@ -99,25 +129,43 @@ class DrawView: UIView{
         textButton.center = CGPointMake(angleButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
         undoButton.center = CGPointMake(textButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
         
-        blackButton.center = CGPointMake(buttonSize.width * 0.75 , freeButton.frame.minY - buttonSize.height)
+        chooseColorButton.center = CGPointMake(buttonSize.width * 0.75 , freeButton.frame.minY - buttonSize.height)
+        choosenColorLabel.center = CGPointMake(buttonSize.width * 0.75, chooseColorButton.frame.minY)
+        
+        blackButton.center = CGPointMake(buttonSize.width * 0.75 , chooseColorButton.frame.minY - buttonSize.height)
         whiteButton.center = CGPointMake(buttonSize.width * 0.75 , blackButton.frame.minY - buttonSize.height)
+        redButton.center = CGPointMake(buttonSize.width * 0.75 , whiteButton.frame.minY - buttonSize.height)
+        blueButton.center = CGPointMake(buttonSize.width * 0.75 , redButton.frame.minY - buttonSize.height)
         
         self.addSubview(freeButton)
         self.addSubview(measureButton)
         self.addSubview(angleButton)
         self.addSubview(textButton)
         self.addSubview(undoButton)
+
         self.addSubview(blackButton)
         self.addSubview(whiteButton)
+        self.addSubview(redButton)
+        self.addSubview(blueButton)
+        
+        self.addSubview(choosenColorLabel)
+        self.addSubview(chooseColorButton)
         
         drawType = .free
         colorPicked = .white
+        choosenColorLabel.text = "⚪️"
         markButtonOnColor()
         markButtonOnDrawtype()
         
         populateNewTempMeasuleLabel()
         populateNewTempAngleLabel()
         populateNewTempTextLabel()
+    }
+    
+
+    func setZoomscale(zscale:CGFloat)
+    {
+        self.zoomscale = zscale
     }
     
     func resetDrawingValues()
@@ -149,11 +197,16 @@ class DrawView: UIView{
         undoButton.hidden = isHidden
         blackButton.hidden = isHidden
         whiteButton.hidden = isHidden
+        redButton.hidden = isHidden
+        blueButton.hidden = isHidden
+        chooseColorButton.hidden = isHidden
+        choosenColorLabel.hidden = isHidden
     }
     
     func populateNewTempMeasuleLabel()
     {
         tempMeasureLabel = UILabel(frame: tempMeasureLabelSize)
+        tempMeasureLabel.font = UIFont.systemFontOfSize(drawingTextPointSize * zoomscale)
         tempMeasureLabel.text = "?"
         tempMeasureLabel.textAlignment = NSTextAlignment.Center
         tempMeasureLabel.backgroundColor = UIColor.clearColor()
@@ -168,6 +221,8 @@ class DrawView: UIView{
     func populateNewTempAngleLabel()
     {
         tempAngleLabel = UILabel(frame: tempAngleLabelSize)
+        tempAngleLabel.font = UIFont.systemFontOfSize(drawingTextPointSize * zoomscale)
+        //println("fontsize \(tempAngleLabel.font.pointSize)")
         tempAngleLabel.text = "?"
         tempAngleLabel.textAlignment = NSTextAlignment.Center
         tempAngleLabel.backgroundColor = UIColor.clearColor()
@@ -184,11 +239,13 @@ class DrawView: UIView{
     {
         tempTextLabel = UILabel(frame: tempTextLabelSize)
         tempTextLabel.text = "Enter text"
+        //tempTextLabel.layer.borderColor = UIColor.blackColor().CGColor
+        //tempTextLabel.layer.borderWidth = 2.0;
         tempTextLabel.textAlignment = NSTextAlignment.Center
         tempTextLabel.backgroundColor = UIColor.clearColor()
         tempTextLabel.hidden = true
         tempTextLabel.userInteractionEnabled = true
-        tempTextLabel.font = UIFont.boldSystemFontOfSize(12)
+        tempTextLabel.font = UIFont.boldSystemFontOfSize(drawingTextPointSize * zoomscale)
         var tapRecognizer = UITapGestureRecognizer(target: self, action: "setDrawntextText:")
         tapRecognizer.numberOfTapsRequired = 1
         tempTextLabel.addGestureRecognizer(tapRecognizer)
@@ -222,19 +279,20 @@ class DrawView: UIView{
             tempTextLabel.textColor = getUIColor(colorPicked)
             if(drawnTexts.last?.label!.text != tempTextLabel.text)
             {
-            tempTextLabel.hidden = false
-            tempTextLabel.center = lastPoint
-            //currentMeasure.setLabel(label: tempMeasureLabel)
-            
-            undoArtifactList.append(.text)
-            drawnTexts.append(Drawntext(label: tempTextLabel, color: colorPicked))
-            populateNewTempTextLabel()
+                tempTextLabel.hidden = false
+                tempTextLabel.center = lastPoint
+                //currentMeasure.setLabel(label: tempMeasureLabel)
+                
+                undoArtifactList.append(.text)
+                drawnTexts.append(Drawntext(label: tempTextLabel, color: colorPicked))
+                populateNewTempTextLabel()
             }
         default:
             break
             
         }
     }
+    
     var angleMidpointSat = false
     override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
         var newPoint = touches.anyObject()?.locationInView(self)
@@ -340,18 +398,16 @@ class DrawView: UIView{
         {
             return
         }
-        //UIGraphicsBeginImageContext(originalImage.size)
-        //originalImage.drawAtPoint(CGPointMake(0, 0))
-        
-        
-        
+
         var context = UIGraphicsGetCurrentContext()
         //CGContextDrawImage(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage)
         originalImage.drawInRect(CGRectMake(0, 0, originalImage.size.width, originalImage.size.height))
         
         CGContextBeginPath(context)
         CGContextSetLineCap(context, kCGLineCapRound)
-        CGContextSetLineWidth(context, 3)
+        var linewidth = drawingLineWidth * zoomscale
+        println("linewidth \(linewidth) zoomscale \(zoomscale)")
+        CGContextSetLineWidth(context, linewidth)
         for line in lines
         {
             setStrokeColor(context,color: line.color)
@@ -420,7 +476,7 @@ class DrawView: UIView{
             
             var clockwiseDraw = IsClockwise([angle.start,angle.mid,angle.end!])
             
-            var radiusForDrawingArc:CGFloat = 40
+            var radiusForDrawingArc:CGFloat = drawingArcRadius * zoomscale
             
             var arcToDraw = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
             arcToDraw.stroke()
@@ -506,6 +562,10 @@ class DrawView: UIView{
             CGContextSetRGBStrokeColor(context, 0, 0, 0, 1)
         case .white:
             CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
+        case .red:
+            CGContextSetRGBStrokeColor(context, 1, 0, 0, 1)
+        case .blue:
+            CGContextSetRGBStrokeColor(context, 0, 0, 1, 1)
         default:
             CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
         }
@@ -582,7 +642,6 @@ class DrawView: UIView{
     func drawDisclosureIndicator(ctxt:CGContextRef, x:CGFloat, y:CGFloat , pointRight:Bool = true)
     {
         let R:CGFloat = 4.5 // "radius" of the arrow head
-        let W:CGFloat = 3.0 // line width
         CGContextSaveGState(ctxt)
         
         if(pointRight)
@@ -600,7 +659,6 @@ class DrawView: UIView{
         }
         CGContextSetLineCap(ctxt, kCGLineCapSquare)
         CGContextSetLineJoin(ctxt, kCGLineJoinMiter)
-        CGContextSetLineWidth(ctxt, W)
         
         CGContextStrokePath(ctxt)
         
@@ -660,19 +718,31 @@ class DrawView: UIView{
     {
         let markValue:CGFloat = 0.65
         textButton.alpha = 1
+        textButton.layer.borderWidth = 0
         angleButton.alpha = 1
+        angleButton.layer.borderWidth = 0
         measureButton.alpha = 1
+        measureButton.layer.borderWidth = 0
         freeButton.alpha = 1
+        freeButton.layer.borderWidth = 0
         switch(drawType)
         {
         case .angle:
             angleButton.alpha = markValue
+            angleButton.layer.borderColor = UIColor.blackColor().CGColor
+            angleButton.layer.borderWidth = 2.0;
         case .free:
             freeButton.alpha = markValue
+            freeButton.layer.borderColor = UIColor.blackColor().CGColor
+            freeButton.layer.borderWidth = 2.0;
         case .measure:
             measureButton.alpha = markValue
+            measureButton.layer.borderColor = UIColor.blackColor().CGColor
+            measureButton.layer.borderWidth = 2.0;
         case .text:
             textButton.alpha = markValue
+            textButton.layer.borderColor = UIColor.blackColor().CGColor
+            textButton.layer.borderWidth = 2.0;
         default:
             break
         }
@@ -682,18 +752,50 @@ class DrawView: UIView{
     {
         let markValue:CGFloat = 0.65
         whiteButton.alpha = 1
+        whiteButton.layer.borderWidth = 0
         blackButton.alpha = 1
+        blackButton.layer.borderWidth = 0
+        blueButton.alpha = 1
+        blueButton.layer.borderWidth = 0
+        redButton.alpha = 1
+        redButton.layer.borderWidth = 0
         switch(colorPicked)
         {
         case .white:
             whiteButton.alpha = markValue
+            whiteButton.layer.borderColor = UIColor.blackColor().CGColor
+            whiteButton.layer.borderWidth = 2.0;
+            choosenColorLabel.text = "⚪️"
         case .black:
             blackButton.alpha = markValue
+            blackButton.layer.borderColor = UIColor.blackColor().CGColor
+            blackButton.layer.borderWidth = 2.0;
+            choosenColorLabel.text = "⚫️"
+        case .blue:
+            blueButton.alpha = markValue
+            blueButton.layer.borderColor = UIColor.blackColor().CGColor
+            blueButton.layer.borderWidth = 2.0;
+            choosenColorLabel.text = "🔵"
+        case .red:
+            redButton.alpha = markValue
+            redButton.layer.borderColor = UIColor.blackColor().CGColor
+            redButton.layer.borderWidth = 2.0;
+            choosenColorLabel.text = "🔴"
+            
         }
+        hideColorButtons()
     }
     
     func undoDraw()
     {
+        
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+                self.undoButton.alpha = 0.5
+            }, completion: { (value: Bool) in
+                self.undoButton.alpha = 1
+
+        })
+        
         drawType = .undo
         //find last paused line
         if(undoArtifactList.count > 0)
@@ -716,7 +818,10 @@ class DrawView: UIView{
             }
             undoArtifactList.removeLast()
         }
-        //println("lines count \(lines.count)")
+    
+        //reset all controll buttons
+        markButtonOnDrawtype()
+        
     }
     
     func undoMeasureDraw()
@@ -775,5 +880,83 @@ class DrawView: UIView{
     {
         colorPicked = .white
         markButtonOnColor()
+    }
+    
+    func blueColor()
+    {
+        colorPicked = .blue
+        markButtonOnColor()
+    }
+    
+    func redColor()
+    {
+        colorPicked = .red
+        markButtonOnColor()
+    }
+    
+    func chooseColor()
+    {
+        showColorButtons()
+    }
+    
+    func showColorButtons()
+    {
+        var whiteCenter = whiteButton.center
+        var blackCenter = blackButton.center
+        var blueCenter = blueButton.center
+        var redCenter = redButton.center
+        
+        whiteButton.center = chooseColorButton.center
+        blackButton.center = chooseColorButton.center
+        blueButton.center = chooseColorButton.center
+        redButton.center = chooseColorButton.center
+        
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.whiteButton.center = whiteCenter
+            self.blackButton.center = blackCenter
+            self.blueButton.center = blueCenter
+            self.redButton.center = redCenter
+            self.whiteButton.alpha = 1
+            self.blackButton.alpha = 1
+            self.blueButton.alpha = 1
+            self.redButton.alpha = 1
+        })
+
+    }
+    
+    func hideColorButtons()
+    {
+
+        var whiteCenter = whiteButton.center
+        var blackCenter = blackButton.center
+        var blueCenter = blueButton.center
+        var redCenter = redButton.center
+
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.whiteButton.center = self.chooseColorButton.center
+            self.blackButton.center = self.chooseColorButton.center
+            self.blueButton.center = self.chooseColorButton.center
+            self.redButton.center = self.chooseColorButton.center
+            self.whiteButton.alpha = 0
+            self.blackButton.alpha = 0
+            self.blueButton.alpha = 0
+            self.redButton.alpha = 0
+            }, completion: { (value: Bool) in
+                self.whiteButton.center = whiteCenter
+                self.blackButton.center = blackCenter
+                self.blueButton.center = blueCenter
+                self.redButton.center = redCenter
+        })
+        
+/*            completion: { (value: Bool) in{
+self.whiteButton.center = whiteCenter
+self.blackButton.center = blackCenter
+self.blueButton.center = blueCenter
+self.redButton.center = redCenter
+})
+*/
+
+
+
     }
 }
