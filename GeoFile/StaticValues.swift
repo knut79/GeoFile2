@@ -11,8 +11,32 @@
 //✔️ All done
 //❗️ Ettersyn
 //♤ ♡ ♢ ♧ 💭 💬
+//delete 🍃 🍃
 //↕️ ↔️🔄⤴️ ⤵️
 //🔒 🔓🌍
+// 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣ 🔟
+
+
+//instanser av bilder/filer som ligger under et punkt
+//📄 added dokument
+//ℹ️ ℹ❕info pictures/files
+//♻️ 🔨🔧⚠ arbeid
+//☑️utført arbeid
+//✅ godkjentr
+//❗mangler ved ettersyn
+//❓(text) spørsmål
+
+
+//kategorier/ tagger
+//⚡️ elektriker
+//🚊 sporjobber
+//🔧 rørlegger
+
+//↪️ ↩️ rotate clockwise/ counter clockwise
+//⏫ ⏬ ⏪ ⏩ move
+//↕️ ↔️ expand
+// ➕ ➖ ➗ zoom
+
 enum drawColorEnum: Int
 {
     case white = 0,black,red,blue

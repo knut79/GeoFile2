@@ -23,7 +23,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     var passingFilepoint:Filepoint?
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-    var incommingFilesScrollView: UIView!
+    var incommingFilesView: UIView!
     var imageViews:[UIImageView] = []
     var yOffset:CGFloat!
     //MARK:
@@ -31,10 +31,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         super.viewDidLoad()
         
         yOffset = UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 2)
-        incommingFilesScrollView = UIView(frame: CGRectMake(0, yOffset, UIScreen.mainScreen().bounds.size.width, 100))
-        incommingFilesScrollView.backgroundColor = UIColor.lightGrayColor()
-        incommingFilesScrollView.hidden = true
-        self.view.addSubview(incommingFilesScrollView)
+        incommingFilesView = UIView(frame: CGRectMake(0, yOffset, UIScreen.mainScreen().bounds.size.width , 100))
+        incommingFilesView.hidden = true
+
+        self.view.addSubview(incommingFilesView)
         
         var viewFrame = self.view.frame
 
@@ -80,8 +80,11 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        visibleContentView.fadeoutActionButtons()
-        visibleContentView.unselectAllOverlayNodes()
+        if(scrollView == overviewScrollView)
+        {
+            visibleContentView.fadeoutActionButtons()
+            visibleContentView.unselectAllOverlayNodes()
+        }
 
     }
     
@@ -92,12 +95,15 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         {
             return
         }
-        incommingFilesScrollView.hidden = false
+        incommingFilesView.hidden = false
         var xOffset:CGFloat = 0
+        var widthPerItem:CGFloat = pdfImages!.count < 3 ? 100 : UIScreen.mainScreen().bounds.size.width / CGFloat(pdfImages!.count)
         for image in pdfImages!
         {
-            var imageView = UIImageView(frame: CGRectMake(xOffset, 0, 100, 100))
+            var imageView = UIImageView(frame: CGRectMake(xOffset, 0, 100, widthPerItem))
             imageView.backgroundColor = UIColor.clearColor()
+            imageView.layer.borderColor = UIColor.blackColor().CGColor
+            imageView.layer.borderWidth = 2.0;
             imageView.image = image
             imageView.userInteractionEnabled = true
             /*
@@ -105,9 +111,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             tapRecognizer.numberOfTapsRequired = 1
             imageView.addGestureRecognizer(tapRecognizer)*/
             imageViews.append(imageView)
-            incommingFilesScrollView.addSubview(imageView)
-            xOffset+=100
+            incommingFilesView.addSubview(imageView)
+            xOffset+=widthPerItem
         }
+        //incommingFilesScrollView.contentSize = CGSizeMake(xOffset, 100)
 
     }
     
@@ -117,6 +124,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         var newfilepointItem = Overlay.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
         save()
+        visibleContentView.clearOverlays()
+        visibleContentView.fetchOverlays()
         
     }
     
@@ -213,7 +222,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         if let view = currentTouchedImageView
         {
             view.removeFromSuperview()
-            incommingFilesScrollView.addSubview(view)
+            incommingFilesView.addSubview(view)
             view.center = startPoint
         }
     }
@@ -311,7 +320,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
         var touch = touches.anyObject()
         
-        var touchLocation = touch!.locationInView(self.incommingFilesScrollView)
+        var touchLocation = touch!.locationInView(self.incommingFilesView)
         
         for view in imageViews
         {
@@ -435,6 +444,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
 
     func showOverlay()
     {
+        visibleContentView.fadeoutActionButtons()
         //TODO:
     }
     

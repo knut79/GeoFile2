@@ -14,7 +14,6 @@
 		720B8C9B1AC8964D00064B86 /* pdftest.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 720B8C961AC8964D00064B86 /* pdftest.pdf */; };
 		720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */; };
 		720E94D51AFBCDE8007946FA /* Drawingline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94D41AFBCDE8007946FA /* Drawingline.swift */; };
-		720E94D71AFC1EA1007946FA /* FilepointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94D61AFC1EA1007946FA /* FilepointView.swift */; };
 		720E94D91AFC45A3007946FA /* FilepointView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94D81AFC45A3007946FA /* FilepointView2.swift */; };
 		720E94DC1AFE95FD007946FA /* Drawingmeasure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94DB1AFE95FD007946FA /* Drawingmeasure.swift */; };
 		720E94DE1AFE960C007946FA /* Drawingangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94DD1AFE960C007946FA /* Drawingangle.swift */; };
@@ -93,7 +92,6 @@
 		720B8C961AC8964D00064B86 /* pdftest.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = pdftest.pdf; path = pictures/pdftest.pdf; sourceTree = "<group>"; };
 		720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHelper.swift; sourceTree = "<group>"; };
 		720E94D41AFBCDE8007946FA /* Drawingline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawingline.swift; sourceTree = "<group>"; };
-		720E94D61AFC1EA1007946FA /* FilepointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointView.swift; sourceTree = "<group>"; };
 		720E94D81AFC45A3007946FA /* FilepointView2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointView2.swift; sourceTree = "<group>"; };
 		720E94DA1AFE89E1007946FA /* GeoFile 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 12.xcdatamodel"; sourceTree = "<group>"; };
 		720E94DB1AFE95FD007946FA /* Drawingmeasure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawingmeasure.swift; sourceTree = "<group>"; };
@@ -276,7 +274,6 @@
 				72CAF4341AE7DD3300B4072B /* TreeViewController.swift */,
 				729A568F1AE819500034418E /* TreeView.swift */,
 				72FE6A6D1AC0492400FF792D /* FilepointViewController.swift */,
-				720E94D61AFC1EA1007946FA /* FilepointView.swift */,
 				720E94D81AFC45A3007946FA /* FilepointView2.swift */,
 				72FE6A2F1AC0234B00FF792D /* MapOverviewViewController.swift */,
 				72FE6A2A1AC0234B00FF792D /* AppDelegate.swift */,
@@ -458,7 +455,6 @@
 				729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */,
 				727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */,
 				72A5987B1AD2BF5D00918CCD /* ProjectListViewController.swift in Sources */,
-				720E94D71AFC1EA1007946FA /* FilepointView.swift in Sources */,
 				720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */,
 				72CAF4351AE7DD3300B4072B /* TreeViewController.swift in Sources */,
 				729A569A1AEB08250034418E /* CustomButton.swift in Sources */,

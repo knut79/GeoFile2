@@ -584,7 +584,6 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         
         save()
         overviewImageView.setNeedsDisplay()
-        
 
         self.cancelDraw()
     }
@@ -643,9 +642,6 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
 
         centerScrollViewContents()
-        
-        //overviewImageView.setNeedsDisplay()
-        //overviewScrollView.setNeedsDisplay()
     }
     
 
@@ -671,12 +667,12 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         //if( (touches.anyObject() as UILabel) == pointLabel )
         if(isInnView)
         {
-            println("inside touchesBegan")
+            //println("inside touchesBegan")
             
             let point = touches.anyObject()!.locationInView(self.view)
             xOffset = point.x - pointLabel.center.x
             yOffset = point.y - pointLabel.center.y
-            pointLabel.transform = CGAffineTransformMakeRotation(10.0 * CGFloat(Float(M_PI)) / 180.0)
+            //pointLabel.transform = CGAffineTransformMakeRotation(10.0 * CGFloat(Float(M_PI)) / 180.0)
             
         }
         else
@@ -730,7 +726,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             //remove label from buttonbar over to overviewImageView, witch is out scrollwindow
             pointLabel.removeFromSuperview()
-            pointLabel.transform = CGAffineTransformMakeRotation(0.0 * CGFloat(Float(M_PI)) / 180.0)
+            //pointLabel.transform = CGAffineTransformMakeRotation(0.0 * CGFloat(Float(M_PI)) / 180.0)
             pointLabel.center = CGPointMake(pointLabel.center.x + overviewScrollView.contentOffset.x, pointLabel.center.y + overviewScrollView.contentOffset.y - (pointLabel.frame.size.height))
             pointLabel.alpha = 0.75
             //test

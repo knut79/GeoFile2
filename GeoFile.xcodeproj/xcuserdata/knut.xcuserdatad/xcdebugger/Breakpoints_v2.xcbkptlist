@@ -22,16 +22,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/MapOverviewViewController.swift"
-            timestampString = "452993803.647032"
+            timestampString = "453076105.414637"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "553"
-            endingLineNumber = "553"
-            landmarkName = "setMarkers(_:atIndex:)"
+            startingLineNumber = "429"
+            endingLineNumber = "429"
+            landmarkName = "moveOverlayLeft()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

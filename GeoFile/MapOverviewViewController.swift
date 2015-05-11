@@ -51,7 +51,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     var lockUnlockButton:UIButton!
     var overlayInfoLabel:UILabel!
     var rotateButton:UIButton!
+    
+    var precisionToggleButton:UIButton!
+    var rotateClockwiseButton:UIButton!
+    var rotateCounterclockwiseButton:UIButton!
     var resizeButton:UIButton!
+    var moveRightButton:UIButton!
+    var moveLeftButton:UIButton!
+    var moveUpButton:UIButton!
+    var moveDownButton:UIButton!
+    var zoomInButton:UIButton!
+    var zoomOutButton:UIButton!
     var mapLocked = false
     var canRotate = false
     var canResize = true
@@ -120,10 +130,11 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     func setNewOverlay(overlay:Overlay)
     {
         var image = UIImage(data: overlay.file)
-        var scaleFactor = image!.size.width / UIScreen.mainScreen().bounds.size.width
-        newOverlayToSet = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, image!.size.height / scaleFactor))
+        //var scaleFactor = image!.size.width / UIScreen.mainScreen().bounds.size.width
+        //newOverlayToSet = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, image!.size.height / scaleFactor))
+        newOverlayToSet = UIImageView(frame: CGRectMake(0, 0, image!.size.width, image!.size.height))
         
-        
+        println("sizes should match \(image!.size.width) \(image!.size.height) and \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height)")
         newOverlayToSet.center = gmaps!.center
         newOverlayToSet.alpha = 0.5
         newOverlayToSet.image = image
@@ -160,6 +171,52 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         rotateButton.setTitle("🔄", forState: .Normal)
         rotateButton.addTarget(self, action: "rotateOverlay", forControlEvents: .TouchUpInside)
         
+        
+        
+        precisionToggleButton = CustomButton(frame: buttonSize)
+        precisionToggleButton.setTitle("🎯", forState: .Normal)
+        precisionToggleButton.addTarget(self, action: "precisionToggle", forControlEvents: .TouchUpInside)
+        
+        rotateClockwiseButton = CustomButton(frame: buttonSize)
+        rotateClockwiseButton.setTitle("↩️", forState: .Normal)
+        rotateClockwiseButton.addTarget(self, action: "rotateOneTickClockwise", forControlEvents: .TouchUpInside)
+        rotateClockwiseButton.alpha = 0
+        
+        rotateCounterclockwiseButton = CustomButton(frame: buttonSize)
+        rotateCounterclockwiseButton.setTitle("↪️", forState: .Normal)
+        rotateCounterclockwiseButton.addTarget(self, action: "rotateOneTickCounterclockwise", forControlEvents: .TouchUpInside)
+        rotateCounterclockwiseButton.alpha = 0
+        
+        moveLeftButton = CustomButton(frame: buttonSize)
+        moveLeftButton.setTitle("⏪", forState: .Normal)
+        moveLeftButton.addTarget(self, action: "moveOverlayLeft", forControlEvents: .TouchUpInside)
+        moveLeftButton.alpha = 0
+        
+        moveRightButton = CustomButton(frame: buttonSize)
+        moveRightButton.setTitle("⏩", forState: .Normal)
+        moveRightButton.addTarget(self, action: "moveOverlayRight", forControlEvents: .TouchUpInside)
+        moveRightButton.alpha = 0
+        
+        moveUpButton = CustomButton(frame: buttonSize)
+        moveUpButton.setTitle("⏫", forState: .Normal)
+        moveUpButton.addTarget(self, action: "moveOverlayUp", forControlEvents: .TouchUpInside)
+        moveUpButton.alpha = 0
+        
+        moveDownButton = CustomButton(frame: buttonSize)
+        moveDownButton.setTitle("⏬", forState: .Normal)
+        moveDownButton.addTarget(self, action: "moveOverlayDown", forControlEvents: .TouchUpInside)
+        moveDownButton.alpha = 0
+        
+        zoomInButton = CustomButton(frame: buttonSize)
+        zoomInButton.setTitle("➕", forState: .Normal)
+        zoomInButton.addTarget(self, action: "zoomInOverlay", forControlEvents: .TouchUpInside)
+        zoomInButton.alpha = 0
+        
+        zoomOutButton = CustomButton(frame: buttonSize)
+        zoomOutButton.setTitle("➖", forState: .Normal)
+        zoomOutButton.addTarget(self, action: "zoomOutOverlay", forControlEvents: .TouchUpInside)
+        zoomOutButton.alpha = 0
+        
         resizeButton = CustomButton(frame: buttonSize)
         resizeButton.setTitle("↔️", forState: .Normal)
         resizeButton.addTarget(self, action: "resizeOverlay", forControlEvents: .TouchUpInside)
@@ -170,14 +227,37 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         gmaps?.addSubview(newOverlayToSet)
         
-        lockUnlockButton.center = CGPointMake(buttonSize.width * 0.75  , gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+        precisionToggleButton.center = CGPointMake(buttonSize.width * 0.75  , gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+        lockUnlockButton.center = CGPointMake(precisionToggleButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
         overlayInfoLabel.center = CGPointMake(lockUnlockButton.frame.maxX + (overlayInfoLabel.frame.width / 2), lockUnlockButton.center.y)
         rotateButton.center = CGPointMake(lockUnlockButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
         resizeButton.center = CGPointMake(rotateButton.frame.maxX + buttonSize.width, gmaps!.frame.maxY - (buttonSize.height * 0.75) - gmaps!.frame.origin.y)
+        rotateClockwiseButton.center = CGPointMake(rotateClockwiseButton.frame.width / 2, gmaps!.center.y)
+        rotateCounterclockwiseButton.center = CGPointMake(gmaps!.frame.maxX - (rotateClockwiseButton.frame.width / 2), gmaps!.center.y)
+        
+        moveLeftButton.center = CGPointMake(moveLeftButton.frame.width / 2, gmaps!.center.y - rotateClockwiseButton.frame.height)
+        moveRightButton.center = CGPointMake(gmaps!.frame.maxX - (moveRightButton.frame.width / 2), gmaps!.center.y - rotateClockwiseButton.frame.height)
+        moveUpButton.center = CGPointMake(gmaps!.center.x , moveUpButton.frame.height/2)
+        moveDownButton.center = CGPointMake(gmaps!.center.x ,precisionToggleButton.center.y)
+        
+        zoomInButton.center = CGPointMake(gmaps!.frame.maxX - (zoomInButton.frame.width / 2), rotateClockwiseButton.frame.maxY + (zoomInButton.frame.height*2))
+        zoomOutButton.center = CGPointMake(gmaps!.frame.maxX - (zoomOutButton.frame.width / 2), zoomInButton.frame.maxY + zoomOutButton.frame.height)
+        
         gmaps?.addSubview(lockUnlockButton)
         gmaps?.addSubview(overlayInfoLabel)
         gmaps?.addSubview(rotateButton)
         gmaps?.addSubview(resizeButton)
+        
+        gmaps?.addSubview(precisionToggleButton)
+        gmaps?.addSubview(rotateClockwiseButton)
+        gmaps?.addSubview(rotateCounterclockwiseButton)
+        
+        gmaps?.addSubview(moveLeftButton)
+        gmaps?.addSubview(moveRightButton)
+        gmaps?.addSubview(moveUpButton)
+        gmaps?.addSubview(moveDownButton)
+        gmaps?.addSubview(zoomInButton)
+        gmaps?.addSubview(zoomOutButton)
         
         
         setOverlayButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight  ,UIScreen.mainScreen().bounds.size.width / 2, buttonBarHeight))
@@ -248,6 +328,42 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         }
     }
     
+    var precisionOn = false
+    func precisionToggle()
+    {
+        var alphaPresicionBtns:CGFloat = 0
+        var alphaNonPresicionBtns:CGFloat = 0
+        if(precisionOn)
+        {
+            precisionOn = false
+            alphaNonPresicionBtns = 1
+            alphaPresicionBtns = 0
+            precisionToggleButton.setTitle("🎯", forState: .Normal)
+            
+        }
+        else
+        {
+            precisionOn = true
+            precisionToggleButton.setTitle("🔙", forState: .Normal)
+            alphaNonPresicionBtns = 0
+            alphaPresicionBtns = 1
+
+        }
+        lockUnlockButton.alpha = alphaNonPresicionBtns
+        overlayInfoLabel.alpha = alphaNonPresicionBtns
+        rotateButton.alpha = alphaNonPresicionBtns
+        resizeButton.alpha = alphaNonPresicionBtns
+        
+        rotateClockwiseButton.alpha = alphaPresicionBtns
+        rotateCounterclockwiseButton.alpha = alphaPresicionBtns
+        moveRightButton.alpha = alphaPresicionBtns
+        moveLeftButton.alpha = alphaPresicionBtns
+        moveUpButton.alpha = alphaPresicionBtns
+        moveDownButton.alpha = alphaPresicionBtns
+        zoomInButton.alpha = alphaPresicionBtns
+        zoomOutButton.alpha = alphaPresicionBtns
+    }
+    
     func rotateOverlay()
     {
         resizeButton.alpha = 1
@@ -265,6 +381,16 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         canRotate = true
         canResize = false
+    }
+    
+    func rotateOneTickClockwise()
+    {
+        newOverlayToSet!.transform = CGAffineTransformRotate(newOverlayToSet!.transform, -0.01)
+    }
+    
+    func rotateOneTickCounterclockwise()
+    {
+        newOverlayToSet!.transform = CGAffineTransformRotate(newOverlayToSet!.transform, 0.01)
     }
     
     func resizeOverlay()
@@ -285,17 +411,71 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         canResize = true
     }
     
+    func moveOverlayDown()
+    {
+        newOverlayToSet.center = CGPointMake(newOverlayToSet.center.x, newOverlayToSet.center.y + 1)
+    }
     
+    func moveOverlayUp()
+    {
+        newOverlayToSet.center = CGPointMake(newOverlayToSet.center.x, newOverlayToSet.center.y - 1)
+    }
+    
+    func moveOverlayRight()
+    {
+        newOverlayToSet.center = CGPointMake(newOverlayToSet.center.x + 1, newOverlayToSet.center.y)
+    }
+    
+    func moveOverlayLeft()
+    {
+        newOverlayToSet.center = CGPointMake(newOverlayToSet.center.x - 1, newOverlayToSet.center.y)
+    }
+    
+    func zoomInOverlay()
+    {
+        var currentTransform = newOverlayToSet.transform
+        newOverlayToSet.transform = CGAffineTransformIdentity
+        
+        let scale:CGFloat = 1.01
+        let oldCenter = newOverlayToSet.center
+        newOverlayToSet.frame.size = CGSizeMake(newOverlayToSet.frame.size.width * scale, newOverlayToSet.frame.size.height * scale)
+        newOverlayToSet.center = oldCenter
+        
+        newOverlayToSet.transform = currentTransform
+    }
+    
+    func zoomOutOverlay()
+    {
+        var currentTransform = newOverlayToSet.transform
+        newOverlayToSet.transform = CGAffineTransformIdentity
+        
+        let scale:CGFloat = 1.01
+        let oldCenter = newOverlayToSet.center
+        newOverlayToSet.frame.size = CGSizeMake(newOverlayToSet.frame.size.width / scale, newOverlayToSet.frame.size.height / scale)
+        newOverlayToSet.center = oldCenter
+        
+        newOverlayToSet.transform = currentTransform
+    }
+    
+    var touchLocationFromCenterInOverlay:CGPoint!
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        var touch = touches.anyObject()
+        //var theImageView = touch?.view
+        if let ovview = newOverlayToSet
+        {
+            touchLocationFromCenterInOverlay = touch!.locationInView(ovview)
+            touchLocationFromCenterInOverlay = CGPointMake(touchLocationFromCenterInOverlay.x - (ovview.frame.width / 2) , touchLocationFromCenterInOverlay.y - (ovview.frame.height / 2))
+            println("sizes \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height) and positions \(touchLocationFromCenterInOverlay.x) \(touchLocationFromCenterInOverlay.y)")
+        }
+    }
     override func touchesMoved(touches: NSSet, withEvent event: UIEvent)  {
         
         var touch = touches.anyObject()
         //var theImageView = touch?.view
         if let view = newOverlayToSet
         {
-            var touchLocation = touch!.locationInView(self.view)
-            println("inside touchmoved")
-            
-            view.center = CGPointMake(touchLocation.x, touchLocation.y)
+            var touchLocation = touch!.locationInView(self.gmaps)
+            view.center = CGPointMake(touchLocation.x - touchLocationFromCenterInOverlay.x, touchLocation.y - touchLocationFromCenterInOverlay.y)
         }
     }
 
@@ -309,6 +489,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         setOverlayButton.removeFromSuperview()
         newOverlayToSet.removeFromSuperview()
         overlayInfoLabel.removeFromSuperview()
+        precisionToggleButton.removeFromSuperview()
+        
+        rotateClockwiseButton.removeFromSuperview()
+        rotateCounterclockwiseButton.removeFromSuperview()
+        moveDownButton.removeFromSuperview()
+        moveUpButton.removeFromSuperview()
+        moveRightButton.removeFromSuperview()
+        moveLeftButton.removeFromSuperview()
+        zoomInButton.removeFromSuperview()
+        zoomOutButton.removeFromSuperview()
+        
         gmaps?.settings.scrollGestures = true
         gmaps?.settings.zoomGestures = true
         gmaps?.settings.rotateGestures = true
@@ -428,7 +619,9 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             
             var view = sender.view
             view!.transform = CGAffineTransformRotate(view!.transform, rotation)
-            
+            //view!.transform = CGAffineTransformMakeTranslation(10, 10)
+            //view!.transform = CGAffineTransformRotate(view!.transform, rotation)
+            //view!.transform = CGAffineTransformTranslate(view!.transform,-10,-10)
             _lastRotation = sender.rotation
             
         }
