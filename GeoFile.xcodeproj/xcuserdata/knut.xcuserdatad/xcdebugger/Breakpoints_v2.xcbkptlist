@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/MapOverviewViewController.swift"
-            timestampString = "453076105.414637"
+            timestampString = "453137698.228313"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "429"
-            endingLineNumber = "429"
-            landmarkName = "moveOverlayLeft()"
+            startingLineNumber = "693"
+            endingLineNumber = "693"
+            landmarkName = "fetchOverlays()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

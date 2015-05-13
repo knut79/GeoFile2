@@ -15,7 +15,7 @@ protocol DrawViewProtocol {
     func setDrawntextText(label:UILabel)
 }
 
-class DrawView: UIView{
+class DrawView: DrawingBase{
     var delegate:DrawViewProtocol?
     
     var lines:[Line] = []
@@ -518,10 +518,15 @@ class DrawView: UIView{
         CGContextStrokePath(context)
         var angle = angleOfPointsToFixedPoint(measurement.start, p2: measurement.end)
         //CGContextRotateCTM(context, angle)
+        
+        drawDisclosureLine(context, x: measurement.start.x, y: measurement.start.y, angle:angle)
+        
+        drawDisclosureLine(context, x: measurement.end.x, y: measurement.end.y, angle:angle)
+        /*
         var drawingFromLeftToRight = measurement.start.x < measurement.end.x
         drawDisclosureIndicator(context, x: measurement.start.x, y: measurement.start.y, pointRight: drawingFromLeftToRight ? false : true)
         drawDisclosureIndicator(context, x: measurement.end.x, y: measurement.end.y, pointRight: drawingFromLeftToRight ? true : false)
-        //var label = measurement.getLabel()
+        */
         label.center = getPointBetweenPoints(measurement.start, p2: measurement.end, offset: CGPointMake(10, -10))
         
         println("degrees \(angle)")
@@ -530,140 +535,7 @@ class DrawView: UIView{
   
     }
 
-    func IsClockwise(vertices:[CGPoint]) -> Bool
-    {
 
-        var area:CGFloat = 0
-        for (var i = 0; i < (vertices.count); i++)
-        {
-            var j = (i + 1) % vertices.count;
-            area += vertices[i].x * vertices[j].y;
-            area -= vertices[j].x * vertices[i].y;
-        
-        }
-        return (area < 0);
-    }
-    
-    func pointPairToBearingDegrees(startingPoint:CGPoint, endingPoint:CGPoint) -> CGFloat
-    {
-        var originPoint = CGPointMake(endingPoint.x - startingPoint.x, endingPoint.y - startingPoint.y); // get origin point to origin by subtracting end from start
-        var bearingRadians = atan2f(Float(originPoint.y), Float(originPoint.x)); // get bearing in radians
-        var bearingDegrees = bearingRadians * (180.0 / Float(M_PI)); // convert to degrees
-        bearingDegrees = (bearingDegrees > 0.0 ? bearingDegrees : (360.0 + bearingDegrees)); // correct discontinuity
-        return CGFloat(bearingDegrees);
-    }
-
-    
-    func setStrokeColor(context: CGContext,color:drawColorEnum)
-    {
-        switch(color)
-        {
-        case .black:
-            CGContextSetRGBStrokeColor(context, 0, 0, 0, 1)
-        case .white:
-            CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
-        case .red:
-            CGContextSetRGBStrokeColor(context, 1, 0, 0, 1)
-        case .blue:
-            CGContextSetRGBStrokeColor(context, 0, 0, 1, 1)
-        default:
-            CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
-        }
-    }
-    
-    func angleOfPointsToFixedPoint(p1:CGPoint, p2:CGPoint,  fixed:CGPoint? = nil) -> CGFloat
-    {
-        var fixedPoint = getFixedPoint(p1,p2: p2)
-        if( fixed != nil)
-        {
-            fixedPoint = (fixed!,shouldTurn180:false)
-        }
-
-        
-        let v1 = CGVector(dx: p1.x - fixedPoint.point.x, dy: p1.y - fixedPoint.point.y)
-        let v2 = CGVector(dx: p2.x - fixedPoint.point.x, dy: p2.y - fixedPoint.point.y)
-        
-        let angle = atan2(v2.dy, v2.dx) - atan2(v1.dy, v1.dx)
-        
-        var deg = angle * CGFloat(180.0 / M_PI)
-        
-        if deg < 0 { deg += 360.0 }
-        
-        
-        return (deg + (fixedPoint.shouldTurn180 ? 180.0:0.0))
-    }
-    
-    func getFixedPoint(p1:CGPoint, p2:CGPoint) -> (point:CGPoint,shouldTurn180:Bool)
-    {
-
-        if(p1.x < p2.x && p1.y > p2.y)
-        {
-            //upright
-            return (CGPointMake(min(p1.x,p2.x), max(p1.y,p2.y)),false)
-        }
-        else if(p1.x > p2.x && p1.y < p2.y)
-        {
-            //downleft
-            return (CGPointMake(max(p1.x,p2.x), min(p1.y,p2.y)),true)
-        }
-        else if(p1.x > p2.x && p1.y > p2.y)
-        {
-            //upleft
-            return (CGPointMake(max(p1.x,p2.x), max(p1.y,p2.y)),true)
-        }
-        else //if(p1.x > p2.x && p1.y > p2.y)
-        {
-            return (CGPointMake(min(p1.x,p2.x), min(p1.y,p2.y)),false)
-        }
-    }
-
-    
-    func getPointBetweenPoints(p1:CGPoint, p2:CGPoint, offset: CGPoint) -> CGPoint
-    {
-        
-        var point1 = CGPointMake(p1.x + offset.x, p1.y + offset.y)
-        var point2 = CGPointMake(p2.x + offset.x, p2.y + offset.y)
-        
-        //upright or
-        if((p1.x < p2.x && p1.y > p2.y) || (p1.x > p2.x && p1.y < p2.y))
-        {
-            point1 = CGPointMake(p1.x - offset.x, p1.y + offset.y)
-            point2 = CGPointMake(p2.x - offset.x, p2.y + offset.y)
-        }
-        
-        var xVal = (point1.x + point2.x ) / 2
-        var yVal = (point1.y + point2.y) / 2
-
-        return CGPointMake(xVal, yVal)
-
-    }
-    
-    
-    func drawDisclosureIndicator(ctxt:CGContextRef, x:CGFloat, y:CGFloat , pointRight:Bool = true)
-    {
-        let R:CGFloat = 4.5 // "radius" of the arrow head
-        CGContextSaveGState(ctxt)
-        
-        if(pointRight)
-        {
-            CGContextMoveToPoint(ctxt, x-R, y-R)
-            CGContextAddLineToPoint(ctxt, x, y)
-            CGContextAddLineToPoint(ctxt, x-R, y+R)
-            
-        }
-        else
-        {
-            CGContextMoveToPoint(ctxt, x+R, y-R)
-            CGContextAddLineToPoint(ctxt, x, y)
-            CGContextAddLineToPoint(ctxt, x+R, y+R)
-        }
-        CGContextSetLineCap(ctxt, kCGLineCapSquare)
-        CGContextSetLineJoin(ctxt, kCGLineJoinMiter)
-        
-        CGContextStrokePath(ctxt)
-        
-        CGContextRestoreGState(ctxt)
-    }
     
     //MARK: Actions
 
