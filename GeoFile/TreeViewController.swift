@@ -133,8 +133,9 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
-        var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, project:projectLeaf.project)
-        projectLeaf.project.addFilepointToProject(newfilepointItem)
+        //(moc: NSManagedObjectContext, title: String, file: NSData, tags:String, worktype:Int)
+        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, tags:nil, worktype:workType.info)
+        projectLeaf.project.addImagefileToProject(newImagefileItem)
         save()
         
     }
@@ -143,8 +144,11 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
-        var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
-        filepointLeaf.filepoint.addFilepointToFilepoint(newfilepointItem)
+        
+        var newImagefile = Imagefile.createInManagedObjectContext(self.managedObjectContext!, title:"Imported image \(timestamp)",file:imageData, tags: nil, worktype: workType.dokument)
+        
+        filepointLeaf.filepoint.addImagefile(newImagefile)
+
         save()
     }
     
@@ -413,13 +417,14 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         titlePrompt.addAction(UIAlertAction(title: "Ok",
             style: .Default,
             handler: { (action) -> Void in
-                var parent = self.visibleContentView!.currentFilepointLeaf.filepoint.parent
+                var parent = self.visibleContentView!.currentFilepointLeaf.filepoint.imagefile!.filepoint
                 //println("aaaa parentID \(parent!.objectID) ")
                 //println("aaaa basenodeD \(self.visibleContentView!.currentFilepointLeaf!.filepoint.objectID) ")
                 self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint)
                 self.save()
                 if(parent == nil)
                 {
+                    //TODO: this will never happen with the new structure
                     self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
                     self.visibleContentView!.fetchProjects()
                 }
@@ -515,12 +520,14 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             var svc = segue!.destinationViewController as FilepointListViewController
             if(self.visibleContentView.currentFilepointLeaf != nil)
             {
-                svc.filepoint = self.visibleContentView.currentFilepointLeaf.filepoint
+                svc.imagefile = self.visibleContentView.currentFilepointLeaf.filepoint.imagefiles.allObjects.first as Imagefile
             }
+                /*
             else if(self.visibleContentView.currentProjectLeaf != nil)
             {
                 svc.project = self.visibleContentView.currentProjectLeaf.project
             }
+            */
         }
         else if (segue.identifier == "showProjectInMap") {
             var svc = segue!.destinationViewController as MapOverviewViewController

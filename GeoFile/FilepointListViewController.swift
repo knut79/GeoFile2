@@ -15,9 +15,7 @@ import CoreData
 class FilepointListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate ,TopNavigationViewProtocol {
     
     
-    var filepoint:Filepoint?
-    //project: only used for displaying multiple paralell files directly under project node
-    var project:Project?
+    var imagefile:Imagefile?
     var addFileButton:UIButton!
     //var topNavigationBar:TopNavigationView!
     var backButton:UIButton!
@@ -60,16 +58,9 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     func setDataSource()
     {
         filepointItems = []
-        if(filepoint != nil)
+        if(imagefile != nil)
         {
-            for item in filepoint!.filepoints
-            {
-                filepointItems.append(item as Filepoint)
-            }
-        }
-        else if(project != nil) //show files from project
-        {
-            for item in project!.filepoints
+            for item in imagefile!.filepoints
             {
                 filepointItems.append(item as Filepoint)
             }
@@ -98,10 +89,12 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
         cell.textLabel?.text = filepointItem.title
         cell.showsReorderControl = true
         //cell.editing = false
-        if(filepointItem.filepoints.count > 0)
+        
+        if(filepointItem.imagefiles.count > 0)
         {
-            var imageData = filepointItem.file
-            if let image = UIImage(data: imageData!)
+            //TODO: allobjects[0] will only return a random item
+            var imageData = (filepointItem.imagefiles.allObjects[0] as Imagefile).file
+            if let image = UIImage(data: imageData)
             {
                 cell.imageView?.image = image
             }
@@ -112,7 +105,8 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     // MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let filepointItem = filepointItems[indexPath.row]
-        filepoint = filepointItem
+        //TODO: allobjects[0] will only return a random item
+        imagefile = filepointItem.imagefiles.allObjects[0] as? Imagefile
         let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
         self.performSegueWithIdentifier("showFilepoint", sender: nil)
     }
@@ -194,17 +188,19 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showProjectInMap") {
             var svc = segue!.destinationViewController as MapOverviewViewController
-            svc.project = project ?? findProjectOfFilepoint(filepoint!)
+            svc.project = imagefile!.project ?? findProjectOfFilepoint(imagefile!.filepoint!)
 
         }
         else if (segue.identifier == "showFilepoint") {
             var svc = segue!.destinationViewController as FilepointViewController
-            svc.currentFilepoint = filepoint
+            //TODO: find info imagefile s filepoint
+            svc.currentFilepoint = (imagefile!.filepoints.allObjects.first as Imagefile).filepoint
         }
         else if (segue.identifier == "showTreeView") {
             var svc = segue!.destinationViewController as TreeViewController
             svc.pdfImages = self.pdfImages
-            svc.passingFilepoint = filepoint
+            //TODO: find info imagefile s filepoint
+            svc.passingFilepoint = (imagefile!.filepoints.allObjects.first as Imagefile).filepoint
             
         }
 

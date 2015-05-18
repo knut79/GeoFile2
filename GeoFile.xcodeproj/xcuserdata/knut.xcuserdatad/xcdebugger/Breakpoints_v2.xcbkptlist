@@ -6,32 +6,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GeoFile/DrawView.swift"
-            timestampString = "452982255.125345"
+            filePath = "GeoFile/TreeView.swift"
+            timestampString = "453638313.761414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "480"
-            endingLineNumber = "480"
-            landmarkName = "drawAngle(_:angle:label:color:)"
+            startingLineNumber = "362"
+            endingLineNumber = "362"
+            landmarkName = "fetchFilepointsFromProject()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GeoFile/MapOverviewViewController.swift"
-            timestampString = "453137698.228313"
+            filePath = "GeoFile/TreeView.swift"
+            timestampString = "453638314.187063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "693"
-            endingLineNumber = "693"
-            landmarkName = "fetchOverlays()"
+            startingLineNumber = "363"
+            endingLineNumber = "363"
+            landmarkName = "fetchFilepointsFromProject()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GeoFile/TreeView.swift"
+            timestampString = "453638314.542932"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "364"
+            endingLineNumber = "364"
+            landmarkName = "fetchFilepointsFromProject()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

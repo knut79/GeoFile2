@@ -10,13 +10,13 @@ import Foundation
 
 class FilepointView2:DrawingBase
 {
-    var filepoint:Filepoint?
+    var imagefile:Imagefile?
     
     
-    init(filepoint:Filepoint)
+    init(imagefile:Imagefile)
     {
-        self.filepoint = filepoint
-        var image = UIImage(data: filepoint.file!)
+        self.imagefile = imagefile
+        var image = UIImage(data: imagefile.file)
         super.init(frame: CGRectMake(0, 0, image!.size.width, image!.size.height))
     }
 
@@ -32,26 +32,26 @@ class FilepointView2:DrawingBase
         var context = UIGraphicsGetCurrentContext()
         //CGContextDrawImage(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage)
         //originalImage.drawInRect(CGRectMake(0, 0, originalImage.size.width, originalImage.size.height))
-        var image = UIImage(data: filepoint!.file!)
+        var image = UIImage(data: imagefile!.file)
         image?.drawInRect(self.bounds)
         CGContextSetLineCap(context, kCGLineCapRound)
-        if let fp = filepoint
+        if let imagefileitem = imagefile
         {
 
             
-            for item in fp.measures
+            for item in imagefileitem.measures
             {
                 var measure = item as Drawingmeasure
                 drawMeasurement(context,measurement: measure)
             }
             
-            for item in fp.angles
+            for item in imagefileitem.angles
             {
                 var angle = item as Drawingangle
                 drawAngle(context,angle: angle)
             }
             
-            for item in fp.lines
+            for item in imagefileitem.lines
             {
                 var line = item as Drawingline
                 setStrokeColor(context,color: drawColorEnum(rawValue: Int(line.color))! )
@@ -62,7 +62,7 @@ class FilepointView2:DrawingBase
                 CGContextStrokePath(context)
             }
             
-            for item in fp.texts
+            for item in imagefileitem.texts
             {
                 var text = item as Drawingtext
                 drawText(text)

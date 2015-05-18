@@ -10,117 +10,66 @@ import CoreData
 
 class Filepoint: NSManagedObject {
     
-    @NSManaged var file: NSData?
     @NSManaged var text: String
     @NSManaged var title: String
     @NSManaged var x: Float
     @NSManaged var y: Float
-    @NSManaged var toPoints: NSSet
-    @NSManaged var parent: Filepoint?
-    @NSManaged var filetype:Int16
-    @NSManaged var project: Project?
-    @NSManaged var filepoints: NSSet
-    @NSManaged var lines: NSSet
-    @NSManaged var measures: NSSet
-    @NSManaged var angles: NSSet
-    @NSManaged var texts: NSSet
+    @NSManaged var imagefile:Imagefile?
+    @NSManaged var imagefiles:NSSet
+
     
     //added on picture with coordinates on parent filepoint
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData?, x:Float, y:Float) -> Filepoint{
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, x:Float, y:Float) -> Filepoint{
         let newitem = NSEntityDescription.insertNewObjectForEntityForName("Filepoint", inManagedObjectContext: moc) as Filepoint
         newitem.title = title
-        newitem.file = file
-        newitem.filepoints = NSMutableSet()
         newitem.x = x
         newitem.y = y
-        
-        newitem.lines = NSMutableSet()
-        newitem.measures = NSMutableSet()
-        newitem.texts = NSMutableSet()
-        newitem.angles = NSMutableSet()
-        return newitem
-    }
-    
-    //added without coordinates on parent filepoint
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData?) -> Filepoint{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Filepoint", inManagedObjectContext: moc) as Filepoint
-        newitem.title = title
-        newitem.file = file
-        newitem.filepoints = NSMutableSet()
-        newitem.x = 0
-        newitem.y = 0
-        
-        newitem.lines = NSMutableSet()
-        newitem.measures = NSMutableSet()
-        newitem.texts = NSMutableSet()
-        newitem.angles = NSMutableSet()
+
+        newitem.imagefiles = NSMutableSet()
         
         return newitem
     }
     
-    //strait on project
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData?, project:Project?) -> Filepoint{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Filepoint", inManagedObjectContext: moc) as Filepoint
-        newitem.title = title
-        newitem.file = file
-        newitem.filepoints = NSMutableSet()
-        newitem.project = project
-        newitem.x = 0
-        newitem.y = 0
-        
-        newitem.lines = NSMutableSet()
-        newitem.measures = NSMutableSet()
-        newitem.texts = NSMutableSet()
-        newitem.angles = NSMutableSet()
-        
-        return newitem
+    var parent:Filepoint?
+        {
+        get{
+            return self.imagefile!.filepoint
+        }
     }
+    
+    var filepoints:NSSet
+        {
+        get{
+            return (self.imagefiles.allObjects.first as Imagefile).filepoints
+        }
+    }
+    
+    //TODO: should find first on info type then on any other .... make some rules
+    var firstImagefile:Imagefile?
+        {
+        get{
+            return self.imagefiles.count > 0 ? self.imagefiles.allObjects.first as Imagefile: nil
+        }
+    }
+    
+    var file:NSData?
+        {
+        get{
+            return self.imagefiles.count > 0 ? (self.imagefiles.allObjects.first as Imagefile).file : nil
+        }
+    }
+
 }
 
-extension Filepoint {
 
+extension Filepoint {
     
-    func addFilepointToFilepoint(filepoint:Filepoint) {
+    
+    func addImagefile(imagefile:Imagefile) {
         
-        var points: NSMutableSet
-        points = self.mutableSetValueForKey("filepoints")
-        points.addObject(filepoint)
+        var imagefiles: NSMutableSet
+        imagefiles = self.mutableSetValueForKey("imagefiles")
+        imagefiles.addObject(imagefile)
     }
-    
-    func addDrawingLineToFilepoint(line:Drawingline) {
-        
-        var lines: NSMutableSet
-        lines = self.mutableSetValueForKey("lines")
-        lines.addObject(line)
-    }
-    
-    func addDrawingMeasureToFilepoint(measure:Drawingmeasure) {
-        
-        var measures: NSMutableSet
-        measures = self.mutableSetValueForKey("measures")
-        measures.addObject(measure)
-    }
-    
-    func addDrawingAngleToFilepoint(angle:Drawingangle) {
-        
-        var angles: NSMutableSet
-        angles = self.mutableSetValueForKey("angles")
-        angles.addObject(angle)
-    }
-    
-    func addDrawingTextToFilepoint(text:Drawingtext) {
-        
-        var texts: NSMutableSet
-        texts = self.mutableSetValueForKey("texts")
-        texts.addObject(text)
-    }
-    
-   
-    
-    func getNumberOfPoints() -> Int {
-        return self.filepoints.count
-    }
-    
-    
     
 }

@@ -63,10 +63,10 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         cell.textLabel?.text = projectItem.title
         cell.showsReorderControl = true
         //cell.editing = false
-        if(projectItem.filepoints.count > 0)
+        if(projectItem.imagefiles.count > 0)
         {
-            var imageData = (projectItem.filepoints.allObjects.first as Filepoint).file
-            if let image = UIImage(data: imageData!)
+            var imageData = (projectItem.imagefiles.allObjects.first as Imagefile).file
+            if let image = UIImage(data: imageData)
             {
                 cell.imageView?.image = image
             }
@@ -78,7 +78,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let projectItem = projectItems[indexPath.row]
         project = projectItem
-        if(project?.filepoints.count > 0)
+        if(project?.imagefiles.count > 0)
         {
             let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)

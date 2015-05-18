@@ -20,6 +20,7 @@
 		720E94E01AFE9618007946FA /* Drawingtext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720E94DF1AFE9618007946FA /* Drawingtext.swift */; };
 		721C6FA31B02351000565D0A /* DrawingBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA21B02351000565D0A /* DrawingBase.swift */; };
 		721C6FA51B023D9700565D0A /* SetOverlayButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA41B023D9700565D0A /* SetOverlayButtons.swift */; };
+		721C6FA81B03585100565D0A /* Imagefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA71B03585100565D0A /* Imagefile.swift */; };
 		727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */; };
 		727A21311AF039E50067BC4A /* SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21301AF039E50067BC4A /* SharedInstance.swift */; };
 		727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21321AF042690067BC4A /* StaticFunctions.swift */; };
@@ -101,6 +102,8 @@
 		720E94DF1AFE9618007946FA /* Drawingtext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawingtext.swift; sourceTree = "<group>"; };
 		721C6FA21B02351000565D0A /* DrawingBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingBase.swift; sourceTree = "<group>"; };
 		721C6FA41B023D9700565D0A /* SetOverlayButtons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetOverlayButtons.swift; sourceTree = "<group>"; };
+		721C6FA61B03537A00565D0A /* image instances.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "image instances.xcdatamodel"; sourceTree = "<group>"; };
+		721C6FA71B03585100565D0A /* Imagefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Imagefile.swift; sourceTree = "<group>"; };
 		727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointListViewController.swift; sourceTree = "<group>"; };
 		727A21301AF039E50067BC4A /* SharedInstance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedInstance.swift; sourceTree = "<group>"; };
 		727A21321AF042690067BC4A /* StaticFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticFunctions.swift; sourceTree = "<group>"; };
@@ -231,6 +234,7 @@
 				720E94DB1AFE95FD007946FA /* Drawingmeasure.swift */,
 				720E94DD1AFE960C007946FA /* Drawingangle.swift */,
 				720E94DF1AFE9618007946FA /* Drawingtext.swift */,
+				721C6FA71B03585100565D0A /* Imagefile.swift */,
 			);
 			name = DataClasses;
 			sourceTree = "<group>";
@@ -461,6 +465,7 @@
 				729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */,
 				727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */,
 				72A5987B1AD2BF5D00918CCD /* ProjectListViewController.swift in Sources */,
+				721C6FA81B03585100565D0A /* Imagefile.swift in Sources */,
 				720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */,
 				72CAF4351AE7DD3300B4072B /* TreeViewController.swift in Sources */,
 				729A569A1AEB08250034418E /* CustomButton.swift in Sources */,
@@ -722,6 +727,7 @@
 			isa = XCVersionGroup;
 			children = (
 				720E94DA1AFE89E1007946FA /* GeoFile 12.xcdatamodel */,
+				721C6FA61B03537A00565D0A /* image instances.xcdatamodel */,
 				72A2A96B1AFBC5D700E4C49F /* GeoFile 11.xcdatamodel */,
 				72A2A9621AF9A2B600E4C49F /* GeoFile 10.xcdatamodel */,
 				72A2A95D1AF8BFE200E4C49F /* GeoFile 9.xcdatamodel */,
@@ -734,7 +740,7 @@
 				72A598801AD49FFB00918CCD /* GeoFile 4.xcdatamodel */,
 				72FE6A2D1AC0234B00FF792D /* GeoFile.xcdatamodel */,
 			);
-			currentVersion = 720E94DA1AFE89E1007946FA /* GeoFile 12.xcdatamodel */;
+			currentVersion = 721C6FA61B03537A00565D0A /* image instances.xcdatamodel */;
 			path = GeoFile.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

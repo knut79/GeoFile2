@@ -10,13 +10,14 @@ import Foundation
 
 func findProjectOfFilepoint(filepoint:Filepoint) -> Project
 {
-    if(filepoint.project != nil)
+    if(filepoint.imagefile!.project != nil)
     {
-        return filepoint.project!
+        return filepoint.imagefile!.project!
     }
     else
     {
-        return findProjectOfFilepoint(filepoint.parent!)
+        //if no project in former imagefiles/filepoint, traverse down in tree
+        return findProjectOfFilepoint(filepoint.imagefile!.filepoint!)
     }
     
 }

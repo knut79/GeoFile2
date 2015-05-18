@@ -42,6 +42,11 @@ enum drawColorEnum: Int
     case white = 0,black,red,blue
 }
 
+enum workType: Int
+{
+    case info = 0,arbeid,utfortarbeid,mangler,dokument
+}
+
 enum viewtypeEnum
 {
     case map

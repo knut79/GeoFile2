@@ -14,33 +14,50 @@ class Project: NSManagedObject {
     @NSManaged var longitude: Double
     @NSManaged var latitude: Double
     @NSManaged var title: String
-    @NSManaged var filepoints: NSSet
+    @NSManaged var imagefiles: NSSet
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, lat: Double, long: Double ) -> Project{
         let newitem = NSEntityDescription.insertNewObjectForEntityForName("Project", inManagedObjectContext: moc) as Project
         newitem.latitude = lat
         newitem.longitude = long
         newitem.title = title
-        newitem.filepoints = NSMutableSet()
+        newitem.imagefiles = NSMutableSet()
         
         return newitem
     }
     
+    //TODO: should find first on info type then on any other .... make some rules
+    var firstImagefile:Imagefile
+        {
+        get{
+            return self.imagefiles.allObjects.first as Imagefile
+        }
+    }
+    
+    
+    var filepoints:NSSet
+        {
+        get{
+            return (self.imagefiles.allObjects.first as Imagefile).filepoints
+        }
+    }
 }
 
 extension Project {
     
-    func addFilepointToProject(filepoint:Filepoint) {
+    func addImagefileToProject(imagefile:Imagefile) {
         
         var files: NSMutableSet
         
-        files = self.mutableSetValueForKey("filepoints")
-        files.addObject(filepoint)
+        files = self.mutableSetValueForKey("imagefiles")
+        files.addObject(imagefile)
         
     }
+    
 
-    func getNumberOfFilepoints() -> Int {
-        return self.filepoints.count
+
+    func getNumberOfFiles() -> Int {
+        return self.imagefiles.count
     }
 
 }

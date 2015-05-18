@@ -108,6 +108,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         geocoder = CLGeocoder()
         fetchProjects()
         
+        printTestDatastructure()
+        
         fetchOverlays()
         
         setMarkers(editProject,atIndex: editProjectAtIndex)
@@ -500,14 +502,16 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         project = self.getProjectOnTitle(marker.title)
         
-        println("number of files in project \(project?.filepoints.count)")
+        println("number of files in project \(project?.imagefiles.count)")
         
-        if(project?.filepoints.count > 1)
+        
+        //TODO: maby show info worktype at first
+        if(project?.imagefiles.count > 1)
         {
             self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as FilepointListViewController
             self.performSegueWithIdentifier("showFilepointList", sender: nil)
         }
-        else if(project?.filepoints.count > 0)
+        else if(project?.imagefiles.count > 0)
         {
             let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
@@ -682,6 +686,41 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         }
     }
     
+    func printTestDatastructure()
+    {
+        for project in projectItems
+        {
+            println("project id \(project.objectID)")
+            for imagefile in project.imagefiles
+            {
+                
+                printTestImagefile(imagefile as Imagefile, depth:0)
+
+            }
+        }
+    }
+    
+    func printTestImagefile(imagefile:Imagefile,depth:Int)
+    {
+        var depthstring = ""
+        for var i = 0 ; i < depth ; i++
+        {
+            depthstring = depthstring + "-"
+        }
+        
+        println("\(depthstring) imagefile id \(imagefile.objectID)")
+        
+        for filepoint in imagefile.filepoints
+        {
+            println("\(depthstring) filepoint id \(filepoint.objectID)")
+            for imagefile in filepoint.imagefiles
+            {
+                printTestImagefile(imagefile as Imagefile,depth: depth + 1)
+            }
+            
+        }
+    }
+    
     func fetchOverlays()
     {
         let fetchRequest = NSFetchRequest(entityName: "Overlay")
@@ -739,10 +778,10 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         if(imageData != nil)
         {
             println("imagedata is not")
-            var newFileItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData, project: project)
+            var newFileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, tags:nil, worktype:workType.info)
             // Update the array containing the table view row data
-            
-            //TODO do we need the following two calls
+            project?.addImagefileToProject(newFileItem)
+
             save()
             self.fetchProjects()
         }
@@ -769,9 +808,9 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         var imageData =  UIImageJPEGRepresentation(image,1.0) as NSData
 
-        var newFileItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData, project: project)
-        // Update the array containing the table view row data
-
+        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData, tags:nil, worktype:workType.info)
+        project?.addImagefileToProject(newImagefileItem)
+        
         save()
         
         self.fetchProjects()
@@ -811,7 +850,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         }
         else if (segue.identifier == "showFilepointList") {
             var svc = segue!.destinationViewController as FilepointListViewController
-            svc.project = project
+            svc.imagefile = project?.imagefiles.allObjects.first as Imagefile
         }
     }
     

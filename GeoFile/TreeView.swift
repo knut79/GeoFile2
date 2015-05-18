@@ -339,7 +339,7 @@ class TreeView:UIView
     func buildLeafButton(xOffset:CGFloat,yOffset:CGFloat,index:Int,item:Filepoint) -> UIImageView
     {
         var filePointItem = item as Filepoint
-        var image = UIImage(data: filePointItem.file!)
+        var image = UIImage(data: (filePointItem.imagefiles.allObjects.first as Imagefile).file)
         var _button = UIImageView(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
         _button.userInteractionEnabled = true
         _button.image = image
@@ -359,7 +359,7 @@ class TreeView:UIView
     {
        
         var i = 0
-        for item in currentProjectLeaf.project.filepoints
+        for item in (currentProjectLeaf.project.imagefiles.allObjects.first as Imagefile).filepoints
         {
             var xOffset = currentProjectLeaf.button.center.x
             var yOffset = currentProjectLeaf.button.center.y
@@ -375,7 +375,7 @@ class TreeView:UIView
     {
         
         var i = 0
-        for item in filepointLeaf.filepoint.filepoints
+        for item in (filepointLeaf.filepoint.imagefiles.allObjects.first as Imagefile).filepoints
         {
             if((item as Filepoint).x != 0 && (item as Filepoint).y != 0)
             {
@@ -387,7 +387,7 @@ class TreeView:UIView
                 i++
             }
         }
-        for item in filepointLeaf.filepoint.filepoints
+        for item in (filepointLeaf.filepoint.imagefiles.allObjects.first as Imagefile).filepoints
         {
             if((item as Filepoint).x == 0 && (item as Filepoint).y == 0)
             {
@@ -601,7 +601,7 @@ class TreeView:UIView
     {
         for projectLeaf in projectLeafs
         {
-            for filepoint in projectLeaf.project.filepoints
+            for filepoint in (projectLeaf.project.imagefiles.allObjects.first as Imagefile).filepoints
             {
                 if(isOnBranchWith(filepoint as Filepoint, onBranchWith:_filepoint))
                 {
@@ -719,7 +719,7 @@ class TreeView:UIView
         {
             if(isOnBranchWith(filepointLeafItem.filepoint, onBranchWith:currentFilepointLeaf.filepoint))
             {
-                println("parent id is \(filepointLeafItem.filepoint.parent?.objectID)")
+                //println("parent id is \(filepointLeafItem.filepoint.parent?.objectID)")
                 buildForNode(filepointLeafItem)
             }
         }
@@ -731,7 +731,7 @@ class TreeView:UIView
         {
             return true
         }
-        for item in filepointToCheck.filepoints
+        for item in (filepointToCheck.imagefiles.allObjects.first as Imagefile).filepoints
         {
             if(isOnBranchWith(item as Filepoint, onBranchWith: onBranchWith))
             {
