@@ -53,7 +53,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
         if(passingFilepoint != nil)
         {
-            visibleContentView.currentFilepointLeaf = FilepointLeaf(_filePoint:passingFilepoint!,_button:UIImageView(),_parent:nil)
+            visibleContentView.currentFilepointLeaf = FilepointLeaf(_filePoint:passingFilepoint!,_parent:nil,viewRef:nil)
             
             visibleContentView.buildNodesUpToSelectedNode_V2()
             visibleContentView.setNeedsDisplay()

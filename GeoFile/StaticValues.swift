@@ -81,9 +81,15 @@ func getUIColor(color:drawColorEnum) -> UIColor
     }
 }
 
+//used by drawing
 let drawingLineWidth:CGFloat = 4
 let drawingArcRadius:CGFloat = 40
 let drawingTextPointSize:CGFloat = 17
+
+//used by treeview
+let leafSize = CGSizeMake( 60, 40)
+let horizontalLineLength:CGFloat = 20
+let verticalLineLength:CGFloat = 20
 
 let buttonBarHeight:CGFloat = 44
 let buttonIconSide:CGFloat = 50

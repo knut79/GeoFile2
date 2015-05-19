@@ -27,10 +27,10 @@ class Project: NSManagedObject {
     }
     
     //TODO: should find first on info type then on any other .... make some rules
-    var firstImagefile:Imagefile
+    var firstImagefile:Imagefile?
         {
         get{
-            return self.imagefiles.allObjects.first as Imagefile
+            return imagefiles.count > 0 ? self.imagefiles.allObjects.first as Imagefile : nil
         }
     }
     

@@ -87,12 +87,6 @@ class TreeView:UIView
     }
     
     
-
-    
-    var horizontalLineLength:CGFloat = 20
-    var verticalLineLength:CGFloat = 20
-    var leafSize = CGSizeMake( 60, 40)
-    
     override func drawRect(rect: CGRect) {
         //[[UIColor brownColor] set];
 
@@ -313,21 +307,12 @@ class TreeView:UIView
             var i = 0
             for item in fetchResults
             {
-                var _button = UILabel(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
-                _button.userInteractionEnabled = true
-                _button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
-                _button.numberOfLines = 2
-                _button.text = "\(item.title)"
-                _button.center =  CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (_button.frame.size.width/2), (UIScreen.mainScreen().bounds.size.height * 0.2) + ((_button.frame.height  + verticalLineLength) * CGFloat(i)))
-                var singleTapRecognizer = UITapGestureRecognizer(target: self, action: "projectSelected:")
-                singleTapRecognizer.numberOfTapsRequired = 1
-                _button.addGestureRecognizer(singleTapRecognizer)
-                var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "showActionButtonsForProject:")
-                doubleTapRecognizer.numberOfTapsRequired = 2
-                singleTapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
-                _button.addGestureRecognizer(doubleTapRecognizer)
-                projectLeafs.append(ProjectLeaf(_project:item,_button:_button))
-                self.addSubview(_button)
+
+                let newProjectLeaf = ProjectLeaf(_project:item, imagesfileItems:(item as Project).imagefiles, viewRef:self)
+                projectLeafs.append(newProjectLeaf)
+                newProjectLeaf.button.center = CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (leafSize.width/2), (UIScreen.mainScreen().bounds.size.height * 0.2) + ((leafSize.height  + verticalLineLength) * CGFloat(i)))
+                
+                self.addSubview(newProjectLeaf.button)
                 
                 i++
             }
@@ -335,69 +320,40 @@ class TreeView:UIView
         }
         self.setNeedsDisplay()
     }
-    
-    func buildLeafButton(xOffset:CGFloat,yOffset:CGFloat,index:Int,item:Filepoint) -> UIImageView
-    {
-        var filePointItem = item as Filepoint
-        var image = UIImage(data: (filePointItem.imagefiles.allObjects.first as Imagefile).file)
-        var _button = UIImageView(frame: CGRectMake(0, 0, leafSize.width, leafSize.height))
-        _button.userInteractionEnabled = true
-        _button.image = image
-        _button.center = CGPointMake(xOffset + _button.frame.size.width + horizontalLineLength, yOffset + ((_button.frame.height + verticalLineLength) * CGFloat(index)))
-        var singleTapRecognizer = UITapGestureRecognizer(target: self, action: "filepointSelectedFromFilepoint:")
-        singleTapRecognizer.numberOfTapsRequired = 1
-        _button.addGestureRecognizer(singleTapRecognizer)
-        var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "showActionButtonsForFilepoint:")
-        doubleTapRecognizer.numberOfTapsRequired = 2
-        singleTapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
-        _button.addGestureRecognizer(doubleTapRecognizer)
-        
-        return _button
-    }
+
     
     func fetchFilepointsFromProject()
     {
-       
+        let xOffset = currentProjectLeaf.button.center.x
+        let yOffset = currentProjectLeaf.button.center.y
         var i = 0
-        for item in (currentProjectLeaf.project.imagefiles.allObjects.first as Imagefile).filepoints
+        if let firstimagefile = currentProjectLeaf.project.firstImagefile
         {
-            var xOffset = currentProjectLeaf.button.center.x
-            var yOffset = currentProjectLeaf.button.center.y
-            var _button = buildLeafButton(xOffset,yOffset: yOffset,index: i,item: item as Filepoint)
-            currentProjectLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
-            self.addSubview(_button)
-            i++
+            for item in firstimagefile.filepoints
+            {
+                let filepointLeaf = FilepointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
+                currentProjectLeaf.filepointLeafs.append(filepointLeaf)
+                filepointLeaf.button.center = CGPointMake(filepointLeaf.button.frame.width + xOffset + horizontalLineLength, yOffset + ((filepointLeaf.button.frame.height + verticalLineLength) * CGFloat(i)))
+                self.addSubview(filepointLeaf.button)
+                i++
 
+            }
         }
+        
     }
     
     func fetchFilepointsFromFilepoint(filepointLeaf:FilepointLeaf)
     {
-        
+        let xOffset = filepointLeaf.button.center.x
+        let yOffset = filepointLeaf.button.center.y
         var i = 0
-        for item in (filepointLeaf.filepoint.imagefiles.allObjects.first as Imagefile).filepoints
+        for item in filepointLeaf.filepoint.firstImagefile!.filepoints
         {
-            if((item as Filepoint).x != 0 && (item as Filepoint).y != 0)
-            {
-                var xOffset = filepointLeaf.button.center.x
-                var yOffset = filepointLeaf.button.center.y
-                var _button = buildLeafButton(xOffset,yOffset: yOffset,index: i,item: item as Filepoint)
-                filepointLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
-                self.addSubview(_button)
-                i++
-            }
-        }
-        for item in (filepointLeaf.filepoint.imagefiles.allObjects.first as Imagefile).filepoints
-        {
-            if((item as Filepoint).x == 0 && (item as Filepoint).y == 0)
-            {
-                var xOffset = filepointLeaf.button.center.x
-                var yOffset = filepointLeaf.button.center.y
-                var _button = buildLeafButton(xOffset,yOffset: yOffset,index: i,item: item as Filepoint)
-                filepointLeaf.filepointLeafs.append(FilepointLeaf(_filePoint:item as Filepoint,_button:_button,_parent:nil))
-                self.addSubview(_button)
-                i++
-            }
+            let newFilepointLeaf = FilepointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
+            filepointLeaf.filepointLeafs.append(newFilepointLeaf)
+            self.addSubview(newFilepointLeaf.button)
+            newFilepointLeaf.button.center = CGPointMake(xOffset + leafSize.width + horizontalLineLength, yOffset + ((leafSize.height + verticalLineLength) * CGFloat(i)))
+            i++
         }
     }
     
@@ -566,18 +522,18 @@ class TreeView:UIView
     {
         currentFilepointLeaf = nil
         fadeoutActionButtons()
-        projectSelected(sender.view as UILabel)
+        projectSelected(sender.view as UIImageView)
 
     }
     
-    func projectSelected(button:UILabel)
+    func projectSelected(button:UIImageView)
     {
         //remove all buttons
         removeProjectLeafs()
         
         for var i = 0 ;  i < projectLeafs.count ; i++
         {
-            if(projectLeafs[i].button == (button as UILabel))
+            if(projectLeafs[i].button == (button as UIImageView))
             {
                 currentProjectLeaf = projectLeafs[i]
                 selectedLeaf.hidden = false
@@ -621,17 +577,7 @@ class TreeView:UIView
             for filepointLeaf in projectLeaf.filepointLeafs
             {
                 filepointLeafToReturn = getFilepointLeafForFilepoint(_filepoint,filepointLeafBase: filepointLeaf)
-                
-                /*
-                if(filepointLeaf.filepoint == _filepoint)
-                {
-                    filepointLeafToReturn = filepointLeaf
-                }
-                else
-                {
-                    filepointLeafToReturn = getFilepointLeafForFilepoint(_filepoint,filepointLeafBase: filepointLeaf)
-                }
-                */
+
                 if(filepointLeafToReturn != nil)
                 {
                     break
