@@ -135,7 +135,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         //(moc: NSManagedObjectContext, title: String, file: NSData, tags:String, worktype:Int)
         var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, tags:nil, worktype:workType.info)
-        projectLeaf.project.addImagefileToProject(newImagefileItem)
+        projectLeaf.project.addImagefile(newImagefileItem)
         save()
         
     }

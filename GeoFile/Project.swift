@@ -45,7 +45,7 @@ class Project: NSManagedObject {
 
 extension Project {
     
-    func addImagefileToProject(imagefile:Imagefile) {
+    func addImagefile(imagefile:Imagefile) {
         
         var files: NSMutableSet
         

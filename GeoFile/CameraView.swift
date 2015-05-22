@@ -14,18 +14,18 @@ import MobileCoreServices
 
 protocol CameraProtocol {
     
-    func savePictureFromCamera(imageData:NSData?)
-    func chooseImageFromPhotoLibrary()
+    func savePictureFromCamera(imageData:NSData?,saveAsNewInstance:Bool,worktype:workType)
+    func chooseImageFromPhotoLibrary(saveAsNewInstance:Bool,worktype:workType)
     func cancelImageFromCamera()
-    func initForCameraAndPickerView()
+    func initPickerView()
 }
 
-class CameraView: UIView
+class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
 {
     var delegate: CameraProtocol?
     
     var imageView:UIImageView!
-
+    var selectedType:workType = workType.info
     var chooseFromCameraButton:CustomButton!
     var chooseFromLibraryButton:CustomButton!
     var cancelButton:CustomButton!
@@ -38,6 +38,14 @@ class CameraView: UIView
     var retakeImageButton:CustomButton!
     var confirmImageButton:CustomButton!
     
+    var pictureOverlayTemplate:UIImageView!
+    
+    
+    var setImageTypeView:UIView!
+    var setTypeHeadingLabel:UILabel!
+    var setTypeButton:CustomButton!
+    var setTypePickerView:UIPickerView!
+    var typeSelectedLabel:UILabel?
     
     
     required init(coder aDecoder: NSCoder) {
@@ -45,17 +53,7 @@ class CameraView: UIView
     }
 
     
-    /*
-    convenience init(frame: CGRect, delegate:CameraProtocol) {
-        
-        self.init(frame: frame)
-        self.delegate = delegate
-        self.delegate?.initForCameraAndPickerView()
-    }
-*/
-
-    
-    override init(frame: CGRect) {
+    init(frame: CGRect, image:UIImage?,showtypes:Bool = false) {
         super.init(frame: frame)
         
         chooseFromLibraryButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
@@ -89,6 +87,11 @@ class CameraView: UIView
         imageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 3)))
         self.addSubview(imageView)
         
+        pictureOverlayTemplate = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 3)))
+        pictureOverlayTemplate.backgroundColor = UIColor.redColor()
+        pictureOverlayTemplate.alpha = 0.5
+        self.addSubview(pictureOverlayTemplate)
+        
         
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         let devices = AVCaptureDevice.devices()
@@ -103,18 +106,88 @@ class CameraView: UIView
             }
         }
         
-    }
-    
-    func takeImageFromCamera(){
-        
-        println("running AV chooseImageFromCamera")
-        
         stillImageOutput.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
-        var videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
+        videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
         
+        //if image is provided it should be saved as a paralell picture instance , not on a new point
+        if image != nil
+        {
+            setImageTypeView = UIView(frame: self.bounds)
+            setImageTypeView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.8)
+            
+            setTypeHeadingLabel = UILabel(frame: CGRectMake(0, 0, self.bounds.width, buttonBarHeight))
+            setTypeHeadingLabel.textAlignment = NSTextAlignment.Center
+            setTypeHeadingLabel.center = CGPointMake(self.frame.width / 2,  self.frame.height * 0.1)
+            setTypeHeadingLabel.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
+            setTypeHeadingLabel.text = "Choose type"
+            
+            setTypePickerView = UIPickerView(frame: CGRectMake(0, 0, self.frame.width * 0.9, buttonBarHeight))
+            setTypePickerView.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
+            setTypePickerView.center = CGPointMake(self.frame.width / 2 , self.frame.height / 2)
+            setTypePickerView.delegate = self
+            setTypePickerView.dataSource = self
+            
+            setTypeHeadingLabel = UILabel(frame: CGRectMake(setTypePickerView.frame.minX, setTypePickerView.frame.minY - buttonBarHeight, self.frame.width * 0.9, buttonBarHeight))
+            setTypeHeadingLabel.textAlignment = NSTextAlignment.Center
+            setTypeHeadingLabel.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
+            setTypeHeadingLabel.text = "Choose type"
+            
+            setTypeButton = CustomButton(frame: CGRectMake(setTypePickerView.frame.minX, setTypePickerView.frame.maxY, self.frame.width * 0.9, buttonBarHeight))
+            setTypeButton.setTitle("OK", forState: UIControlState.Normal)
+            setTypeButton.addTarget(self, action: "setType", forControlEvents: .TouchUpInside)
+
+            
+            setImageTypeView.addSubview(setTypePickerView)
+            setImageTypeView.addSubview(setTypeButton)
+            setImageTypeView.addSubview(setTypeHeadingLabel)
+            
+            typeSelectedLabel = UILabel(frame: CGRectMake(self.frame.width - buttonIconSide, 0, buttonIconSide, buttonIconSide))
+            typeSelectedLabel!.textAlignment = NSTextAlignment.Center
+            typeSelectedLabel?.hidden = true
+            
+            
+            pictureOverlayTemplate.image = image
+            pictureOverlayTemplate.hidden = false
+            self.bringSubviewToFront(pictureOverlayTemplate)
+            self.addSubview(typeSelectedLabel!)
+            
+            
+            self.addSubview(setImageTypeView)
+        }
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return workType.count
+    }
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+        return "\(workType(rawValue: row)!.icon) \(workType(rawValue: row)!.description)" //"\(workType(rawValue: row)?.description) \(workType(rawValue: row)?.icon)"
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedType = workType(rawValue: row)!
+    }
+    
+    func setType()
+    {
+        typeSelectedLabel!.text = selectedType.icon
+        typeSelectedLabel?.hidden = false
+        setImageTypeView.removeFromSuperview()
+    }
+    
+    var videoConnection:AVCaptureConnection!
+    func takeImageFromCamera(){
+        
+        println("running AV chooseImageFromCamera")
+        pictureOverlayTemplate.hidden = true
+        typeSelectedLabel?.hidden = true
         if videoConnection != nil {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageOutput.connectionWithMediaType(AVMediaTypeVideo))
                 { (imageDataSampleBuffer, error) -> Void in
@@ -127,6 +200,7 @@ class CameraView: UIView
                     self.hiddenBaseButtons(true)
                     self.hiddenConfirmPreviewButtons(false)
             }}
+
     }
     
     func confirmImageFromCamera()
@@ -135,12 +209,14 @@ class CameraView: UIView
         self.hiddenBaseButtons(false)
         self.hiddenConfirmPreviewButtons(true)
         
-        self.delegate?.savePictureFromCamera(self.imageData)
+        self.delegate?.savePictureFromCamera(self.imageData,saveAsNewInstance: (pictureOverlayTemplate.image != nil),worktype:selectedType)
     }
     
     func retakeImageFromCamera()
     {
         self.imageView.hidden = true
+        pictureOverlayTemplate.hidden = false
+        typeSelectedLabel?.hidden = false
         self.hiddenBaseButtons(false)
         self.hiddenConfirmPreviewButtons(true)
         captureSession.stopRunning()
@@ -196,7 +272,7 @@ class CameraView: UIView
     
     func chooseImageFromPhotoLibrary()
     {
-        delegate?.chooseImageFromPhotoLibrary()
+        delegate?.chooseImageFromPhotoLibrary((pictureOverlayTemplate.image != nil),worktype:selectedType)
     }
    
 }

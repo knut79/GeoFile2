@@ -13,6 +13,9 @@ protocol DrawViewProtocol {
     func setMeasurementText(label:UILabel)
     func setAngleText(label:UILabel)
     func setDrawntextText(label:UILabel)
+    func cancelDraw()
+    func saveDraw()
+    
 }
 
 class DrawView: DrawingBase{
@@ -49,7 +52,8 @@ class DrawView: DrawingBase{
     var chooseColorButton:CustomButton!
     var choosenColorLabel:UILabel!
     var undoArtifactList:[drawTypeEnum] = []
-    
+    var saveDrawButton:CustomButton!
+    var cancelDrawButton:CustomButton!
 
     var drawType:drawTypeEnum = .free
     var colorPicked:drawColorEnum = .white
@@ -69,6 +73,19 @@ class DrawView: DrawingBase{
         tempMeasureLabelSize = CGRectMake(0, 0, 100, 25)
         tempAngleLabelSize = CGRectMake(0, 0, 100, 25)
         tempTextLabelSize = CGRectMake(0, 0, 300, 25)
+        
+        
+        
+        saveDrawButton = CustomButton(frame: CGRectMake(0, self.bounds.size.height - buttonBarHeight, self.bounds.size.width * 0.5, buttonBarHeight))
+        saveDrawButton.setTitle("Save", forState: .Normal)
+        saveDrawButton.addTarget(self, action: "saveDraw", forControlEvents: .TouchUpInside)
+        //saveDrawButton.hidden = true
+        
+        cancelDrawButton = CustomButton(frame: CGRectMake(saveDrawButton.frame.width, self.bounds.size.height - buttonBarHeight, self.bounds.size.width * 0.5, buttonBarHeight))
+        cancelDrawButton.setTitle("Cancel", forState: .Normal)
+        cancelDrawButton.addTarget(self, action: "cancelDraw", forControlEvents: .TouchUpInside)
+        //cancelDrawButton.hidden = true
+        
         
         freeButton = CustomButton(frame: buttonSize)
         freeButton.setTitle("✒", forState: .Normal)
@@ -123,11 +140,11 @@ class DrawView: DrawingBase{
         
         //println("origin \(self.frame.origin.y)")
         
-        freeButton.center = CGPointMake(buttonSize.width * 0.75  , self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
-        measureButton.center = CGPointMake(freeButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
-        angleButton.center = CGPointMake(measureButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
-        textButton.center = CGPointMake(angleButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
-        undoButton.center = CGPointMake(textButton.frame.maxX + buttonSize.width, self.frame.maxY - (buttonSize.height * 0.75) - self.frame.origin.y)
+        freeButton.center = CGPointMake(buttonSize.width * 0.75  , saveDrawButton.frame.minY - (buttonSize.height * 0.75))
+        measureButton.center = CGPointMake(freeButton.frame.maxX + buttonSize.width, saveDrawButton.frame.minY - (buttonSize.height * 0.75))
+        angleButton.center = CGPointMake(measureButton.frame.maxX + buttonSize.width,saveDrawButton.frame.minY - (buttonSize.height * 0.75))
+        textButton.center = CGPointMake(angleButton.frame.maxX + buttonSize.width, saveDrawButton.frame.minY - (buttonSize.height * 0.75))
+        undoButton.center = CGPointMake(textButton.frame.maxX + buttonSize.width, saveDrawButton.frame.minY - (buttonSize.height * 0.75))
         
         chooseColorButton.center = CGPointMake(buttonSize.width * 0.75 , freeButton.frame.minY - buttonSize.height)
         choosenColorLabel.center = CGPointMake(buttonSize.width * 0.75, chooseColorButton.frame.minY)
@@ -150,6 +167,9 @@ class DrawView: DrawingBase{
         
         self.addSubview(choosenColorLabel)
         self.addSubview(chooseColorButton)
+        
+        self.addSubview(cancelDrawButton)
+        self.addSubview(saveDrawButton)
         
         drawType = .free
         colorPicked = .white
@@ -262,6 +282,7 @@ class DrawView: DrawingBase{
     var touchBegan = false
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         lastPoint = touches.anyObject()?.locationInView(self)
+        hideColorButtons()
         touchBegan = true
         switch(drawType)
         {
@@ -820,15 +841,23 @@ class DrawView: DrawingBase{
                 self.redButton.center = redCenter
         })
         
-/*            completion: { (value: Bool) in{
-self.whiteButton.center = whiteCenter
-self.blackButton.center = blackCenter
-self.blueButton.center = blueCenter
-self.redButton.center = redCenter
-})
-*/
-
-
-
+        /*            completion: { (value: Bool) in{
+        self.whiteButton.center = whiteCenter
+        self.blackButton.center = blackCenter
+        self.blueButton.center = blueCenter
+        self.redButton.center = redCenter
+        })
+        */
     }
+    
+    func cancelDraw()
+    {
+        delegate?.cancelDraw()
+    }
+    
+    func saveDraw()
+    {
+        delegate?.saveDraw()
+    }
+    
 }

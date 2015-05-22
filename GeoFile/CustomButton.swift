@@ -19,5 +19,7 @@ class CustomButton:UIButton {
         
         self.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         self.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
+        self.layer.borderColor = UIColor.grayColor().CGColor
+        self.layer.borderWidth = 2.0;
     }
 }

@@ -194,7 +194,16 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
         else if (segue.identifier == "showFilepoint") {
             var svc = segue!.destinationViewController as FilepointViewController
             //TODO: find info imagefile s filepoint
-            svc.currentFilepoint = (imagefile!.filepoints.allObjects.first as Imagefile).filepoint
+            if imagefile?.filepoint != nil
+            {
+                svc.currentFilepoint = imagefile?.filepoint
+            }
+            else
+            {
+                svc.project = imagefile?.project
+            }
+            svc.currentImagefile = imagefile
+            
         }
         else if (segue.identifier == "showTreeView") {
             var svc = segue!.destinationViewController as TreeViewController

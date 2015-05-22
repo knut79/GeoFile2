@@ -58,7 +58,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        initForCameraAndPickerView()
+        initPickerView()
 
         initialTarget = project != nil ? CLLocationCoordinate2D(latitude: project!.latitude, longitude: project!.longitude) : nil
         var target: CLLocationCoordinate2D = initialTarget ?? CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75)
@@ -506,18 +506,21 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         
         //TODO: maby show info worktype at first
-        if(project?.imagefiles.count > 1)
+        /*if(project?.imagefiles.count > 1)
         {
             self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as FilepointListViewController
             self.performSegueWithIdentifier("showFilepointList", sender: nil)
         }
-        else if(project?.imagefiles.count > 0)
+        else*/
+        if(project?.imagefiles.count > 0)
         {
             let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
         }
         else
         {
+            cameraView = CameraView(frame: self.view.frame, image:nil)
+            cameraView.delegate = self
             self.view.addSubview(cameraView)
         }
         return true
@@ -756,11 +759,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
    
     //MARK: CameraViewProtocol and UIImagePickerDelegate
     
-    func initForCameraAndPickerView()
+    func initPickerView()
     {
-        cameraView = CameraView(frame: self.view.frame)
-        cameraView.delegate = self
-        
         picker = UIImagePickerController()
         picker.providesPresentationContextTransitionStyle = true
         picker.definesPresentationContext = true
@@ -773,14 +773,14 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         cameraView.removeFromSuperview()
     }
     
-    func savePictureFromCamera(imageData:NSData?)
+    func savePictureFromCamera(imageData:NSData?,saveAsNewInstance:Bool,worktype:workType)
     {
         if(imageData != nil)
         {
             println("imagedata is not")
-            var newFileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, tags:nil, worktype:workType.info)
+            var newFileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, tags:nil, worktype:worktype)
             // Update the array containing the table view row data
-            project?.addImagefileToProject(newFileItem)
+            project?.addImagefile(newFileItem)
 
             save()
             self.fetchProjects()
@@ -792,12 +792,12 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         cameraView.removeFromSuperview()
     }
     
-    func chooseImageFromPhotoLibrary()
+    var worktypeFromCameraView:workType!
+    func chooseImageFromPhotoLibrary(saveAsNewInstance:Bool,worktype:workType)
     {
+        worktypeFromCameraView = worktype
         picker.sourceType = .PhotoLibrary
-        
         presentViewController(picker, animated: true, completion: nil)
-        
         cameraView.removeFromSuperview()
     }
     
@@ -808,8 +808,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         var imageData =  UIImageJPEGRepresentation(image,1.0) as NSData
 
-        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData, tags:nil, worktype:workType.info)
-        project?.addImagefileToProject(newImagefileItem)
+        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData, tags:nil, worktype:worktypeFromCameraView)
+        project?.addImagefile(newImagefileItem)
         
         save()
         

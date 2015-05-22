@@ -42,10 +42,60 @@ enum drawColorEnum: Int
     case white = 0,black,red,blue
 }
 
-enum workType: Int
+enum workType:Int
 {
-    case info = 0,arbeid,utfortarbeid,mangler,dokument
+    case info = 0
+    case arbeid
+    case utfortarbeid
+    case godkjent
+    case mangler
+    case dokument
+    
+    static var count: Int {
+        var max: Int = 0
+        while let _ = self(rawValue: ++max) {}
+        return max
+    }
+    
+    var description: String {
+        switch self {
+        case .info:
+            return "til informasjon"
+        case .arbeid:
+            return "arbeid"
+        case .utfortarbeid:
+            return "utført arbeid"
+        case .godkjent:
+            return "godkjent arbeid"
+        case .mangler:
+            return "mangler ved ettersyn"
+        case .dokument:
+            return "dokument"
+        default:
+            return "til informasjon"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .info:
+            return "ℹ️"
+        case .arbeid:
+            return "♻️"
+        case .utfortarbeid:
+            return "☑️"
+        case .godkjent:
+            return "✅"
+        case .mangler:
+            return "❗"
+        case .dokument:
+            return "📄"
+        default:
+            return "ℹ️"
+        }
+    }
 }
+
 
 enum viewtypeEnum
 {
@@ -94,6 +144,9 @@ let verticalLineLength:CGFloat = 20
 let buttonBarHeight:CGFloat = 44
 let buttonIconSide:CGFloat = 50
 let buttonIconSideSmall:CGFloat = 40
+let imageinstanceSideSmall:CGFloat = 50
+let imageinstanceSideBig:CGFloat = imageinstanceSideSmall * 2
+let elementMargin:CGFloat = 10
 //UIScreen.mainScreen().bounds.size.width * 0.5
 
 

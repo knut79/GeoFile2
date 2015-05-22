@@ -27,13 +27,17 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     var filepointImageView: UIImageView!
     var overviewScrollView: UIScrollView!
     var drawView:DrawView!
-    var saveDrawButton:CustomButton!
-    var cancelDrawButton:CustomButton!
+    //var saveDrawButton:CustomButton!
+    //var cancelDrawButton:CustomButton!
     var addPointButton: CustomButton!
-    var drawButton:CustomButton!
+    var addDrawButton:CustomButton!
     var messageButton:CustomButton!
+    
     //var topNavigationBar:TopNavigationView!
     var backOneLevelButton: CustomButton!
+    var addButton:CustomButton!
+    var hideAddMenuButton:CustomButton!
+
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
     var imagefileItems = [Imagefile]()
@@ -41,9 +45,12 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     
     var childFilepointItems = [Filepoint]()
     //var sameLevelFilepointsTableView = UITableView(frame: CGRectZero, style: .Plain)
-    var addFileButton: CustomButton!
+    var addPictureButton: CustomButton!
     
     var oneLevelFromProject = false
+    
+    var imageInstances:[ImageInstanceWithIcon]?
+    var imageInstancesScrollView:UIScrollView!
     
     
     var picker:UIImagePickerController!
@@ -55,50 +62,71 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         
         var viewFrame = self.view.frame
 
-        initForCameraAndPickerView()
-        
-        drawButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width * 0.5, buttonBarHeight))
-        drawButton.setTitle("Draw", forState: .Normal)
-        drawButton.addTarget(self, action: "draw", forControlEvents: .TouchUpInside)
-        
+        initPickerView()
+
         messageButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width * 0.5, buttonBarHeight))
         messageButton.setTitle("Add text", forState: .Normal)
         messageButton.addTarget(self, action: "draw", forControlEvents: .TouchUpInside)
+
         
-        saveDrawButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width * 0.5, buttonBarHeight))
-        saveDrawButton.setTitle("Save", forState: .Normal)
-        saveDrawButton.addTarget(self, action: "saveDraw", forControlEvents: .TouchUpInside)
-        saveDrawButton.hidden = true
+
+        //make space for imageinstances :)
+        //var mariginForImageInstances = (elementMargin * 2) + buttonIconSide
+        addButton = CustomButton(frame: CGRectMake(elementMargin, UIScreen.mainScreen().bounds.size.height - buttonIconSide - elementMargin, buttonIconSide , buttonIconSide))
+        addButton.setTitle("➕", forState: .Normal)
+        addButton.addTarget(self, action: "genericAdd", forControlEvents: .TouchUpInside)
         
-        cancelDrawButton = CustomButton(frame: CGRectMake(drawButton.frame.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width * 0.5, buttonBarHeight))
-        cancelDrawButton.setTitle("Cancel", forState: .Normal)
-        cancelDrawButton.addTarget(self, action: "cancelDraw", forControlEvents: .TouchUpInside)
-        cancelDrawButton.hidden = true
+        hideAddMenuButton = CustomButton(frame: CGRectMake(addButton.frame.minX, addButton.frame.minY, buttonIconSide , buttonIconSide))
+        hideAddMenuButton.setTitle("➖", forState: .Normal)
+        hideAddMenuButton.addTarget(self, action: "hideAddMenu", forControlEvents: .TouchUpInside)
+        hideAddMenuButton.hidden = true
         
-        addPointButton = CustomButton(frame: CGRectMake(drawButton.frame.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width * 0.5, buttonBarHeight))
+        
+        addPointButton = CustomButton(frame: CGRectMake(elementMargin, addButton.frame.minY - elementMargin - buttonIconSide, buttonIconSide * 3, buttonIconSide))
         addPointButton.setTitle("Add point→", forState: .Normal)
         addPointButton.addTarget(self, action: "addPoint", forControlEvents: .TouchUpInside)
-
-        addFileButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        addFileButton.setTitle("Add file", forState: .Normal)
-        addFileButton.addTarget(self, action: "addFile", forControlEvents: .TouchUpInside)
-        addFileButton.hidden = true
+        addPointButton.hidden = true
         
-        backOneLevelButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        addPictureButton = CustomButton(frame: CGRectMake(elementMargin, addPointButton.frame.minY - elementMargin - buttonIconSide, buttonIconSide * 3, buttonIconSide))
+        addPictureButton.setTitle("Add picture→", forState: .Normal)
+        addPictureButton.addTarget(self, action: "addPicture", forControlEvents: .TouchUpInside)
+        addPictureButton.hidden = true
+        
+        addDrawButton = CustomButton(frame: CGRectMake(elementMargin, addPictureButton.frame.minY - elementMargin - buttonIconSide, buttonIconSide * 3, buttonIconSide))
+        addDrawButton.setTitle("Add drawing→", forState: .Normal)
+        addDrawButton.addTarget(self, action: "draw", forControlEvents: .TouchUpInside)
+        addDrawButton.hidden = true
+        
+
+        
+
+        
+        backOneLevelButton = CustomButton(frame: CGRectMake(addButton.frame.maxX + elementMargin, UIScreen.mainScreen().bounds.size.height - buttonIconSide - elementMargin, buttonIconSide * 2, buttonIconSide))
         backOneLevelButton.setTitle("🔙", forState: .Normal)
         backOneLevelButton.addTarget(self, action: "goBackOneLevel", forControlEvents: .TouchUpInside)
         
-        let strechedHeight = UIScreen.mainScreen().bounds.size.height - (addPointButton.frame.size.height + topNavigationBar.frame.size.height + backOneLevelButton.frame.size.height)
+
+        
+        
+        let strechedHeight = UIScreen.mainScreen().bounds.size.height - (topNavigationBar.frame.size.height)
         overviewScrollView = UIScrollView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
         overviewScrollView.backgroundColor = UIColor.blackColor()
         //!!! overviewScrollView.autoresizesSubviews = false
-        drawView = DrawView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
+        drawView = DrawView(frame: overviewScrollView.frame)
 
-        self.view.addSubview(cancelDrawButton)
-        self.view.addSubview(saveDrawButton)
-        self.view.addSubview(drawButton)
+
+        self.view.addSubview(overviewScrollView)
+        self.view.addSubview(drawView)
+        
+        //self.view.addSubview(cancelDrawButton)
+        //self.view.addSubview(saveDrawButton)
+        self.view.addSubview(addDrawButton)
         self.view.addSubview(addPointButton)
-        self.view.addSubview(addFileButton)
+        self.view.addSubview(addPictureButton)
+        
+        
+        self.view.addSubview(addButton)
+        self.view.addSubview(hideAddMenuButton)
         self.view.addSubview(backOneLevelButton)
 
         
@@ -111,14 +139,13 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             backOneLevelButton.enabled = false
             backOneLevelButton.alpha = 0.5
-            currentImagefile = project?.imagefiles.allObjects.first as Imagefile
+            currentImagefile = project?.firstImagefile
         }
 
 
         self.fetchFilepointChildren()
 
-        self.view.addSubview(overviewScrollView)
-        self.view.addSubview(drawView)
+
         drawView.hidden = true
 
         self.setFileLevel()
@@ -296,15 +323,207 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             
             overviewScrollView.addSubview(pointLabel)
         }
+
         
+        removeImageInstances()
         
+        if project?.imagefiles.count > 1
+        {
+            imageInstances = []
+            for imagefile in project!.imagefiles
+            {
+                //let image = UIImage(data: (imagefile as Imagefile).file)
+                let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
+                //imageView.image = image
+                imageInstances?.append(imageView)
+                
+            }
+        }
+        else if currentFilepoint?.imagefiles.count > 1
+        {
+            imageInstances = []
+            for imagefile in currentFilepoint!.imagefiles
+            {
+                let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
+                imageInstances?.append(imageView)
+            }
+        }
+        addImageInstancesAsIcons()
+
+    }
+    
+    func addImageInstancesAsIcons()
+    {
+        
+        if imageInstances?.count > 0
+        {
+            var current:ImageInstanceWithIcon!
+            var index:CGFloat = 1
+            for imageView in imageInstances!
+            {
+                
+                if imageView.imagefile == currentImagefile
+                {
+                    current = imageView
+                    imageView.transform = CGAffineTransformScale(imageView.transform, 0.5, 0.5)
+                    imageView.center = CGPointMake(backOneLevelButton.frame.maxX + imageinstanceSideSmall + CGFloat(imageInstances!.count * 10) - CGFloat(imageInstances!.count * 10) , backOneLevelButton.center.y - CGFloat(imageInstances!.count * 2))
+                    var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesSmallTapped:")
+                    tapRecognizer.numberOfTapsRequired = 1
+                    imageView.addGestureRecognizer(tapRecognizer)
+                    
+                    self.view.addSubview(imageView)
+                }
+                else
+                {
+                    imageView.transform = CGAffineTransformScale(imageView.transform, 0.5, 0.5)
+                    imageView.center = CGPointMake(backOneLevelButton.frame.maxX + imageinstanceSideSmall + CGFloat(imageInstances!.count * 10) - (index * 10), backOneLevelButton.center.y - (index * 2))
+                    
+                    self.view.addSubview(imageView)
+                    index++
+                    
+                }
+            }
+            
+            self.view.bringSubviewToFront(current)
+        }
+    }
+    
+    func addImageInstancesInScrollView()
+    {
+        
+        /*
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            
+            
+            self.addPointButton.center = self.addButton.center
+            self.addPictureButton.center = self.addButton.center
+            self.addDrawButton.center = self.addButton.center
+            self.addPointButton.transform = CGAffineTransformScale(self.addPointButton.transform, 0.2, 0.2)
+            self.addPictureButton.transform = CGAffineTransformScale(self.addPictureButton.transform, 0.2, 0.2)
+            self.addDrawButton.transform = CGAffineTransformScale(self.addDrawButton.transform, 0.2, 0.2)
+            }, completion: { (value: Bool) in
+                self.addDrawButton.hidden = true
+                self.addPointButton.hidden = true
+                self.addPictureButton.hidden = true
+                self.hideAddMenuButton.hidden = true
+                self.addPointButton.center = orgPosAddPointButton
+                self.addPictureButton.center = orgPosAddPictureButton
+                self.addDrawButton.center = orgPosAddDrawButton
+        })
+        */
+        
+        if imageInstances?.count > 0
+        {
+            imageInstancesScrollView = UIScrollView(frame: CGRectMake(elementMargin, addButton.frame.minY - imageinstanceSideBig - elementMargin, self.view.frame.width - (elementMargin * 2), imageinstanceSideBig))
+            imageInstancesScrollView.contentSize = CGSizeMake(CGFloat(imageInstances!.count) * imageinstanceSideBig, imageinstanceSideBig)
+            imageInstancesScrollView.delegate = self
+
+            var index:CGFloat = 0
+            for imageView in imageInstances!
+            {
+                imageView.transform = CGAffineTransformIdentity
+                imageView.center = CGPointMake((imageView.frame.width / 2) + (index * imageinstanceSideBig), imageView.frame.height / 2)
+                index++
+                var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesBigTapped:")
+                tapRecognizer.numberOfTapsRequired = 1
+                imageView.addGestureRecognizer(tapRecognizer)
+                imageInstancesScrollView.addSubview(imageView)
+            }
+            
+            self.view.addSubview(imageInstancesScrollView)
+        }
+    }
+    
+    func removeImageInstances()
+    {
+        if imageInstances?.count > 0
+        {
+            for imageView in imageInstances!
+            {
+                imageView.removeFromSuperview()
+            }
+        }
+    }
+    
+    func hideImageInstances(hidden:Bool = true)
+    {
+        if imageInstances?.count > 0
+        {
+            for imageView in imageInstances!
+            {
+                imageView.hidden = hidden
+            }
+        }
+    }
+    
+    func genericAdd()
+    {
+        addDrawButton.hidden = false
+        addPointButton.hidden = false
+        addPictureButton.hidden = false
+        hideAddMenuButton.hidden = false
+        
+        addPointButton.transform = CGAffineTransformScale(addPointButton.transform, 0.2, 0.2)
+        addPictureButton.transform = CGAffineTransformScale(addPictureButton.transform, 0.2, 0.2)
+        addDrawButton.transform = CGAffineTransformScale(addDrawButton.transform, 0.2, 0.2)
+        
+        let orgPosAddPointButton = addPointButton.center
+        let orgPosAddPictureButton = addPictureButton.center
+        let orgPosAddDrawButton = addDrawButton.center
+        
+        addPointButton.center = addButton.center
+        addPictureButton.center = addButton.center
+        addDrawButton.center = addButton.center
+        
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.addPointButton.transform = CGAffineTransformIdentity
+            self.addPictureButton.transform = CGAffineTransformIdentity
+            self.addDrawButton.transform = CGAffineTransformIdentity
+            
+            self.addPointButton.center = orgPosAddPointButton
+            self.addPictureButton.center = orgPosAddPictureButton
+            self.addDrawButton.center = orgPosAddDrawButton
+        })
+    }
+    
+    func hideAddMenu()
+    {
+        let orgPosAddPointButton = addPointButton.center
+        let orgPosAddPictureButton = addPictureButton.center
+        let orgPosAddDrawButton = addDrawButton.center
+        
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.addPointButton.center = self.addButton.center
+            self.addPictureButton.center = self.addButton.center
+            self.addDrawButton.center = self.addButton.center
+            self.addPointButton.transform = CGAffineTransformScale(self.addPointButton.transform, 0.2, 0.2)
+            self.addPictureButton.transform = CGAffineTransformScale(self.addPictureButton.transform, 0.2, 0.2)
+            self.addDrawButton.transform = CGAffineTransformScale(self.addDrawButton.transform, 0.2, 0.2)
+            }, completion: { (value: Bool) in
+                self.addDrawButton.hidden = true
+                self.addPointButton.hidden = true
+                self.addPictureButton.hidden = true
+                self.hideAddMenuButton.hidden = true
+                self.addPointButton.center = orgPosAddPointButton
+                self.addPictureButton.center = orgPosAddPictureButton
+                self.addDrawButton.center = orgPosAddDrawButton
+        })
     }
 
+    func addPicture()
+    {
+        hideAddMenu()
+        var image = UIImage(data: currentImagefile!.file)
+        cameraView = CameraView(frame: self.view.frame, image:image!,showtypes:true)
+        cameraView.delegate = self
+        self.view.addSubview(cameraView)
+    }
+    
     func addPoint()
     {
         addPointButton.enabled = false
         addPointButton.alpha = 0.5
-        addPointButton.frame = CGRectMake(addPointButton.frame.minX, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) - buttonBarHeight, addPointButton.frame.height)
+        //addPointButton.frame = CGRectMake(addPointButton.frame.minX, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) - buttonBarHeight, addPointButton.frame.height)
         //addPointButton.frame.size.width = UIScreen.mainScreen().bounds.size.width * 0.7
         var pointLabel = UILabel(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, buttonBarHeight, buttonBarHeight))
 
@@ -319,8 +538,16 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         pointLabel.addGestureRecognizer(tapRecognizer)
 
         childPointsAndLabels.append((pointLabel,nil))
+        pointLabel.transform = CGAffineTransformScale(pointLabel.transform, 0.1, 0.1)
         self.view.addSubview(pointLabel)
+        
+        UIView.animateWithDuration(0.50, animations: { () -> Void in
+            pointLabel.transform = CGAffineTransformIdentity
+        })
+        
+        
     }
+    
     var chooseFromCameraButton:UIButton!
     var currentTappedTag:Int = 0
     func pointTapped(sender:UITapGestureRecognizer)->Void
@@ -349,13 +576,11 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
                 }, completion: { (value: Bool) in
                     imageViewForAnimation.removeFromSuperview()
                     
-                    println("former imagefile id \(self.currentImagefile!.objectID)")
                     self.removeImageAndPointLabels()
                     self.currentFilepoint = filepointToNavigateTowards
                     self.currentImagefile = self.currentFilepoint!.firstImagefile
                     println("new imagefile id \(self.currentImagefile!.objectID)")
-                    self.setFileLevel()
-                    self.backOneLevelButton.alpha = 1.0
+                       self.backOneLevelButton.alpha = 1.0
                     self.backOneLevelButton.enabled = true
             })
             
@@ -363,8 +588,26 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
         else
         {
+            cameraView = CameraView(frame: self.view.frame, image:nil, showtypes:true)
+            cameraView.delegate = self
             self.view.addSubview(cameraView)
         }
+    }
+    
+    func imageinstancesSmallTapped(sender:UITapGestureRecognizer)->Void
+    {
+        addImageInstancesInScrollView()
+        
+    }
+    
+    func imageinstancesBigTapped(sender:UITapGestureRecognizer) -> Void
+    {
+        addImageInstancesAsIcons()
+        imageInstancesScrollView.removeFromSuperview()
+        var imageinstance = sender.view as ImageInstanceWithIcon
+        self.removeImageAndPointLabels()
+        currentImagefile = imageinstance.imagefile
+        self.setFileLevel()
     }
     
     func goBackOneLevel()
@@ -515,11 +758,17 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         drawView.resetDrawingValues()
         drawView.hidden = false
         
+        addButton.hidden = true
         addPointButton.hidden = true
-        cancelDrawButton.hidden = false
-        drawButton.hidden = true
-        saveDrawButton.hidden = false
-
+        addPictureButton.hidden = true
+        addDrawButton.hidden = true
+        
+        hideImageInstances()
+        hideAddMenuButton.hidden = true
+        backOneLevelButton.hidden = true
+        
+        //saveDrawButton.hidden = false
+        //cancelDrawButton.hidden = false
     }
     
     func cancelDraw()
@@ -528,11 +777,13 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         drawView.hidden = true
         drawView.clear()
         
-
-        addPointButton.hidden = false
-        cancelDrawButton.hidden = true
-        drawButton.hidden = false
-        saveDrawButton.hidden = true
+        //cancelDrawButton.hidden = true
+        //saveDrawButton.hidden = true
+        
+        backOneLevelButton.hidden = false
+        hideImageInstances(hidden: false)
+        addButton.hidden = false
+        
         for item in childPointsAndLabels
         {
             item.0.hidden = false
@@ -673,6 +924,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         //if( (touches.anyObject() as UILabel) == pointLabel )
         if(isInnView)
         {
+            self.hideAddMenu()
             //println("inside touchesBegan")
             
             let point = touches.anyObject()!.locationInView(self.view)
@@ -758,7 +1010,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             
             addPointButton.enabled = true
             addPointButton.alpha = 1
-            addPointButton.frame.size.width = UIScreen.mainScreen().bounds.size.width * 0.5
+            //addPointButton.frame.size.width = UIScreen.mainScreen().bounds.size.width * 0.5
         }
         else
         {
@@ -769,11 +1021,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     
     //MARK: CameraViewProtocol and UIImagePickerDelegate
     
-    func initForCameraAndPickerView()
+    func initPickerView()
     {
-        cameraView = CameraView(frame: self.view.frame)
-        cameraView.delegate = self
-        
         picker = UIImagePickerController()
         picker.providesPresentationContextTransitionStyle = true
         picker.definesPresentationContext = true
@@ -786,11 +1035,18 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         cameraView.removeFromSuperview()
     }
     
-    func savePictureFromCamera(imageData:NSData?)
+    func savePictureFromCamera(imageData:NSData?, saveAsNewInstance:Bool, worktype:workType)
     {
         if(imageData != nil)
         {
-            addImageToFileObject(imageData!,sourceText: "From camera")
+            if saveAsNewInstance
+            {
+                addImageToCurrentFilepointOrProject(imageData!,sourceText: "From camera",worktype: worktype)
+            }
+            else
+            {
+                addImageToNewFilepoint(imageData!,sourceText: "From camera", worktype:worktype)
+            }
         }
         else
         {
@@ -799,14 +1055,18 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         cameraView.removeFromSuperview()
     }
     
-    func chooseImageFromPhotoLibrary()
+    var saveImageFromLibraryAsNewInstance = false
+    var saveImageFromLibraryAsWorktype:workType = workType.info
+    func chooseImageFromPhotoLibrary(saveAsNewInstance:Bool, worktype:workType)
     {
+        saveImageFromLibraryAsWorktype = worktype
+        saveImageFromLibraryAsNewInstance = saveAsNewInstance
         picker.sourceType = .PhotoLibrary
         presentViewController(picker, animated: true, completion: nil)
         cameraView.removeFromSuperview()
     }
     
-    func addImageToFileObject(imageData:NSData, sourceText:String)
+    func addImageToNewFilepoint(imageData:NSData, sourceText:String, worktype:workType)
     {
         // Update the array containing the table view row data
         var pointObj = self.findPointLabelOnTag(self.currentTappedTag)
@@ -817,17 +1077,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         var newfilepointItem = pointObj!.1
         
         println("newfilepointItem id \(newfilepointItem!.objectID)")
-    
-        /*
-        println("trying to set image for filepoint with objID \(newfilepointItem!.objectID)")
-        println("x and y values are  \(newfilepointItem!.x) \(newfilepointItem!.y)")
-        newfilepointItem?.file = imageData
+
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
-        newfilepointItem?.title = "\(sourceText) \(timestamp)"
-        self.currentFilepoint?.addFilepointToFilepoint(newfilepointItem!)
-        */
-        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
-        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"\(sourceText) \(timestamp)",file:imageData, tags:nil, worktype:workType.info)
+        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"\(sourceText) \(timestamp)",file:imageData, tags:nil, worktype:worktype)
         newfilepointItem!.addImagefile(newImagefileItem)
         
         self.currentImagefile?.addFilepoint(newfilepointItem!)
@@ -842,11 +1094,40 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         self.backOneLevelButton.enabled = true
     }
     
+    func addImageToCurrentFilepointOrProject(imageData:NSData, sourceText:String, worktype:workType)
+    {
+        
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"\(sourceText) \(timestamp)",file:imageData, tags:nil, worktype:worktype)
+        if currentFilepoint != nil{
+            currentFilepoint!.addImagefile(newImagefileItem)
+        }
+        else
+        {
+            project?.addImagefile(newImagefileItem)
+        }
+
+        self.save()
+        
+        //remove image and pointlabels before we set new current obj
+        self.removeImageAndPointLabels()
+        self.currentImagefile = newImagefileItem
+        self.setFileLevel()
+    }
+    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         var image = info[UIImagePickerControllerOriginalImage] as UIImage
         dismissViewControllerAnimated(true, completion: nil)
         var imageData =  UIImageJPEGRepresentation(image,1.0) as NSData
-        addImageToFileObject(imageData,sourceText: "From picture library")
+        if saveImageFromLibraryAsNewInstance
+        {
+            addImageToCurrentFilepointOrProject(imageData,sourceText: "From picture library",worktype:saveImageFromLibraryAsWorktype)
+        }
+        else
+        {
+            addImageToNewFilepoint(imageData,sourceText: "From picture library",worktype:saveImageFromLibraryAsWorktype)
+        }
+        saveImageFromLibraryAsNewInstance = false
         cameraView.removeFromSuperview()
     }
     
