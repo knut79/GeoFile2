@@ -20,7 +20,8 @@ class PointElement: UIView {
     {
         super.init(frame: frame)
         self.filepoint = filepoint
-        pointIcon = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height))
+        pointIcon = UILabel(frame: CGRectMake(0, 0, buttonIconSide, buttonIconSide))
+        pointIcon.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
         pointIcon.text = icon
         pointIcon.textAlignment = NSTextAlignment.Center
         pointIcon.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
@@ -29,6 +30,9 @@ class PointElement: UIView {
         pointIcon.clipsToBounds = true
         
         self.addSubview(pointIcon)
+        
+        self.layer.borderColor = UIColor.blackColor().CGColor
+        self.layer.borderWidth = 2.0;
 
     }
 }
