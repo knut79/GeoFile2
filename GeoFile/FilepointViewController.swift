@@ -19,7 +19,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     var currentFilepoint: Filepoint?
     var currentImagefile: Imagefile?
     //just because we ned temporary coordinates for a label associated with a filepoint
-    var childPointsAndLabels = [(UILabel,Filepoint?)]()
+    var childPointsAndLabels = [PointElement]()
     
     var project:Project?
     var frontPicture: Bool = false
@@ -43,7 +43,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     var imagefileItems = [Imagefile]()
     
     
-    var childFilepointItems = [Filepoint]()
+    //var childFilepointItems = [Filepoint]()
     //var sameLevelFilepointsTableView = UITableView(frame: CGRectZero, style: .Plain)
     var addPictureButton: CustomButton!
     
@@ -143,7 +143,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
 
 
-        self.fetchFilepointChildren()
+        //self.fetchFilepointChildren()
 
 
         drawView.hidden = true
@@ -186,25 +186,28 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             count++
             
-            var pointLabel = UILabel(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) * 0.30, buttonBarHeight))
+            var point = PointElement(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) * 0.30, buttonBarHeight), icon:"💠",filepoint:item as? Filepoint)
+            /*
             pointLabel.text = "💠"
             pointLabel.textAlignment = NSTextAlignment.Center
             pointLabel.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
             pointLabel.userInteractionEnabled = true
             pointLabel.layer.cornerRadius = 8.0
             pointLabel.clipsToBounds = true
-            pointLabel.tag =  count
+            */
+            point.tag =  count
             var tapRecognizer = UITapGestureRecognizer(target: self, action: "pointTapped:")
             tapRecognizer.numberOfTapsRequired = 1
-            pointLabel.addGestureRecognizer(tapRecognizer)
+            point.pointIcon.addGestureRecognizer(tapRecognizer)
 
+            
             var position = CGPointMake(CGFloat((item as Filepoint).x), CGFloat((item as Filepoint).y))
-            pointLabel.center = CGPointMake(position.x * overviewScrollView.zoomScale,position.y * overviewScrollView.zoomScale)
-            pointLabel.center = CGPointMake(pointLabel.center.x + xVoidOffset,pointLabel.center.y + yVoidOffset)
+            point.center = CGPointMake(position.x * overviewScrollView.zoomScale,position.y * overviewScrollView.zoomScale)
+            point.center = CGPointMake(point.center.x + xVoidOffset,point.center.y + yVoidOffset)
             
-            println("recalculated values : x \(pointLabel.center.x) y \(pointLabel.center.y)")
+            println("recalculated values : x \(point.center.x) y \(point.center.y)")
             
-            childPointsAndLabels.append((pointLabel,item as? Filepoint))
+            childPointsAndLabels.append(point)
         }
     }
     
@@ -232,6 +235,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
     }
 
+    /*
     func fetchFilepointChildren() {
 
         childFilepointItems = []
@@ -242,6 +246,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             childFilepointItems.append(item as Filepoint)
         }
     }
+    */
     
     func fetchDrawings()
     {
@@ -261,9 +266,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
 
     func removeImageAndPointLabels()
     {
-        for label in childPointsAndLabels
+        for point in childPointsAndLabels
         {
-            label.0.removeFromSuperview()
+            point.removeFromSuperview()
         }
 
         overviewImageView.removeFromSuperview()
@@ -304,8 +309,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         //for filepoint in filepointItems[0].filepoints
         for filepointAndLabel in childPointsAndLabels
         {
-            var pointLabel = filepointAndLabel.0
-            var position = CGPointMake(CGFloat(filepointAndLabel.1!.x), CGFloat(filepointAndLabel.1!.y))
+            var pointLabel = filepointAndLabel
+            var position = CGPointMake(CGFloat(filepointAndLabel.filepoint!.x), CGFloat(filepointAndLabel.filepoint!.y))
 
             pointLabel.center = CGPointMake(pointLabel.center.x + overviewScrollView.contentOffset.x, pointLabel.center.y + overviewScrollView.contentOffset.y - (pointLabel.frame.size.height/2))
             
@@ -573,29 +578,33 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         addPointButton.alpha = 0.5
         //addPointButton.frame = CGRectMake(addPointButton.frame.minX, addPointButton.frame.minY, (UIScreen.mainScreen().bounds.size.width * 0.5) - buttonBarHeight, addPointButton.frame.height)
         //addPointButton.frame.size.width = UIScreen.mainScreen().bounds.size.width * 0.7
-        var pointLabel = UILabel(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, buttonBarHeight, buttonBarHeight))
-
+        //var pointLabel = UILabel(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, buttonBarHeight, buttonBarHeight))
+        var point = PointElement(frame: CGRectMake(addPointButton.frame.maxX + 2, addPointButton.frame.minY, buttonBarHeight, buttonBarHeight), icon:"💢",filepoint:nil)
+        /*
         pointLabel.text = "💢"
         pointLabel.textAlignment = NSTextAlignment.Center
         pointLabel.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         pointLabel.userInteractionEnabled = true
-        pointLabel.tag =  currentImagefile!.filepoints.count + 1
+        */
+        point.tag =  currentImagefile!.filepoints.count + 1
         
         var tapRecognizer = UITapGestureRecognizer(target: self, action: "pointTapped:")
         tapRecognizer.numberOfTapsRequired = 1
-        pointLabel.addGestureRecognizer(tapRecognizer)
+        point.pointIcon.addGestureRecognizer(tapRecognizer)
 
-        childPointsAndLabels.append((pointLabel,nil))
-        pointLabel.transform = CGAffineTransformScale(pointLabel.transform, 0.1, 0.1)
-        self.view.addSubview(pointLabel)
+        childPointsAndLabels.append(point)
+        point.transform = CGAffineTransformScale(point.transform, 0.1, 0.1)
+        self.view.addSubview(point)
+        
         
         UIView.animateWithDuration(0.50, animations: { () -> Void in
-            pointLabel.transform = CGAffineTransformIdentity
+            point.transform = CGAffineTransformIdentity
         })
         
         
     }
     
+    var newFilepointTitle:String = ""
     var chooseFromCameraButton:UIButton!
     var currentTappedTag:Int = 0
     func pointTapped(sender:UITapGestureRecognizer)->Void
@@ -603,7 +612,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         println("tag is \(sender.view!.tag)")
         currentTappedTag = sender.view!.tag
         var pointObj = self.findPointLabelOnTag(currentTappedTag)
-        var filepointToNavigateTowards = pointObj!.1
+        var filepointToNavigateTowards = pointObj!.filepoint
         
         if(filepointToNavigateTowards != nil && filepointToNavigateTowards!.imagefiles.count > 0)
         {
@@ -638,6 +647,36 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
         else
         {
+            
+            var titlePrompt = UIAlertController(title: "Title for new point",
+                message: "Set title for new point",
+                preferredStyle: .Alert)
+          
+            var titleTextField: UITextField?
+            titlePrompt.addTextFieldWithConfigurationHandler {
+                (textField) -> Void in
+                titleTextField = textField
+                textField.placeholder = "Title"
+                textField.textAlignment = NSTextAlignment.Center
+                textField.keyboardType = UIKeyboardType.Default
+            }
+            
+            titlePrompt.addAction(UIAlertAction(title: "Dont need title",
+                style: .Default,
+                handler: { (action) -> Void in
+                    
+            }))
+            
+            titlePrompt.addAction(UIAlertAction(title: "Ok",
+                style: .Default,
+                handler: { (action) -> Void in
+                    self.newFilepointTitle = titleTextField!.text
+            }))
+
+            self.presentViewController(titlePrompt,
+                animated: true,
+                completion: nil)
+            
             cameraView = CameraView(frame: self.view.frame, image:nil, showtypes:true)
             cameraView.delegate = self
             self.view.addSubview(cameraView)
@@ -942,8 +981,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         //for item in currentFilepoint!.filepoints
         for item in childPointsAndLabels
         {
-            var label = item.0
-            var position = CGPointMake(CGFloat(item.1!.x), CGFloat(item.1!.y))
+            var label = item
+            var position = CGPointMake(CGFloat(item.filepoint!.x), CGFloat(item.filepoint!.y))
             label.center = CGPointMake(position.x * overviewScrollView.zoomScale,position.y * overviewScrollView.zoomScale)
             label.center = CGPointMake(label.center.x + xVoidOffset,label.center.y + yVoidOffset)
         }
@@ -967,7 +1006,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             return
         }
         var touch = touches.anyObject()
-        var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1].0
+        var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
         var touchLocation = touch!.locationInView(self.view)
         var isInnView = CGRectContainsPoint(pointLabel.frame,touchLocation)
         
@@ -996,14 +1035,14 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
         var touch = touches.anyObject()
         var touchLocation = touch!.locationInView(self.view)
-        var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1].0
+        var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
         var isInnView = CGRectContainsPoint(pointLabel.frame,touchLocation)
         
         //if( (touches.anyObject() as UILabel) == pointLabel )
         if(isInnView)
         {
             //println("inside touchmoved")
-            var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1].0
+            var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
             let point = touches.anyObject()!.locationInView(self.view)
             pointLabel.center = CGPointMake(point.x - xOffset, point.y - yOffset)
         }
@@ -1021,7 +1060,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             return
         }
-        var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1].0
+        var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
         
         self.touchesMoved(touches, withEvent: event)
 
@@ -1048,9 +1087,10 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
             realPosition = CGPointMake(realPosition.x - (xVoidOffset/overviewScrollView.zoomScale), realPosition.y - (yVoidOffset/overviewScrollView.zoomScale))
             
-            var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"filepoint title", x: Float(realPosition.x), y: Float(realPosition.y))
+            var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:newFilepointTitle, x: Float(realPosition.x), y: Float(realPosition.y))
+            newFilepointTitle = ""
             save()
-            childPointsAndLabels[childPointsAndLabels.count - 1].1 = newfilepointItem
+            childPointsAndLabels[childPointsAndLabels.count - 1].filepoint = newfilepointItem
             println("object id for added filepoint is \(newfilepointItem.objectID)")
             println("x and y values are  \(newfilepointItem.x) \(newfilepointItem.y)")
             
@@ -1120,11 +1160,11 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     {
         // Update the array containing the table view row data
         var pointObj = self.findPointLabelOnTag(self.currentTappedTag)
-        var pointLabel = pointObj!.0
+        //var pointLabel = pointObj!.pointIcon
         
         //NOTE: we do not add a completly new entity , only picture . Entity is created earlier at addPoint action
 
-        var newfilepointItem = pointObj!.1
+        var newfilepointItem = pointObj!.filepoint
         
         println("newfilepointItem id \(newfilepointItem!.objectID)")
 
@@ -1182,11 +1222,11 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     }
     
 
-    func findPointLabelOnTag(tag:Int) -> (UILabel,Filepoint?)?
+    func findPointLabelOnTag(tag:Int) -> PointElement?
     {
         for item in childPointsAndLabels
         {
-            if(item.0.tag == tag)
+            if(item.tag == tag)
             {
                 return item
             }
