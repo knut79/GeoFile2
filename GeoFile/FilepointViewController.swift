@@ -327,9 +327,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         
         removeImageInstances()
         
+        imageInstances = []
         if project?.imagefiles.count > 1
         {
-            imageInstances = []
             for imagefile in project!.imagefiles
             {
                 //let image = UIImage(data: (imagefile as Imagefile).file)
@@ -341,7 +341,6 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
         else if currentFilepoint?.imagefiles.count > 1
         {
-            imageInstances = []
             for imagefile in currentFilepoint!.imagefiles
             {
                 let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
@@ -352,32 +351,49 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
 
     }
     
+
     func addImageInstancesAsIcons()
     {
-        
+        /*
+        if(imageinstancesShownAsIcons)
+        {
+            return
+        }
+        imageinstancesShownAsIcons = true
+        */
         if imageInstances?.count > 0
         {
+            
+           
             var current:ImageInstanceWithIcon!
             var index:CGFloat = 1
             for imageView in imageInstances!
             {
-                
+                imageView.transform = CGAffineTransformIdentity
+                imageView.transform = CGAffineTransformScale(imageView.transform, 0.5, 0.5)
                 if imageView.imagefile == currentImagefile
                 {
                     current = imageView
-                    imageView.transform = CGAffineTransformScale(imageView.transform, 0.5, 0.5)
                     imageView.center = CGPointMake(backOneLevelButton.frame.maxX + imageinstanceSideSmall + CGFloat(imageInstances!.count * 10) - CGFloat(imageInstances!.count * 10) , backOneLevelButton.center.y - CGFloat(imageInstances!.count * 2))
+                    /*
+                    if let recognizers = imageView.gestureRecognizers {
+                        for recognizer in recognizers {
+                            imageView.removeGestureRecognizer(recognizer as UIGestureRecognizer)
+                        }
+                    }
+                        */
+
                     var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesSmallTapped:")
                     tapRecognizer.numberOfTapsRequired = 1
                     imageView.addGestureRecognizer(tapRecognizer)
+
                     
                     self.view.addSubview(imageView)
                 }
                 else
                 {
-                    imageView.transform = CGAffineTransformScale(imageView.transform, 0.5, 0.5)
-                    imageView.center = CGPointMake(backOneLevelButton.frame.maxX + imageinstanceSideSmall + CGFloat(imageInstances!.count * 10) - (index * 10), backOneLevelButton.center.y - (index * 2))
                     
+                    imageView.center = CGPointMake(backOneLevelButton.frame.maxX + imageinstanceSideSmall + CGFloat(imageInstances!.count * 10) - (index * 10), backOneLevelButton.center.y - (index * 2))
                     self.view.addSubview(imageView)
                     index++
                     
@@ -412,23 +428,54 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         })
         */
         
+        /*
+        if(!imageinstancesShownAsIcons)
+        {
+            return
+        }
+        imageinstancesShownAsIcons = false
+        */
+        
+        hideAddMenu()
         if imageInstances?.count > 0
         {
             imageInstancesScrollView = UIScrollView(frame: CGRectMake(elementMargin, addButton.frame.minY - imageinstanceSideBig - elementMargin, self.view.frame.width - (elementMargin * 2), imageinstanceSideBig))
             imageInstancesScrollView.contentSize = CGSizeMake(CGFloat(imageInstances!.count) * imageinstanceSideBig, imageinstanceSideBig)
             imageInstancesScrollView.delegate = self
 
-            var index:CGFloat = 0
-            for imageView in imageInstances!
-            {
-                imageView.transform = CGAffineTransformIdentity
-                imageView.center = CGPointMake((imageView.frame.width / 2) + (index * imageinstanceSideBig), imageView.frame.height / 2)
-                index++
-                var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesBigTapped:")
-                tapRecognizer.numberOfTapsRequired = 1
-                imageView.addGestureRecognizer(tapRecognizer)
-                imageInstancesScrollView.addSubview(imageView)
-            }
+            
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                    var index:CGFloat = 0
+                    for imageView in self.imageInstances!
+                    {
+                        imageView.transform = CGAffineTransformIdentity
+                        imageView.center = CGPointMake(self.imageInstancesScrollView.frame.origin.x + (imageView.frame.width / 2) + (index * imageinstanceSideBig),self.imageInstancesScrollView.frame.origin.y +  imageView.frame.height / 2)
+                        index++
+
+                    }
+
+                }, completion: { (value: Bool) in
+
+                    var index:CGFloat = 0
+                    for imageView in self.imageInstances!
+                    {
+                        imageView.transform = CGAffineTransformIdentity
+                        imageView.center = CGPointMake((imageView.frame.width / 2) + (index * imageinstanceSideBig), imageView.frame.height / 2)
+                        index++
+                       /* if let recognizers = imageView.gestureRecognizers {
+                            for recognizer in recognizers {
+                                imageView.removeGestureRecognizer(recognizer as UIGestureRecognizer)
+                            }
+                        }*/
+
+                        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesBigTapped:")
+                        tapRecognizer.numberOfTapsRequired = 1
+                        imageView.addGestureRecognizer(tapRecognizer)
+
+                        self.imageInstancesScrollView.addSubview(imageView)
+                    }
+            })
+
             
             self.view.addSubview(imageInstancesScrollView)
         }
@@ -458,6 +505,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     
     func genericAdd()
     {
+        addImageInstancesAsIcons()
         addDrawButton.hidden = false
         addPointButton.hidden = false
         addPictureButton.hidden = false
@@ -578,10 +626,12 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
                     
                     self.removeImageAndPointLabels()
                     self.currentFilepoint = filepointToNavigateTowards
+                    self.project = nil
                     self.currentImagefile = self.currentFilepoint!.firstImagefile
                     println("new imagefile id \(self.currentImagefile!.objectID)")
                        self.backOneLevelButton.alpha = 1.0
                     self.backOneLevelButton.enabled = true
+                    self.setFileLevel()
             })
             
 
