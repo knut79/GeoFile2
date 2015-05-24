@@ -302,6 +302,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
 
     func addImageInstancesAsIcons()
     {
+        //TODO: animate
+        
         if imageInstances?.count > 0
         {
 
@@ -353,6 +355,11 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
                     {
                         imageView.transform = CGAffineTransformIdentity
                         imageView.center = CGPointMake(self.imageInstancesScrollView.frame.origin.x + (imageView.frame.width / 2) + (index * imageinstanceSideBig),self.imageInstancesScrollView.frame.origin.y +  imageView.frame.height / 2)
+                        if imageView.imagefile == self.currentImagefile
+                        {
+                        imageView.layer.borderColor = UIColor.greenColor().CGColor
+                        imageView.layer.borderWidth = 2.0;
+                        }
                         index++
 
                     }
@@ -567,12 +574,34 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     
     func imageinstancesBigTapped(sender:UITapGestureRecognizer) -> Void
     {
-        addImageInstancesAsIcons()
-        imageInstancesScrollView.removeFromSuperview()
+
+        if (sender.view! as ImageInstanceWithIcon).imagefile == self.currentImagefile
+        {
+            return
+        }
         var imageinstance = sender.view as ImageInstanceWithIcon
-        self.removeImageAndPointLabels()
-        currentImagefile = imageinstance.imagefile
-        self.setFileLevel()
+        var imageViewForAnimation = UIImageView(frame: self.overviewScrollView.frame)
+
+        imageViewForAnimation.transform = CGAffineTransformScale(imageViewForAnimation.transform, 0.1, 0.1)
+        
+        imageViewForAnimation.center = CGPointMake(imageInstancesScrollView.frame.minX + sender.view!.center.x, imageInstancesScrollView.frame.minY + sender.view!.center.y) //
+        imageViewForAnimation.alpha = 0
+        let image = UIImage(data: imageinstance.imagefile.file)
+        imageViewForAnimation.image = image
+        self.view.addSubview(imageViewForAnimation)
+        UIView.animateWithDuration(0.30, animations: { () -> Void in
+            imageViewForAnimation.center = self.overviewScrollView.center
+            imageViewForAnimation.transform = CGAffineTransformIdentity
+            imageViewForAnimation.alpha = 0.7
+            }, completion: { (value: Bool) in
+                self.imageInstancesScrollView.removeFromSuperview()
+                self.removeImageAndPointLabels()
+                imageViewForAnimation.removeFromSuperview()
+                self.currentImagefile = imageinstance.imagefile
+                self.setFileLevel()
+        })
+
+
     }
     
     func goBackOneLevel()
@@ -950,8 +979,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             var xVoidOffset = overviewImageView.frame.width < overviewScrollView.frame.width ? (overviewScrollView.frame.width - overviewImageView.frame.width)/2 : 0.0
             realPosition = CGPointMake(realPosition.x - (xVoidOffset/overviewScrollView.zoomScale), realPosition.y - (yVoidOffset/overviewScrollView.zoomScale))
             
-            var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:newFilepointTitle, x: Float(realPosition.x), y: Float(realPosition.y))
-            newFilepointTitle = ""
+            var newfilepointItem = Filepoint.createInManagedObjectContext(self.managedObjectContext!,title:"", x: Float(realPosition.x), y: Float(realPosition.y))
+
             save()
             childPointsAndLabels[childPointsAndLabels.count - 1].filepoint = newfilepointItem
             println("x og y for pointLabel is \(pointLabel.center.x) \(pointLabel.center.y)")
@@ -1032,7 +1061,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"\(sourceText) \(timestamp)",file:imageData, tags:nil, worktype:worktype)
         newfilepointItem!.addImagefile(newImagefileItem)
-        
+        newfilepointItem?.title = newFilepointTitle
+        newFilepointTitle = ""
         self.currentImagefile?.addFilepoint(newfilepointItem!)
         self.save()
 

@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import QuartzCore
 
 class PointElement: UIView {
     
     var filepoint:Filepoint?
     var pointIcon:UILabel!
+    var titleLabel:UILabel!
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -31,8 +33,26 @@ class PointElement: UIView {
         
         self.addSubview(pointIcon)
         
-        self.layer.borderColor = UIColor.blackColor().CGColor
-        self.layer.borderWidth = 2.0;
+        if self.filepoint != nil && self.filepoint!.title != ""
+        {
+            titleLabel = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height * 0.35))
+            titleLabel.numberOfLines = 2
+            titleLabel.text = self.filepoint?.title
+            //titleLabel.layer.borderColor = UIColor.blackColor().CGColor
+            //titleLabel.layer.borderWidth = 2.0;
+            titleLabel.textAlignment = NSTextAlignment.Center
+            
+            titleLabel.layer.shadowColor = UIColor.whiteColor().CGColor
+            titleLabel.layer.shadowRadius = 5.0
+            titleLabel.layer.shadowOpacity = 1
+            titleLabel.layer.shouldRasterize = true
+            titleLabel.layer.shadowOffset = CGSizeMake(0,1)
+            titleLabel.layer.masksToBounds = false
+            self.addSubview(titleLabel!)
+        }
+        
+        //self.layer.borderColor = UIColor.blackColor().CGColor
+        //self.layer.borderWidth = 2.0;
 
     }
 }
