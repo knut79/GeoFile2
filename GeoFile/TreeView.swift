@@ -20,7 +20,7 @@ protocol TreeViewProtocol
     func deleteOverlayNode()
 }
 
-class TreeView:UIView
+class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
 {
 
     var imageViewTest:UIImageView!
@@ -531,6 +531,11 @@ class TreeView:UIView
         //remove all buttons
         removeProjectLeafs()
         
+        
+        
+        
+        
+        
         for var i = 0 ;  i < projectLeafs.count ; i++
         {
             if(projectLeafs[i].button == (button as UIImageView))
@@ -543,7 +548,7 @@ class TreeView:UIView
             projectLeafs[i].selected = false
             projectLeafs[i].button.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         }
-        
+
         currentProjectLeaf.selected = true
         jumpToFilepointButton.alpha = 0
         

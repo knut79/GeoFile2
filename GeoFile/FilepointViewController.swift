@@ -303,7 +303,10 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     func addImageInstancesAsIcons()
     {
         //TODO: animate
-        
+        if imageInstancesScrollView != nil
+        {
+            imageInstancesScrollView.removeFromSuperview()
+        }
         if imageInstances?.count > 0
         {
 
@@ -313,6 +316,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             {
                 imageView.transform = CGAffineTransformIdentity
                 imageView.transform = CGAffineTransformScale(imageView.transform, 0.5, 0.5)
+                imageView.layer.borderWidth = 0
                 if imageView.imagefile == currentImagefile
                 {
                     current = imageView
@@ -321,7 +325,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
                     var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesSmallTapped:")
                     tapRecognizer.numberOfTapsRequired = 1
                     imageView.addGestureRecognizer(tapRecognizer)
-
+                    
                     self.view.addSubview(imageView)
                 }
                 else
@@ -357,8 +361,8 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
                         imageView.center = CGPointMake(self.imageInstancesScrollView.frame.origin.x + (imageView.frame.width / 2) + (index * imageinstanceSideBig),self.imageInstancesScrollView.frame.origin.y +  imageView.frame.height / 2)
                         if imageView.imagefile == self.currentImagefile
                         {
-                        imageView.layer.borderColor = UIColor.greenColor().CGColor
-                        imageView.layer.borderWidth = 2.0;
+                            imageView.layer.borderColor = UIColor.greenColor().CGColor
+                            imageView.layer.borderWidth = 2.0;
                         }
                         index++
 
@@ -739,6 +743,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     //MARK: Draw
     func draw()
     {
+
         for item in childPointsAndLabels
         {
             item.0.hidden = true

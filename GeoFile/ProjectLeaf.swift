@@ -8,6 +8,12 @@
 
 import Foundation
 
+protocol ProjectLeafProtocol
+{
+    func projectSelected(sender:UITapGestureRecognizer)
+    func showActionButtonsForProject(sender:AnyObject)
+}
+
 class ProjectLeaf
 {
     var project:Project

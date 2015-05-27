@@ -8,6 +8,12 @@
 
 import Foundation
 
+protocol FilepointLeafProtocol
+{
+    func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
+    func showActionButtonsForFilepoint(sender:AnyObject)
+}
+
 class FilepointLeaf
 {
     var filepoint:Filepoint
