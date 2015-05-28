@@ -20,7 +20,7 @@ protocol TreeViewProtocol
     func deleteOverlayNode()
 }
 
-class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
+class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
 {
 
     var imageViewTest:UIImageView!
@@ -29,7 +29,7 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
     var projectLeafs = [ProjectLeaf]()
     var overlayNodes = [OverlayNode]()
-    var currentFilepointLeaf:FilepointLeaf!
+    var currentFilepointLeaf:PointLeaf!
     var currentProjectLeaf:ProjectLeaf!
     var selectedLeaf:UIView!
     var overlayNode:UILabel!
@@ -128,15 +128,13 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
             CGContextStrokePath(currentContext);
         }
         
-        var selectedItem:FilepointLeaf?
+        var selectedItem:PointLeaf?
         for item in projectLeaf.filepointLeafs
         {
             //draw horizontal line backwards
-            let buttonItem = item.button
-
             CGContextSetLineWidth(currentContext,3.0)
-            var x = buttonItem.frame.minX
-            var y = buttonItem.center.y
+            var x = item.frame.minX
+            var y = item.center.y
             var drawToX = x - ( horizontalLineLength / 2 )
             CGContextMoveToPoint(currentContext,x, y);
             CGContextAddLineToPoint(currentContext,drawToX, y);
@@ -150,51 +148,50 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         //vertical line
         if let item = projectLeaf.filepointLeafs.first
         {
-            var firstButtonItem = item.button
-            var fromX = firstButtonItem!.frame.minX - (horizontalLineLength/2)
-            var fromY = firstButtonItem!.center.y
+            var firstItem = item as PointLeaf
+            var fromX = firstItem.frame.minX - (horizontalLineLength/2)
+            var fromY = firstItem.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
             
             //var lastButtonItem = selectedItem == nil ? projectLeaf.filepointLeafs.last!.button : selectedItem!.button
-            var lastButtonItem = projectLeaf.filepointLeafs.last!.button
-            var toX = lastButtonItem.frame.minX - (horizontalLineLength/2)
-            var toY = lastButtonItem.center.y
+            var lastItem = projectLeaf.filepointLeafs.last!
+            var toX = lastItem.frame.minX - (horizontalLineLength/2)
+            var toY = lastItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
         }
     }
     
     
-    func drawFilepointsFromFilepoint(currentContext:CGContext, filepointLeaf:FilepointLeaf)
+    func drawFilepointsFromFilepoint(currentContext:CGContext, filepointLeaf:PointLeaf)
     {
         CGContextSetLineCap(currentContext, kCGLineCapRound)
-        if(filepointLeaf.filepointLeafs.count > 0)
+        if(filepointLeaf.pointLeafs.count > 0)
         {
             //draw horizontal line
-            let buttonItem = filepointLeaf.button
+            let item = filepointLeaf
             CGContextSetLineWidth(currentContext,3.0)
-            var x = buttonItem.frame.maxX
-            var y = buttonItem.center.y
+            var x = item.frame.maxX
+            var y = item.center.y
             var drawToX = x + ( horizontalLineLength / 2 )
             CGContextMoveToPoint(currentContext,x, y);
             CGContextAddLineToPoint(currentContext,drawToX, y);
             CGContextStrokePath(currentContext);
         }
         
-        var selectedItem:FilepointLeaf?
-        for item in filepointLeaf.filepointLeafs
+        var selectedItem:PointLeaf?
+        for item in filepointLeaf.pointLeafs
         {
             //draw horizontal line
-            let buttonItem = item.button
-            if(buttonItem.isDescendantOfView(self))
+            if(item.isDescendantOfView(self))
             {
                 //var lengths:[CGFloat] = [CGFloat(0),CGFloat(0.5 * 2)]
                 //CGContextSetLineDash(currentContext, 0.0, lengths, 2)
-                if(item.filepoint.x != 0 && item.filepoint.y != 0)
+                if(item.filepoint!.x != 0 && item.filepoint!.y != 0)
                 {
                 CGContextSetLineWidth(currentContext,3.0)
-                var x = buttonItem.frame.minX
-                var y = buttonItem.center.y
+                var x = item.frame.minX
+                var y = item.center.y
                 var drawToX = x - ( horizontalLineLength / 2 )
                 CGContextMoveToPoint(currentContext,x, y);
                 CGContextAddLineToPoint(currentContext,drawToX, y);
@@ -207,34 +204,34 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
 
         }
         
-        if let item = filepointLeaf.filepointLeafs.first
+        if let item = filepointLeaf.pointLeafs.first
         {
-            var firstButtonItem = item.button
-            var fromX = firstButtonItem!.frame.minX - (horizontalLineLength/2)
-            var fromY = firstButtonItem!.center.y
+            var firstItem = item
+            var fromX = firstItem.frame.minX - (horizontalLineLength/2)
+            var fromY = firstItem.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
         
 
             //var lastButtonItem = getLastFilepointWithCoordinates(filepointLeaf).button
-            var lastButtonItem = filepointLeaf.filepointLeafs.last!.button
-            var toX = lastButtonItem.frame.minX - (horizontalLineLength/2)
-            var toY = lastButtonItem.center.y
+            var lastItem = filepointLeaf.pointLeafs.last!
+            var toX = lastItem.frame.minX - (horizontalLineLength/2)
+            var toY = lastItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
         }
 
     }
     
-    func getLastFilepointWithCoordinates(filepointLeaf:FilepointLeaf) -> FilepointLeaf
+    func getLastFilepointWithCoordinates(filepointLeaf:PointLeaf) -> PointLeaf
     {
-        var lastNodeWithCoordinates = filepointLeaf.filepointLeafs.first
-        for var i = 0; i < filepointLeaf.filepointLeafs.count ; i++
+        var lastNodeWithCoordinates = filepointLeaf.pointLeafs.first
+        for var i = 0; i < filepointLeaf.pointLeafs.count ; i++
         {
-            if(filepointLeaf.filepointLeafs[i].filepoint.x == 0 && filepointLeaf.filepointLeafs[i].filepoint.y == 0)
+            if(filepointLeaf.pointLeafs[i].filepoint!.x == 0 && filepointLeaf.pointLeafs[i].filepoint!.y == 0)
             {
                 if(i > 0)
                 {
-                    lastNodeWithCoordinates = filepointLeaf.filepointLeafs[i-1]
+                    lastNodeWithCoordinates = filepointLeaf.pointLeafs[i-1]
                     break
                 }
             }
@@ -331,10 +328,10 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         {
             for item in firstimagefile.filepoints
             {
-                let filepointLeaf = FilepointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
+                let filepointLeaf = PointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
                 currentProjectLeaf.filepointLeafs.append(filepointLeaf)
-                filepointLeaf.button.center = CGPointMake(filepointLeaf.button.frame.width + xOffset + horizontalLineLength, yOffset + ((filepointLeaf.button.frame.height + verticalLineLength) * CGFloat(i)))
-                self.addSubview(filepointLeaf.button)
+                filepointLeaf.center = CGPointMake(filepointLeaf.frame.width + xOffset + horizontalLineLength, yOffset + ((filepointLeaf.frame.height + verticalLineLength) * CGFloat(i)))
+                self.addSubview(filepointLeaf)
                 i++
 
             }
@@ -342,17 +339,17 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         
     }
     
-    func fetchFilepointsFromFilepoint(filepointLeaf:FilepointLeaf)
+    func fetchFilepointsFromFilepoint(filepointLeaf:PointLeaf)
     {
-        let xOffset = filepointLeaf.button.center.x
-        let yOffset = filepointLeaf.button.center.y
+        let xOffset = filepointLeaf.center.x
+        let yOffset = filepointLeaf.center.y
         var i = 0
-        for item in filepointLeaf.filepoint.firstImagefile!.filepoints
+        for item in filepointLeaf.currentImage!.filepoints
         {
-            let newFilepointLeaf = FilepointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
-            filepointLeaf.filepointLeafs.append(newFilepointLeaf)
-            self.addSubview(newFilepointLeaf.button)
-            newFilepointLeaf.button.center = CGPointMake(xOffset + leafSize.width + horizontalLineLength, yOffset + ((leafSize.height + verticalLineLength) * CGFloat(i)))
+            let newFilepointLeaf = PointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
+            filepointLeaf.pointLeafs.append(newFilepointLeaf)
+            self.addSubview(newFilepointLeaf)
+            newFilepointLeaf.center = CGPointMake(xOffset + leafSize.width + horizontalLineLength, yOffset + ((leafSize.height + verticalLineLength) * CGFloat(i)))
             i++
         }
     }
@@ -365,22 +362,22 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
    
     
     
-    func findSelecedFilepointLeaf(filepointLeaf:FilepointLeaf, buttonPushed:UIImageView)
+    func findSelecedFilepointLeaf(filepointLeaf:PointLeaf, pointLeafPushed:PointLeaf)
     {
         fadeoutActionButtons()
         
-        var filepointLeafs = filepointLeaf.filepointLeafs
+        var filepointLeafs = filepointLeaf.pointLeafs
         for var i = 0 ; i < filepointLeafs.count ; i++
         {
-            if(filepointLeafs[i].button == buttonPushed)
+            if(filepointLeafs[i] == pointLeafPushed)
             {
                 currentFilepointLeaf = filepointLeafs[i]
                 selectedLeaf.hidden = false
-                selectedLeaf.center = currentFilepointLeaf.button.center
+                selectedLeaf.center = currentFilepointLeaf.center
             }
             else
             {
-                findSelecedFilepointLeaf(filepointLeafs[i],buttonPushed: buttonPushed)
+                findSelecedFilepointLeaf(filepointLeafs[i],pointLeafPushed: pointLeafPushed)
             }
 
         }
@@ -391,24 +388,24 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
     {
         fadeoutActionButtons()
         
-        var button = (sender as UITapGestureRecognizer).view
-        filepointSelectedFromFilepoint(button as UIImageView)
+        var selectedFilepointLeaf = (sender as UITapGestureRecognizer).view?.superview
+        filepointSelectedFromFilepoint(selectedFilepointLeaf as PointLeaf)
     }
     
-    func filepointSelectedFromFilepoint(button:UIImageView)
+    func filepointSelectedFromFilepoint(selectedFilepointLeaf:PointLeaf)
     {
         var filepointLeafs = currentProjectLeaf.filepointLeafs
         for var i = 0 ;  i < filepointLeafs.count ; i++
         {
-            if(filepointLeafs[i].button == button )
+            if(filepointLeafs[i] == selectedFilepointLeaf )
             {
                 currentFilepointLeaf = filepointLeafs[i]
                 selectedLeaf.hidden = false
-                selectedLeaf.center = currentFilepointLeaf.button.center
+                selectedLeaf.center = currentFilepointLeaf.center
             }
             else
             {
-                findSelecedFilepointLeaf(filepointLeafs[i],buttonPushed: (button as UIImageView))
+                findSelecedFilepointLeaf(filepointLeafs[i],pointLeafPushed: selectedFilepointLeaf)
             }
         }
         
@@ -422,19 +419,19 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         setNeedsDisplay()
     }
     
-    func findButtonForFilepointAndSelectIt(filepointToCheck:Filepoint, filepointLeafs:[FilepointLeaf]? = nil)
+    func findLeafForFilepointAndSelectIt(filepointToCheck:Filepoint, pointLeafs:[PointLeaf]? = nil)
     {
-        var _filepointsLeafs = filepointLeafs ?? currentProjectLeaf.filepointLeafs
+        var _pointsLeafs = pointLeafs ?? currentProjectLeaf.filepointLeafs
 
-        for item in _filepointsLeafs
+        for item in _pointsLeafs
         {
-            if(item.filepoint.objectID == filepointToCheck.objectID)
+            if(item.filepoint!.objectID == filepointToCheck.objectID)
             {
-                filepointSelectedFromFilepoint(item.button)
+                filepointSelectedFromFilepoint(item)
             }
             else
             {
-                findButtonForFilepointAndSelectIt(filepointToCheck, filepointLeafs: item.filepointLeafs)
+                findLeafForFilepointAndSelectIt(filepointToCheck, pointLeafs: item.pointLeafs)
             }
         }
     }
@@ -506,8 +503,8 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         if(currentFilepointLeaf != nil)
         {
             self.bringSubviewToFront(deleteNodeButton)
-            var jumpToFilepointButtonY = currentFilepointLeaf.button.center.y > self.frame.height / 2 ? currentFilepointLeaf.button.center.y - currentFilepointLeaf.button.frame.height : currentFilepointLeaf.button.center.y + currentFilepointLeaf.button.frame.height
-            var jumpToFilepointButtonX = currentFilepointLeaf.button.center.x > self.frame.width / 2 ? currentFilepointLeaf.button.center.x - currentFilepointLeaf.button.frame.width : currentFilepointLeaf.button.center.x + currentFilepointLeaf.button.frame.width
+            var jumpToFilepointButtonY = currentFilepointLeaf.center.y > self.frame.height / 2 ? currentFilepointLeaf.center.y - currentFilepointLeaf.frame.height : currentFilepointLeaf.center.y + currentFilepointLeaf.frame.height
+            var jumpToFilepointButtonX = currentFilepointLeaf.center.x > self.frame.width / 2 ? currentFilepointLeaf.center.x - currentFilepointLeaf.frame.width : currentFilepointLeaf.center.x + currentFilepointLeaf.frame.width
             deleteNodeButton.alpha = 0.75
             deleteNodeButton.center = CGPointMake(jumpToFilepointButtonX,jumpToFilepointButtonY)
             
@@ -574,9 +571,9 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
     }
     
     //base ass in checking from projectleafs
-    func getFilepointLeafForFilepointBase(_filepoint:Filepoint) -> FilepointLeaf?
+    func getFilepointLeafForFilepointBase(_filepoint:Filepoint) -> PointLeaf?
     {
-        var filepointLeafToReturn:FilepointLeaf?
+        var filepointLeafToReturn:PointLeaf?
         for projectLeaf in projectLeafs
         {
             for filepointLeaf in projectLeaf.filepointLeafs
@@ -596,15 +593,15 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         return filepointLeafToReturn
     }
     
-    func getFilepointLeafForFilepoint(_filepoint:Filepoint, filepointLeafBase:FilepointLeaf) -> FilepointLeaf?
+    func getFilepointLeafForFilepoint(_filepoint:Filepoint, filepointLeafBase:PointLeaf) -> PointLeaf?
     {
         if(filepointLeafBase.filepoint == _filepoint)
         {
             return filepointLeafBase
         }
         
-        var filepointLeafToReturn:FilepointLeaf?
-        for filepointLeaf in filepointLeafBase.filepointLeafs
+        var filepointLeafToReturn:PointLeaf?
+        for filepointLeaf in filepointLeafBase.pointLeafs
         {
             if(filepointLeaf.filepoint == _filepoint)
             {
@@ -630,21 +627,21 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
     func buildNodesUpToSelectedNode_V2()
     {
         //find project
-        currentProjectLeaf = getProjectleafForFilepoint(currentFilepointLeaf.filepoint)
+        currentProjectLeaf = getProjectleafForFilepoint(currentFilepointLeaf.filepoint!)
         
         fetchFilepointsFromProject()
         for filepointLeaf in currentProjectLeaf.filepointLeafs
         {
-            if(isOnBranchWith(filepointLeaf.filepoint, onBranchWith:currentFilepointLeaf.filepoint))
+            if(isOnBranchWith(filepointLeaf.filepoint!, onBranchWith:currentFilepointLeaf.filepoint!))
             {
                 buildForNode(filepointLeaf)
             }
         }
         
-        currentFilepointLeaf = getFilepointLeafForFilepointBase(currentFilepointLeaf.filepoint)
+        currentFilepointLeaf = getFilepointLeafForFilepointBase(currentFilepointLeaf.filepoint!)
         
         selectedLeaf.hidden = false
-        selectedLeaf.center = currentFilepointLeaf.button.center
+        selectedLeaf.center = currentFilepointLeaf.center
         
         //filepointSelectedFromFilepoint(currentProjectLeaf.button)
     }
@@ -654,7 +651,7 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         fetchFilepointsFromProject()
         for filepointLeaf in currentProjectLeaf.filepointLeafs
         {
-            if(isOnBranchWith(filepointLeaf.filepoint, onBranchWith:currentFilepointLeaf.filepoint))
+            if(isOnBranchWith(filepointLeaf.filepoint!, onBranchWith:currentFilepointLeaf.filepoint!))
             {
                 
                 buildForNode(filepointLeaf)
@@ -662,13 +659,13 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         }
     }
     
-    func buildForNode(filepointLeaf:FilepointLeaf)
+    func buildForNode(filepointLeaf:PointLeaf)
     {
         fetchFilepointsFromFilepoint(filepointLeaf)
-        println("filepointLeaf.filepoint id is \(filepointLeaf.filepoint.objectID)")
-        for filepointLeafItem in filepointLeaf.filepointLeafs
+        println("filepointLeaf.filepoint id is \(filepointLeaf.filepoint!.objectID)")
+        for filepointLeafItem in filepointLeaf.pointLeafs
         {
-            if(isOnBranchWith(filepointLeafItem.filepoint, onBranchWith:currentFilepointLeaf.filepoint))
+            if(isOnBranchWith(filepointLeafItem.filepoint!, onBranchWith:currentFilepointLeaf.filepoint!))
             {
                 //println("parent id is \(filepointLeafItem.filepoint.parent?.objectID)")
                 buildForNode(filepointLeafItem)
@@ -719,14 +716,14 @@ class TreeView:UIView, FilepointLeafProtocol, ProjectLeafProtocol
         }
     }
     
-    func removeFilepointLeaf(filepointLeaf:FilepointLeaf)
+    func removeFilepointLeaf(filepointLeaf:PointLeaf)
     {
-        for var i = 0 ;  i < filepointLeaf.filepointLeafs.count ; i++
+        for var i = 0 ;  i < filepointLeaf.pointLeafs.count ; i++
         {
-            removeFilepointLeaf(filepointLeaf.filepointLeafs[i])
+            removeFilepointLeaf(filepointLeaf.pointLeafs[i])
         }
-        filepointLeaf.filepointLeafs = []
-        filepointLeaf.button.removeFromSuperview()
+        filepointLeaf.pointLeafs = []
+        filepointLeaf.removeFromSuperview()
     }
     
     func deleteNode()

@@ -53,10 +53,13 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
         if(passingFilepoint != nil)
         {
-            visibleContentView.currentFilepointLeaf = FilepointLeaf(_filePoint:passingFilepoint!,_parent:nil,viewRef:nil)
             
+            //MARK: TODO: select given leaf
+            /*
+            visibleContentView.currentFilepointLeaf = FilepointLeaf(_filePoint:passingFilepoint!,_parent:nil,viewRef:nil)
             visibleContentView.buildNodesUpToSelectedNode_V2()
             visibleContentView.setNeedsDisplay()
+            */
         }
         
         
@@ -140,20 +143,20 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
     }
     
-    func addImageToFilepoint(image:UIImage,filepointLeaf:FilepointLeaf)
+    func addImageToFilepoint(image:UIImage,filepointLeaf:PointLeaf)
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         
         var newImagefile = Imagefile.createInManagedObjectContext(self.managedObjectContext!, title:"Imported image \(timestamp)",file:imageData, tags: nil, worktype: workType.dokument)
         
-        filepointLeaf.filepoint.addImagefile(newImagefile)
+        filepointLeaf.filepoint!.addImagefile(newImagefile)
 
         save()
     }
     
     var projectDropLeaf:ProjectLeaf?
-    var filepointDropLeaf:FilepointLeaf?
+    var filepointDropLeaf:PointLeaf?
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
         
         self.touchesMoved(touches, withEvent: event)
@@ -195,17 +198,17 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             {
                 for filepointItem in projectItem.filepointLeafs
                 {
-                    let filepointView = filepointItem.button
+                    let filepointView = filepointItem
                     var isInnView = CGRectContainsPoint(filepointView.frame,touchLocation)
                     if(isInnView)
                     {
                         println("drop inside first-level filepoint")
                         //we only drop on leafs that have childleafs
-                        if(filepointItem.filepointLeafs.count > 0)
+                        if(filepointItem.pointLeafs.count > 0)
                         {
                             filepointDropLeaf = filepointItem
                             addImageToFilepoint(currentTouchedImageView!.image!, filepointLeaf: filepointDropLeaf!)
-                            visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!.button)
+                            visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!)
                             
                             currentTouchedImageView?.removeFromSuperview()
                             return
@@ -231,21 +234,21 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         }
     }
     
-    func findFilepointDrop(filepointLeaf:FilepointLeaf,touchLocation:CGPoint) -> Bool
+    func findFilepointDrop(filepointLeaf:PointLeaf,touchLocation:CGPoint) -> Bool
     {
-        for filepointItem in filepointLeaf.filepointLeafs
+        for filepointItem in filepointLeaf.pointLeafs
         {
-            let filepointView = filepointItem.button
+            let filepointView = filepointItem
             var isInnView = CGRectContainsPoint(filepointView.frame,touchLocation)
             if(isInnView)
             {
                 println("drop inside filepoint")
                 //we only drop on leafs that have childleafs
-                if(filepointItem.filepointLeafs.count > 0)
+                if(filepointItem.pointLeafs.count > 0)
                 {
                     filepointDropLeaf = filepointItem
                     addImageToFilepoint(currentTouchedImageView!.image!, filepointLeaf: filepointDropLeaf!)
-                    visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!.button)
+                    visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!)
                     
                     currentTouchedImageView?.removeFromSuperview()
                     return true
@@ -417,10 +420,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         titlePrompt.addAction(UIAlertAction(title: "Ok",
             style: .Default,
             handler: { (action) -> Void in
-                var parent = self.visibleContentView!.currentFilepointLeaf.filepoint.imagefile!.filepoint
+                var parent = self.visibleContentView!.currentFilepointLeaf.filepoint!.imagefile!.filepoint
                 //println("aaaa parentID \(parent!.objectID) ")
                 //println("aaaa basenodeD \(self.visibleContentView!.currentFilepointLeaf!.filepoint.objectID) ")
-                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint)
+                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint!)
                 self.save()
                 if(parent == nil)
                 {
@@ -430,7 +433,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
                 }
                 else
                 {
-                    self.visibleContentView!.findButtonForFilepointAndSelectIt(parent!)
+                    self.visibleContentView!.findLeafForFilepointAndSelectIt(parent!)
                 }
                 
                 
@@ -520,7 +523,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             var svc = segue!.destinationViewController as FilepointListViewController
             if(self.visibleContentView.currentFilepointLeaf != nil)
             {
-                svc.imagefile = self.visibleContentView.currentFilepointLeaf.filepoint.imagefiles.allObjects.first as Imagefile
+                svc.imagefile = self.visibleContentView.currentFilepointLeaf.filepoint!.imagefiles.allObjects.first as Imagefile
             }
                 /*
             else if(self.visibleContentView.currentProjectLeaf != nil)

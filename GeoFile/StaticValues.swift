@@ -42,6 +42,11 @@ enum drawColorEnum: Int
     case white = 0,black,red,blue
 }
 
+enum leafType: Int
+{
+    case mappoint = 0,imagepoint
+}
+
 enum workType:Int
 {
     case info = 0

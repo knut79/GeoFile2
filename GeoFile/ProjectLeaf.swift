@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 knut. All rights reserved.
 //
 
+//OBSOLETE
+
 import Foundation
 
 protocol ProjectLeafProtocol
@@ -20,7 +22,7 @@ class ProjectLeaf
     var button:UIImageView!
     var imageViews:[UIImageView]
     var selected:Bool = false
-    var filepointLeafs:[FilepointLeaf]
+    var filepointLeafs:[PointLeaf]
     
     init(_project:Project, imagesfileItems:NSSet, viewRef:UIView)
     {
