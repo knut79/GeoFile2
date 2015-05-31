@@ -23,6 +23,7 @@
 		721C6FA81B03585100565D0A /* Imagefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA71B03585100565D0A /* Imagefile.swift */; };
 		7249D46E1B0F2D00008AE9CF /* ImageInstanceWithIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7249D46D1B0F2D00008AE9CF /* ImageInstanceWithIcon.swift */; };
 		7249D4701B1011AB008AE9CF /* PointElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7249D46F1B1011AB008AE9CF /* PointElement.swift */; };
+		7249D4751B1B1F2F008AE9CF /* OverlayDropzone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7249D4741B1B1F2F008AE9CF /* OverlayDropzone.swift */; };
 		727A212F1AEE5AC60067BC4A /* FilepointListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */; };
 		727A21311AF039E50067BC4A /* SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21301AF039E50067BC4A /* SharedInstance.swift */; };
 		727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21321AF042690067BC4A /* StaticFunctions.swift */; };
@@ -37,7 +38,7 @@
 		72A297261ADB473700F8D584 /* Angle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A297251ADB473700F8D584 /* Angle.swift */; };
 		72A297281ADFA7D200F8D584 /* Drawntext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A297271ADFA7D200F8D584 /* Drawntext.swift */; };
 		72A2A95F1AF8C20C00E4C49F /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A2A95E1AF8C20C00E4C49F /* Overlay.swift */; };
-		72A2A9611AF980C800E4C49F /* OverlayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A2A9601AF980C800E4C49F /* OverlayNode.swift */; };
+		72A2A9611AF980C800E4C49F /* OverlayLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A2A9601AF980C800E4C49F /* OverlayLeaf.swift */; };
 		72A2A9651AFA19BD00E4C49F /* pictureOverviewStrechWidth.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A9631AFA19BD00E4C49F /* pictureOverviewStrechWidth.png */; };
 		72A2A9661AFA19BD00E4C49F /* pictureOverviewStrechHeight.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A9641AFA19BD00E4C49F /* pictureOverviewStrechHeight.png */; };
 		72A2A9681AFA1A6100E4C49F /* pictureOverviewSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A9671AFA1A6100E4C49F /* pictureOverviewSmall.png */; };
@@ -108,6 +109,7 @@
 		721C6FA71B03585100565D0A /* Imagefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Imagefile.swift; sourceTree = "<group>"; };
 		7249D46D1B0F2D00008AE9CF /* ImageInstanceWithIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageInstanceWithIcon.swift; sourceTree = "<group>"; };
 		7249D46F1B1011AB008AE9CF /* PointElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointElement.swift; sourceTree = "<group>"; };
+		7249D4741B1B1F2F008AE9CF /* OverlayDropzone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayDropzone.swift; sourceTree = "<group>"; };
 		727A212E1AEE5AC60067BC4A /* FilepointListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilepointListViewController.swift; sourceTree = "<group>"; };
 		727A21301AF039E50067BC4A /* SharedInstance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedInstance.swift; sourceTree = "<group>"; };
 		727A21321AF042690067BC4A /* StaticFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticFunctions.swift; sourceTree = "<group>"; };
@@ -124,7 +126,7 @@
 		72A297271ADFA7D200F8D584 /* Drawntext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawntext.swift; sourceTree = "<group>"; };
 		72A2A95D1AF8BFE200E4C49F /* GeoFile 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 9.xcdatamodel"; sourceTree = "<group>"; };
 		72A2A95E1AF8C20C00E4C49F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
-		72A2A9601AF980C800E4C49F /* OverlayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayNode.swift; sourceTree = "<group>"; };
+		72A2A9601AF980C800E4C49F /* OverlayLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayLeaf.swift; sourceTree = "<group>"; };
 		72A2A9621AF9A2B600E4C49F /* GeoFile 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 10.xcdatamodel"; sourceTree = "<group>"; };
 		72A2A9631AFA19BD00E4C49F /* pictureOverviewStrechWidth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewStrechWidth.png; path = pictures/pictureOverviewStrechWidth.png; sourceTree = "<group>"; };
 		72A2A9641AFA19BD00E4C49F /* pictureOverviewStrechHeight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pictureOverviewStrechHeight.png; path = pictures/pictureOverviewStrechHeight.png; sourceTree = "<group>"; };
@@ -231,11 +233,12 @@
 		7249D4731B15DC8B008AE9CF /* Treeview */ = {
 			isa = PBXGroup;
 			children = (
-				72A2A9601AF980C800E4C49F /* OverlayNode.swift */,
+				72A2A9601AF980C800E4C49F /* OverlayLeaf.swift */,
 				729A56931AE9A4690034418E /* ProjectLeaf.swift */,
 				729A56951AE9A4AE0034418E /* PointLeaf.swift */,
 				72CAF4341AE7DD3300B4072B /* TreeViewController.swift */,
 				729A568F1AE819500034418E /* TreeView.swift */,
+				7249D4741B1B1F2F008AE9CF /* OverlayDropzone.swift */,
 			);
 			name = Treeview;
 			sourceTree = "<group>";
@@ -483,6 +486,7 @@
 				721C6FA81B03585100565D0A /* Imagefile.swift in Sources */,
 				720B8C9D1AC8A6B900064B86 /* PictureHelper.swift in Sources */,
 				7249D4701B1011AB008AE9CF /* PointElement.swift in Sources */,
+				7249D4751B1B1F2F008AE9CF /* OverlayDropzone.swift in Sources */,
 				72CAF4351AE7DD3300B4072B /* TreeViewController.swift in Sources */,
 				729A569A1AEB08250034418E /* CustomButton.swift in Sources */,
 				72A5988F1AD97C0100918CCD /* DrawView.swift in Sources */,
@@ -491,7 +495,7 @@
 				720E94E01AFE9618007946FA /* Drawingtext.swift in Sources */,
 				72A297281ADFA7D200F8D584 /* Drawntext.swift in Sources */,
 				729A56961AE9A4AE0034418E /* PointLeaf.swift in Sources */,
-				72A2A9611AF980C800E4C49F /* OverlayNode.swift in Sources */,
+				72A2A9611AF980C800E4C49F /* OverlayLeaf.swift in Sources */,
 				72A598861AD5FCCA00918CCD /* EditProjectView.swift in Sources */,
 				72A297261ADB473700F8D584 /* Angle.swift in Sources */,
 				72FE6A301AC0234B00FF792D /* MapOverviewViewController.swift in Sources */,

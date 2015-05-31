@@ -45,11 +45,13 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         let strechedHeight = UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 2)
         overviewScrollView = UIScrollView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight - 100))
         overviewScrollView.backgroundColor = UIColor.whiteColor()
-        visibleContentView = TreeView(frame: CGRectMake(0, 0, overviewScrollView.frame.size.width * 1.4, overviewScrollView.frame.size.height * 1.4))
+        visibleContentView = TreeView(frame: CGRectMake(0, 0, overviewScrollView.frame.size.width , overviewScrollView.frame.size.height),delegate:self)
         visibleContentView.backgroundColor = UIColor.clearColor()
-        visibleContentView.delegate = self
+        //visibleContentView.delegate = self
+        //overviewScrollView.clipsToBounds = true
+        //overviewScrollView.autoresizesSubviews = false
         overviewScrollView.addSubview(visibleContentView)
-        overviewScrollView.contentSize = visibleContentView.frame.size
+        //overviewScrollView.contentSize = visibleContentView.bounds.size
         
         if(passingFilepoint != nil)
         {
@@ -72,6 +74,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         overviewScrollView.zoomScale = minScale
         overviewScrollView.delegate = self
 
+
+        
         self.view.addSubview(overviewScrollView)
         
         populatePdfImages()
@@ -82,11 +86,18 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         return true
     }
     
+    func setContentsize(size:CGSize)
+    {
+        //let newWidth = overviewScrollView.contentSize.width < size.width ? size.width : overviewScrollView.contentSize.width
+        //let newHeight = overviewScrollView.contentSize.height < size.height ? size.height : overviewScrollView.contentSize.height
+        overviewScrollView.contentSize = size // CGSizeMake(newWidth,newHeight)
+    }
+    
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if(scrollView == overviewScrollView)
         {
             visibleContentView.fadeoutActionButtons()
-            visibleContentView.unselectAllOverlayNodes()
+            visibleContentView.unselectAllOverlayLeafs()
         }
 
     }
@@ -132,13 +143,13 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
     }
     
-    func addImageToProject(image:UIImage,projectLeaf:ProjectLeaf)
+    func addImageToProject(image:UIImage,projectLeaf:PointLeaf)
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         //(moc: NSManagedObjectContext, title: String, file: NSData, tags:String, worktype:Int)
         var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, tags:nil, worktype:workType.info)
-        projectLeaf.project.addImagefile(newImagefileItem)
+        projectLeaf.project!.addImagefile(newImagefileItem)
         save()
         
     }
@@ -155,7 +166,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         save()
     }
     
-    var projectDropLeaf:ProjectLeaf?
+    var projectDropLeaf:PointLeaf?
     var filepointDropLeaf:PointLeaf?
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
         
@@ -167,7 +178,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         //check overlay node
         
         
-        var isInnView = CGRectContainsPoint(visibleContentView.overlayNode.frame,touchLocation)
+        var isInnView = CGRectContainsPoint(visibleContentView.overlayDropzone.frame,touchLocation)
         if(isInnView)
         {
             println("drop inside overlays")
@@ -181,7 +192,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         //check for project and filepoint nodes
         for projectItem in visibleContentView.projectLeafs
         {
-            let projectView = projectItem.button
+            let projectView = projectItem
             var isInnView = CGRectContainsPoint(projectView.frame,touchLocation)
             if(isInnView)
             {
@@ -189,14 +200,14 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
                 projectDropLeaf = projectItem
                 addImageToProject(currentTouchedImageView!.image!, projectLeaf: projectDropLeaf!)
                 //imit select of project
-                visibleContentView.projectSelected(projectDropLeaf!.button)
+                visibleContentView.projectSelected(projectDropLeaf!)
                 
                 currentTouchedImageView?.removeFromSuperview()
                 return
             }
             else
             {
-                for filepointItem in projectItem.filepointLeafs
+                for filepointItem in projectItem.pointLeafs
                 {
                     let filepointView = filepointItem
                     var isInnView = CGRectContainsPoint(filepointView.frame,touchLocation)
@@ -391,7 +402,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         titlePrompt.addAction(UIAlertAction(title: "Ok",
             style: .Default,
             handler: { (action) -> Void in
-                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.project)
+                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.project!)
                 self.save()
                 self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
                 self.visibleContentView!.fetchProjects()

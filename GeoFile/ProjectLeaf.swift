@@ -16,7 +16,7 @@ protocol ProjectLeafProtocol
     func showActionButtonsForProject(sender:AnyObject)
 }
 
-class ProjectLeaf
+class XProjectLeaf
 {
     var project:Project
     var button:UIImageView!

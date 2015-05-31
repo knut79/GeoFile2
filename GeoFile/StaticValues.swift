@@ -37,6 +37,11 @@
 //↕️ ↔️ expand
 // ➕ ➖ ➗ zoom
 
+//show 💡 🔦🔎
+//delete 🚮
+
+//send 📤
+
 enum drawColorEnum: Int
 {
     case white = 0,black,red,blue
@@ -142,16 +147,18 @@ let drawingArcRadius:CGFloat = 40
 let drawingTextPointSize:CGFloat = 17
 
 //used by treeview
-let leafSize = CGSizeMake( 60, 40)
+let leafSize = CGSizeMake( 200 , 200)
 let horizontalLineLength:CGFloat = 20
 let verticalLineLength:CGFloat = 20
 
 let buttonBarHeight:CGFloat = 44
 let buttonIconSide:CGFloat = 50
 let buttonIconSideSmall:CGFloat = 40
+let imageInstanceSides:CGFloat = 40
 let imageinstanceSideSmall:CGFloat = 50
 let imageinstanceSideBig:CGFloat = imageinstanceSideSmall * 2
 let elementMargin:CGFloat = 10
+let leafMargin:CGFloat = 5
 //UIScreen.mainScreen().bounds.size.width * 0.5
 
 
