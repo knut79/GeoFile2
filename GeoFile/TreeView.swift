@@ -11,7 +11,6 @@ import CoreData
 
 protocol TreeViewProtocol
 {
-    func setNewContentSize()
     func jumpToFilepoint()
     func showOverlay()
     func setEditOverlay()
@@ -19,9 +18,12 @@ protocol TreeViewProtocol
     func deleteProjectNode()
     func deleteOverlayNode()
     func setContentsize(size:CGSize)
+    func setupImageInstancesScrollView(pointLeaf:PointLeaf)
+    func setScrollViewSizeBig()
+    func setScrollViewSizeSmall()
 }
 
-class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
+class TreeView:UIView, PointLeafProtocol
 {
 
     var imageViewTest:UIImageView!
@@ -106,13 +108,14 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
         CGContextSetLineDash(currentContext, 0.0, ra, 2);
         var fromX = overlayDropzone.center.x
         var fromY = overlayDropzone.center.y
-        CGContextMoveToPoint(currentContext,fromX, fromY);
+        CGContextMoveToPoint(currentContext,fromX, fromY)
         for item in overlayLeafs
         {
             var toX = item.center.x
             var toY = item.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
+            CGContextMoveToPoint(currentContext,toX, toY)
         }
     }
     
@@ -177,9 +180,9 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
             //draw horizontal line
             let item = filepointLeaf
             CGContextSetLineWidth(currentContext,3.0)
-            var x = item.frame.maxX
+            var x = item.center.x
             var y = item.center.y
-            var drawToX = x + ( horizontalLineLength / 2 )
+            var drawToX = x + filepointLeaf.frame.width //( horizontalLineLength / 2 )
             CGContextMoveToPoint(currentContext,x, y);
             CGContextAddLineToPoint(currentContext,drawToX, y);
             CGContextStrokePath(currentContext);
@@ -195,32 +198,33 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
                 //CGContextSetLineDash(currentContext, 0.0, lengths, 2)
                 if(item.filepoint!.x != 0 && item.filepoint!.y != 0)
                 {
-                CGContextSetLineWidth(currentContext,3.0)
-                var x = item.frame.minX
-                var y = item.center.y
-                var drawToX = x - ( horizontalLineLength / 2 )
-                CGContextMoveToPoint(currentContext,x, y);
-                CGContextAddLineToPoint(currentContext,drawToX, y);
-                CGContextStrokePath(currentContext);
+                    CGContextSetLineWidth(currentContext,3.0)
+                    var x = item.center.x
+                    var y = item.center.y
+                    var drawToX = x - (item.frame.width / 2) //( horizontalLineLength / 2 )
+                    CGContextMoveToPoint(currentContext,x, y)
+                    CGContextAddLineToPoint(currentContext,drawToX, y)
+                    CGContextStrokePath(currentContext);
                 }
             }
 
 
-                drawFilepointsFromFilepoint(currentContext,filepointLeaf: item)
+            drawFilepointsFromFilepoint(currentContext,filepointLeaf: item)
 
         }
         
+        //vertical line
         if let item = filepointLeaf.pointLeafs.first
         {
             var firstItem = item
-            var fromX = firstItem.frame.minX - (horizontalLineLength/2)
+            var fromX = firstItem.frame.minX //+ (horizontalLineLength/2)
             var fromY = firstItem.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
         
 
             //var lastButtonItem = getLastFilepointWithCoordinates(filepointLeaf).button
             var lastItem = filepointLeaf.pointLeafs.last!
-            var toX = lastItem.frame.minX - (horizontalLineLength/2)
+            var toX = lastItem.frame.minX // (horizontalLineLength/2)
             var toY = lastItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
@@ -280,7 +284,7 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
             for item in fetchResults
             {
                 var node = OverlayLeaf(overlay:item as Overlay, viewRef:self)
-                node.center =  CGPointMake(overlayDropzone.frame.maxX + ((node.frame.width / 2) * CGFloat(i)),  overlayDropzone.center.y)
+                node.center =  CGPointMake(overlayDropzone.center.x + (node.frame.width * CGFloat(i)),  overlayDropzone.center.y)
                 overlayLeafs.append(node)
                 expandContentsize(node.frame)
                 self.addSubview(node)
@@ -307,10 +311,7 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
                 newProjectLeaf.center = CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (leafSize.width/2), (UIScreen.mainScreen().bounds.size.height * 0.2) + ((leafSize.height ) * CGFloat(i)) + overlayNodeMargin)
                 
                 expandContentsize(newProjectLeaf.frame)
-                
-                
                 self.addSubview(newProjectLeaf)
-                //self.addSubview(buttonTest)
                 i++
             }
 
@@ -332,24 +333,15 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
         delegate?.setContentsize(newSize)
     }
 
-    func testSelected(sender:UITapGestureRecognizer)
-    {
-        var test = "test"
-    }
-    
-    func heiTest()
-    {
-        var test = "hei"
-    }
     
     func fetchFilepointsFromProject()
     {
         let xOffset = currentProjectLeaf.center.x
         let yOffset = currentProjectLeaf.center.y
         var i = 0
-        if let firstimagefile = currentProjectLeaf.project!.firstImagefile
+        if let currentImagefile = currentProjectLeaf.currentImage //.project!.firstImagefile
         {
-            for item in firstimagefile.filepoints
+            for item in currentImagefile.filepoints
             {
                 let filepointLeaf = PointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
                 currentProjectLeaf.pointLeafs.append(filepointLeaf)
@@ -378,12 +370,6 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
             
             i++
         }
-    }
-    
-    func expandFrame(maxPoint:CGPoint)
-    {
-        self.frame =  CGRectMake(0, 0, self.frame.size.width > maxPoint.x ? self.frame.size.width : maxPoint.x, self.frame.size.height > maxPoint.y ? self.frame.size.height : (maxPoint.y + projectLeafs.first!.frame.height))
-        delegate!.setNewContentSize()
     }
    
     
@@ -446,25 +432,53 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
         removeProjectLeafs()
         */
         
-        buildNodesUpToSelectedNode()
+        
         
         for item in projectLeafs
         {
             item.unselectLeaf()
         }
+        unselectAllLeafsOnCurrentProjectLeaf()
+
+        //buildNodesUpToSelectedNode()
+        buildForNode(currentFilepointLeaf)
         
+        currentFilepointLeaf.selectLeaf()
+        
+        setNeedsDisplay()
+
+    }
+    
+    func unselectAllLeafsOnCurrentProjectLeaf()
+    {
         for item in currentProjectLeaf.pointLeafs
         {
+            item.unselectLeaf()
+            
+            unselectAllLeafsOnPointLeaf(item as PointLeaf)
+            /*
             if(item != currentFilepointLeaf)
             {
                 item.unselectLeaf()
             }
+            */
         }
-
-        selectedFilepointLeaf.selectLeaf()
-        
-        setNeedsDisplay()
-
+    }
+    
+    func unselectAllLeafsOnPointLeaf(pointLeaf:PointLeaf)
+    {
+        for item in pointLeaf.pointLeafs
+        {
+            item.unselectLeaf()
+            
+            unselectAllLeafsOnPointLeaf(item as PointLeaf)
+            /*
+            if(item != currentFilepointLeaf)
+            {
+            item.unselectLeaf()
+            }
+            */
+        }
     }
     
     func findLeafForFilepointAndSelectIt(filepointToCheck:Filepoint, pointLeafs:[PointLeaf]? = nil)
@@ -532,6 +546,9 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
         overlayLeaf.selectLeaf()
         
         setNeedsDisplay()
+        
+        //remove imageinstances from scrollview
+        //delegate!.setScrollViewSize(CGSizeMake(self.frame.width, self.frame.height))
     }
     
     var actionForOverlay = false
@@ -641,13 +658,15 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
         
         //expandFrame(CGPointMake(projectLeafs.last!.button.frame.maxX, projectLeafs.last!.button.frame.maxY))//   projectButtons.last?.frame.maxX, projectButtons.last?.frame.maxY!))
         setNeedsDisplay()
+
+        delegate?.setupImageInstancesScrollView(currentProjectLeaf)
     }
 
     func getProjectleafForFilepoint(_filepoint:Filepoint) -> PointLeaf?
     {
         for projectLeaf in projectLeafs
         {
-            for filepoint in projectLeaf.project!.firstImagefile!.filepoints
+            for filepoint in projectLeaf.currentImage!.filepoints
             {
                 if(isOnBranchWith(filepoint as Filepoint, onBranchWith:_filepoint))
                 {
@@ -746,6 +765,7 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
             }
         }
     }
+
     
     func buildForNode(filepointLeaf:PointLeaf)
     {
@@ -833,6 +853,11 @@ class TreeView:UIView, PointLeafProtocol, ProjectLeafProtocol
 
             
         }
+    }
+    
+    func findPointLeafForImagefileAndSetNewCurrentImageInstance(imagefile:Imagefile)
+    {
+        
     }
     
     func save() {

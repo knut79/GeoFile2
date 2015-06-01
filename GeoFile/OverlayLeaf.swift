@@ -35,6 +35,8 @@ class OverlayLeaf: UIView
         imageView = UIImageView(frame: CGRectMake(0, 0, imageInstanceSides, imageInstanceSides))
         
         imageView.userInteractionEnabled = true
+        imageView.layer.borderColor = UIColor.grayColor().CGColor
+        imageView.layer.borderWidth = 2.0;
         var image = UIImage(data: overlay.file)
         imageView.image = image
         imageView.center =  CGPointMake(self.frame.width / 2, self.frame.height / 2)

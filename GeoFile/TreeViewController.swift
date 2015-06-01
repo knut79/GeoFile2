@@ -24,6 +24,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
     var incommingFilesView: UIView!
+    var incommingFilesViewHeight:CGFloat = 100
+    var imageInstancesScrollView:UIScrollView!
     var imageViews:[UIImageView] = []
     var yOffset:CGFloat!
     //MARK:
@@ -31,27 +33,27 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         super.viewDidLoad()
         
         yOffset = UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 2)
-        incommingFilesView = UIView(frame: CGRectMake(0, yOffset, UIScreen.mainScreen().bounds.size.width , 100))
+        incommingFilesView = UIView(frame: CGRectMake(0, yOffset, UIScreen.mainScreen().bounds.size.width , incommingFilesViewHeight))
         incommingFilesView.hidden = true
+        incommingFilesView.layer.borderColor = UIColor.grayColor().CGColor
+        incommingFilesView.layer.borderWidth = 2.0;
 
         self.view.addSubview(incommingFilesView)
         
         var viewFrame = self.view.frame
 
-
         topNavigationBar.showForViewtype(.tree)
-        
 
-        let strechedHeight = UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 2)
-        overviewScrollView = UIScrollView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight - 100))
+        let strechedHeight = UIScreen.mainScreen().bounds.size.height - buttonBarHeight
+        overviewScrollView = UIScrollView(frame: CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, strechedHeight))
         overviewScrollView.backgroundColor = UIColor.whiteColor()
-        visibleContentView = TreeView(frame: CGRectMake(0, 0, overviewScrollView.frame.size.width , overviewScrollView.frame.size.height),delegate:self)
+        visibleContentView = TreeView(frame: CGRectMake(0, 0, overviewScrollView.frame.size.width , overviewScrollView.frame.size.height ),delegate:self)
         visibleContentView.backgroundColor = UIColor.clearColor()
         //visibleContentView.delegate = self
         //overviewScrollView.clipsToBounds = true
         //overviewScrollView.autoresizesSubviews = false
         overviewScrollView.addSubview(visibleContentView)
-        //overviewScrollView.contentSize = visibleContentView.bounds.size
+        overviewScrollView.contentSize = visibleContentView.bounds.size
         
         if(passingFilepoint != nil)
         {
@@ -77,6 +79,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
 
         
         self.view.addSubview(overviewScrollView)
+
         
         populatePdfImages()
         
@@ -86,11 +89,119 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         return true
     }
     
+    func setupImageInstancesScrollView(pointLeaf:PointLeaf)
+    {
+        setScrollViewSizeSmall()
+
+        
+        /*
+        var imageInstances:[ImageInstanceWithIcon]? = []
+        for imagefile in pointLeaf.project!.imagefiles
+        {
+            let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
+            imageInstances?.append(imageView)
+        }
+        */
+        
+        
+        if(imageInstancesScrollView != nil)
+        {
+            imageInstancesScrollView.removeFromSuperview()
+            imageInstancesScrollView = nil
+        }
+        if pointLeaf.imageInstances?.count > 0
+        {
+            
+            imageInstancesScrollView = UIScrollView(frame: CGRectMake(0, self.view.frame.height - 100, self.view.frame.width, 100))
+            imageInstancesScrollView.contentSize = CGSizeMake(CGFloat(pointLeaf.imageInstances!.count) * 100, 100)
+            imageInstancesScrollView.delegate = self
+            
+            var index:CGFloat = 0
+            for imageView in pointLeaf.imageInstances!
+            {
+                var newImageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imageView.imagefile)
+                newImageView.frame = CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig)
+                //
+                
+                //imageView.transform = CGAffineTransformIdentity
+                newImageView.center = CGPointMake((newImageView.frame.width / 2) + (index * imageinstanceSideBig), newImageView.frame.height / 2)
+                index++
+                
+                var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesTapped:")
+                tapRecognizer.numberOfTapsRequired = 1
+                imageView.addGestureRecognizer(tapRecognizer)
+                
+                self.imageInstancesScrollView.addSubview(newImageView)
+                if(pointLeaf.currentImage == imageView.imagefile)
+                {
+                    newImageView.layer.borderColor = UIColor.greenColor().CGColor
+                    newImageView.layer.borderWidth = 2.0;
+                }
+            }
+
+            /*
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                var index:CGFloat = 0
+                for imageView in self.imageInstances!
+                {
+                    imageView.transform = CGAffineTransformIdentity
+                    imageView.center = CGPointMake(self.imageInstancesScrollView.frame.origin.x + (imageView.frame.width / 2) + (index * imageinstanceSideBig),self.imageInstancesScrollView.frame.origin.y +  imageView.frame.height / 2)
+                    if imageView.imagefile == self.currentImagefile
+                    {
+                        imageView.layer.borderColor = UIColor.greenColor().CGColor
+                        imageView.layer.borderWidth = 2.0;
+                    }
+                    index++
+                    
+                }
+                
+                }, completion: { (value: Bool) in
+                    
+                    var index:CGFloat = 0
+                    for imageView in self.imageInstances!
+                    {
+                        imageView.transform = CGAffineTransformIdentity
+                        imageView.center = CGPointMake((imageView.frame.width / 2) + (index * imageinstanceSideBig), imageView.frame.height / 2)
+                        index++
+                        
+                        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesBigTapped:")
+                        tapRecognizer.numberOfTapsRequired = 1
+                        imageView.addGestureRecognizer(tapRecognizer)
+                        
+                        self.imageInstancesScrollView.addSubview(imageView)
+                    }
+            })*/
+            
+            
+            self.view.addSubview(imageInstancesScrollView)
+        }
+    }
+    
+    func imageinstancesTapped(sender:UITapGestureRecognizer)
+    {
+        if let imageInstanceWithIcon = sender.view as? ImageInstanceWithIcon
+        {
+            visibleContentView.findPointLeafForImagefileAndSetNewCurrentImageInstance(imageInstanceWithIcon.imagefile)
+        }
+    }
+    
     func setContentsize(size:CGSize)
     {
         //let newWidth = overviewScrollView.contentSize.width < size.width ? size.width : overviewScrollView.contentSize.width
         //let newHeight = overviewScrollView.contentSize.height < size.height ? size.height : overviewScrollView.contentSize.height
         overviewScrollView.contentSize = size // CGSizeMake(newWidth,newHeight)
+    }
+    
+    func setScrollViewSizeSmall()
+    {
+        let strechedHeight = UIScreen.mainScreen().bounds.size.height - buttonBarHeight - incommingFilesViewHeight
+        overviewScrollView.frame.size = CGSizeMake(UIScreen.mainScreen().bounds.size.width, strechedHeight)
+    }
+    
+    func setScrollViewSizeBig()
+    {
+        let strechedHeight = UIScreen.mainScreen().bounds.size.height - buttonBarHeight
+        overviewScrollView.frame.size = CGSizeMake(UIScreen.mainScreen().bounds.size.width, strechedHeight)
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -109,12 +220,18 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         {
             return
         }
+        
+        
+        //set up frame for treeview
+        setScrollViewSizeSmall()
+        
         incommingFilesView.hidden = false
+        self.view.bringSubviewToFront(incommingFilesView)
         var xOffset:CGFloat = 0
-        var widthPerItem:CGFloat = pdfImages!.count < 3 ? 100 : UIScreen.mainScreen().bounds.size.width / CGFloat(pdfImages!.count)
+        var widthPerItem:CGFloat = pdfImages!.count < 3 ? incommingFilesViewHeight : UIScreen.mainScreen().bounds.size.width / CGFloat(pdfImages!.count)
         for image in pdfImages!
         {
-            var imageView = UIImageView(frame: CGRectMake(xOffset, 0, 100, widthPerItem))
+            var imageView = UIImageView(frame: CGRectMake(xOffset, 0, incommingFilesViewHeight, widthPerItem))
             imageView.backgroundColor = UIColor.clearColor()
             imageView.layer.borderColor = UIColor.blackColor().CGColor
             imageView.layer.borderWidth = 2.0;
@@ -148,21 +265,17 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         var imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         //(moc: NSManagedObjectContext, title: String, file: NSData, tags:String, worktype:Int)
-        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, tags:nil, worktype:workType.info)
-        projectLeaf.project!.addImagefile(newImagefileItem)
+        var newImagefile = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData, tags:nil, worktype:workType.dokument)
+        projectLeaf.project!.addImagefile(newImagefile)
         save()
-        
     }
     
-    func addImageToFilepoint(image:UIImage,filepointLeaf:PointLeaf)
+    func addImageToFilepoint(image:UIImage,filepointLeaf:PointLeaf) 
     {
         var imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
-        
         var newImagefile = Imagefile.createInManagedObjectContext(self.managedObjectContext!, title:"Imported image \(timestamp)",file:imageData, tags: nil, worktype: workType.dokument)
-        
         filepointLeaf.filepoint!.addImagefile(newImagefile)
-
         save()
     }
     
@@ -192,16 +305,21 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         //check for project and filepoint nodes
         for projectItem in visibleContentView.projectLeafs
         {
-            let projectView = projectItem
-            var isInnView = CGRectContainsPoint(projectView.frame,touchLocation)
+
+            var isInnView = CGRectContainsPoint(projectItem.frame,touchLocation)
             if(isInnView)
             {
+                if(currentTouchedImageView == nil)
+                {
+                    println("no touched imageView")
+                    return
+                }
                 println("drop inside project")
-                projectDropLeaf = projectItem
-                addImageToProject(currentTouchedImageView!.image!, projectLeaf: projectDropLeaf!)
+                addImageToProject(currentTouchedImageView!.image!, projectLeaf: projectItem)
                 //imit select of project
-                visibleContentView.projectSelected(projectDropLeaf!)
-                
+                //TODO: reload images
+                //visibleContentView.projectSelected(projectDropLeaf!)
+                projectItem.reloadImageInstances()
                 currentTouchedImageView?.removeFromSuperview()
                 return
             }
@@ -209,21 +327,17 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             {
                 for filepointItem in projectItem.pointLeafs
                 {
-                    let filepointView = filepointItem
-                    var isInnView = CGRectContainsPoint(filepointView.frame,touchLocation)
+                    var isInnView = CGRectContainsPoint(filepointItem.frame,touchLocation)
                     if(isInnView)
                     {
                         println("drop inside first-level filepoint")
-                        //we only drop on leafs that have childleafs
-                        if(filepointItem.pointLeafs.count > 0)
-                        {
-                            filepointDropLeaf = filepointItem
-                            addImageToFilepoint(currentTouchedImageView!.image!, filepointLeaf: filepointDropLeaf!)
-                            visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!)
-                            
-                            currentTouchedImageView?.removeFromSuperview()
-                            return
-                        }
+
+                        filepointDropLeaf = filepointItem
+                        addImageToFilepoint(currentTouchedImageView!.image!, filepointLeaf: filepointItem)
+                        //visibleContentView.filepointSelectedFromFilepoint(filepointItem)
+                        filepointItem.reloadImageInstances()
+                        currentTouchedImageView?.removeFromSuperview()
+                        return
                     }
                     else
                     {
@@ -249,21 +363,16 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     {
         for filepointItem in filepointLeaf.pointLeafs
         {
-            let filepointView = filepointItem
-            var isInnView = CGRectContainsPoint(filepointView.frame,touchLocation)
+            var isInnView = CGRectContainsPoint(filepointItem.frame,touchLocation)
             if(isInnView)
             {
                 println("drop inside filepoint")
-                //we only drop on leafs that have childleafs
-                if(filepointItem.pointLeafs.count > 0)
-                {
-                    filepointDropLeaf = filepointItem
-                    addImageToFilepoint(currentTouchedImageView!.image!, filepointLeaf: filepointDropLeaf!)
-                    visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!)
-                    
-                    currentTouchedImageView?.removeFromSuperview()
-                    return true
-                }
+
+                addImageToFilepoint(currentTouchedImageView!.image!, filepointLeaf: filepointItem)
+                //visibleContentView.filepointSelectedFromFilepoint(filepointDropLeaf!)
+                filepointItem.reloadImageInstances()
+                currentTouchedImageView?.removeFromSuperview()
+                return true
             }
             else
             {
@@ -278,20 +387,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     }
     
     //MARK: TreeViewProtocol
-    func setNewContentSize()
-    {
-        overviewScrollView.contentSize = visibleContentView.frame.size
-        
-        let scrollViewFrame = overviewScrollView.frame
-        let scaleWidth = scrollViewFrame.size.width / overviewScrollView.contentSize.width
-        let scaleHeight = scrollViewFrame.size.height / overviewScrollView.contentSize.height
-        let minScale = max(scaleWidth, scaleHeight)
-        overviewScrollView.minimumZoomScale = minScale
-        overviewScrollView.maximumZoomScale = 1.0
-        overviewScrollView.zoomScale = minScale
-        
-        visibleContentView.setNeedsDisplay()
-    }
+
 
     //MARK: UIScrollViewDelegate
     

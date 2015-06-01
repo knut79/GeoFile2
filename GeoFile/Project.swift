@@ -30,7 +30,21 @@ class Project: NSManagedObject {
     var firstImagefile:Imagefile?
         {
         get{
-            return imagefiles.count > 0 ? self.imagefiles.allObjects.first as Imagefile : nil
+            if imagefiles.count > 0
+            {
+                for item in imagefiles
+                {
+                    if( (item as Imagefile).worktype == Int16(workType.info.rawValue))
+                    {
+                        return item as Imagefile
+                    }
+                }
+                return self.imagefiles.allObjects.first as Imagefile
+            }
+            else
+            {
+                return nil
+            }
         }
     }
     

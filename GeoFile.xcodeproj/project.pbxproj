@@ -28,7 +28,6 @@
 		727A21311AF039E50067BC4A /* SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21301AF039E50067BC4A /* SharedInstance.swift */; };
 		727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727A21321AF042690067BC4A /* StaticFunctions.swift */; };
 		729A56901AE819500034418E /* TreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A568F1AE819500034418E /* TreeView.swift */; };
-		729A56941AE9A4690034418E /* ProjectLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56931AE9A4690034418E /* ProjectLeaf.swift */; };
 		729A56961AE9A4AE0034418E /* PointLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56951AE9A4AE0034418E /* PointLeaf.swift */; };
 		729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */; };
 		729A569A1AEB08250034418E /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56991AEB08250034418E /* CustomButton.swift */; };
@@ -115,7 +114,6 @@
 		727A21321AF042690067BC4A /* StaticFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticFunctions.swift; sourceTree = "<group>"; };
 		727A21341AF26F860067BC4A /* GeoFile 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GeoFile 8.xcdatamodel"; sourceTree = "<group>"; };
 		729A568F1AE819500034418E /* TreeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeView.swift; sourceTree = "<group>"; };
-		729A56931AE9A4690034418E /* ProjectLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectLeaf.swift; sourceTree = "<group>"; };
 		729A56951AE9A4AE0034418E /* PointLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointLeaf.swift; sourceTree = "<group>"; };
 		729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopNavigationBarView.swift; sourceTree = "<group>"; };
 		729A56991AEB08250034418E /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 			isa = PBXGroup;
 			children = (
 				72A2A9601AF980C800E4C49F /* OverlayLeaf.swift */,
-				729A56931AE9A4690034418E /* ProjectLeaf.swift */,
 				729A56951AE9A4AE0034418E /* PointLeaf.swift */,
 				72CAF4341AE7DD3300B4072B /* TreeViewController.swift */,
 				729A568F1AE819500034418E /* TreeView.swift */,
@@ -510,7 +507,6 @@
 				729A569E1AEC26930034418E /* CustomViewController.swift in Sources */,
 				72A598821AD4A2F300918CCD /* Project.swift in Sources */,
 				72A2A95F1AF8C20C00E4C49F /* Overlay.swift in Sources */,
-				729A56941AE9A4690034418E /* ProjectLeaf.swift in Sources */,
 				720E94DE1AFE960C007946FA /* Drawingangle.swift in Sources */,
 				727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */,
 				72FE6A6E1AC0492400FF792D /* FilepointViewController.swift in Sources */,

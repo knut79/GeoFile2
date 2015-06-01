@@ -32,7 +32,7 @@ class ImageInstanceWithIcon:UIView
         iconLabel.font = UIFont.systemFontOfSize(8)
         iconLabel.text = workType(rawValue:Int(imagefile.worktype))?.icon
         iconLabel.textAlignment = NSTextAlignment.Center
-        
+        println("worktype : \(workType(rawValue:Int(imagefile.worktype))?.icon)")
         self.addSubview(iconLabel)
     }
     
