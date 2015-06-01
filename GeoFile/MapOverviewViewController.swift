@@ -141,13 +141,10 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         gmaps?.settings.rotateGestures = false
 
         
-        overlayButtons = SetOverlayButtons(view: gmaps!, overlay:newOverlayToSet)
-        overlayButtons.delegate = self
-
-        
         gmaps?.addSubview(newOverlayToSet)
         
-
+        overlayButtons = SetOverlayButtons(view: gmaps!, overlay:newOverlayToSet)
+        overlayButtons.delegate = self
         
         
         setOverlayButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight  ,UIScreen.mainScreen().bounds.size.width / 2, buttonBarHeight))

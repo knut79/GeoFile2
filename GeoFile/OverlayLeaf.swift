@@ -10,7 +10,7 @@ import Foundation
 
 class OverlayLeaf: UIView
 {
-    var selected:Bool = false
+    var xselected:Bool = false
     var overlay:Overlay!
     
     var showButton:UIButton!
@@ -83,13 +83,13 @@ class OverlayLeaf: UIView
         showButton = CustomButton(frame: CGRectMake(0, 0, imageInstanceSides * 2, buttonIconSideSmall))
         showButton.hidden = true
         showButton.setTitle("Set", forState: UIControlState.Normal)
-        showButton.addTarget(viewRef, action: "showNode", forControlEvents: .TouchUpInside)
+        showButton.addTarget(viewRef, action: "showOverlay", forControlEvents: .TouchUpInside)
         showButton.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
         self.addSubview(showButton)
         
         deleteButton = CustomButton(frame: CGRectMake(0, 0, imageInstanceSides * 2, buttonIconSideSmall))
         deleteButton.hidden = true
-        deleteButton.addTarget(viewRef, action: "deleteNode", forControlEvents: .TouchUpInside)
+        deleteButton.addTarget(viewRef, action: "deleteOverlay", forControlEvents: .TouchUpInside)
         deleteButton.setTitle("Delete", forState: UIControlState.Normal)
         deleteButton.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
         self.addSubview(deleteButton)
@@ -97,52 +97,60 @@ class OverlayLeaf: UIView
         //self.layer.borderColor = UIColor.grayColor().CGColor
         //self.layer.borderWidth = 2.0;
 
-        selected = false
+        xselected = false
     }
 
     
     func selectLeaf()
     {
-        
-        //currentImageInstance.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
-        self.deleteButton.hidden = false
-        self.showButton.hidden = false
-        self.titleLabel.hidden = false
-        
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
-            self.imageView.transform = CGAffineTransformScale(self.imageView.transform, 2, 2)
-            self.showButton.transform = CGAffineTransformIdentity
-            self.deleteButton.transform = CGAffineTransformIdentity
-            self.titleLabel.transform = CGAffineTransformIdentity
-            self.showButton.center = CGPointMake(self.imageView.frame.maxX ,  self.imageView.frame.maxY )
-            self.deleteButton.center = CGPointMake(self.imageView.frame.maxX ,  self.showButton.frame.maxY + (self.deleteButton.frame.size.height / 2))
-            self.titleLabel.center = CGPointMake(self.frame.size.width / 2,  self.imageView.frame.minY - (self.titleLabel.frame.size.height / 2))
-            }, completion: { (value: Bool) in
-                self.bringSubviewToFront(self.deleteButton)
-                self.bringSubviewToFront(self.showButton)
-        })
+        if(!xselected)
+        {
+            xselected = true
+            //currentImageInstance.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
+            self.deleteButton.hidden = false
+            self.showButton.hidden = false
+            self.titleLabel.hidden = false
+            
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                self.imageView.transform = CGAffineTransformScale(self.imageView.transform, 2, 2)
+                self.showButton.transform = CGAffineTransformIdentity
+                self.deleteButton.transform = CGAffineTransformIdentity
+                self.titleLabel.transform = CGAffineTransformIdentity
+                self.showButton.center = CGPointMake(self.imageView.frame.maxX ,  self.imageView.frame.maxY )
+                self.deleteButton.center = CGPointMake(self.imageView.frame.maxX ,  self.showButton.frame.maxY + (self.deleteButton.frame.size.height / 2))
+                self.titleLabel.center = CGPointMake(self.frame.size.width / 2,  self.imageView.frame.minY - (self.titleLabel.frame.size.height / 2))
+                }, completion: { (value: Bool) in
+                    self.bringSubviewToFront(self.deleteButton)
+                    self.bringSubviewToFront(self.showButton)
+            })
+        }
     }
     
     func unselectLeaf()
     {
-        //currentImageInstance.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
-        //currentImageInstance.transform = CGAffineTransformScale(imageInstance.transform, 2, 2)
-        //self.addSubview(imageInstance)
-        self.bringSubviewToFront(self.imageView)
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
-            self.imageView.transform = CGAffineTransformIdentity
-            self.deleteButton.transform = CGAffineTransformScale(self.deleteButton.transform, 0.1, 0.1)
-            self.showButton.transform = CGAffineTransformScale(self.deleteButton.transform, 0.1, 0.1)
-            self.titleLabel.transform = CGAffineTransformScale(self.deleteButton.transform, 0.1, 0.1)
-            self.showButton.center = self.imageView.center
-            self.deleteButton.center = self.imageView.center
-            self.titleLabel.center = self.imageView.center
+        if(xselected)
+        {
+            xselected = false
             
-            }, completion: { (value: Bool) in
-                self.deleteButton.hidden = true
-                self.showButton.hidden = true
-                self.titleLabel.hidden = true
-        })
+            //currentImageInstance.center = CGPointMake(self.frame.width / 2, self.frame.height / 2)
+            //currentImageInstance.transform = CGAffineTransformScale(imageInstance.transform, 2, 2)
+            //self.addSubview(imageInstance)
+            self.bringSubviewToFront(self.imageView)
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                self.imageView.transform = CGAffineTransformIdentity
+                self.deleteButton.transform = CGAffineTransformScale(self.deleteButton.transform, 0.1, 0.1)
+                self.showButton.transform = CGAffineTransformScale(self.deleteButton.transform, 0.1, 0.1)
+                self.titleLabel.transform = CGAffineTransformScale(self.deleteButton.transform, 0.1, 0.1)
+                self.showButton.center = self.imageView.center
+                self.deleteButton.center = self.imageView.center
+                self.titleLabel.center = self.imageView.center
+                
+                }, completion: { (value: Bool) in
+                    self.deleteButton.hidden = true
+                    self.showButton.hidden = true
+                    self.titleLabel.hidden = true
+            })
+        }
     }
     
 }

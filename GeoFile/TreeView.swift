@@ -13,7 +13,6 @@ protocol TreeViewProtocol
 {
     func jumpToFilepoint()
     func showOverlay()
-    func setEditOverlay()
     func deleteFilepointNode()
     func deleteProjectNode()
     func deleteOverlayNode()
@@ -35,12 +34,10 @@ class TreeView:UIView, PointLeafProtocol
     var overlayLeafs = [OverlayLeaf]()
     var currentFilepointLeaf:PointLeaf!
     var currentProjectLeaf:PointLeaf!
+    var currentOverlayLeaf:OverlayLeaf!
     var selectedLeaf:UIView!
     var overlayDropzone:OverlayDropzone!
     
-    var jumpToFilepointButton:UIButton!
-    var deleteNodeButton:UIButton!
-    var setEditNodeButton:UIButton!
     
     
     init(frame: CGRect, delegate: TreeViewProtocol) {
@@ -54,7 +51,7 @@ class TreeView:UIView, PointLeafProtocol
         selectedLeaf.clipsToBounds = true
         selectedLeaf.backgroundColor = UIColor.redColor()
         self.addSubview(selectedLeaf)
-        
+/*
         jumpToFilepointButton = CustomButton(frame: CGRectMake(0, 0, 75, buttonBarHeight))
         jumpToFilepointButton.setTitle("Show", forState: UIControlState.Normal)
         jumpToFilepointButton.alpha = 0
@@ -78,7 +75,7 @@ class TreeView:UIView, PointLeafProtocol
         setEditNodeButton.clipsToBounds = true
         setEditNodeButton.addTarget(self, action: "setEditNode", forControlEvents: .TouchUpInside)
         self.addSubview(setEditNodeButton)
-        
+  */
         
         //populateTestOverlays()
         
@@ -377,7 +374,6 @@ class TreeView:UIView, PointLeafProtocol
     
     func findSelecedFilepointLeaf(filepointLeaf:PointLeaf, pointLeafPushed:PointLeaf)
     {
-        fadeoutActionButtons()
         
         var filepointLeafs = filepointLeaf.pointLeafs
         for var i = 0 ; i < filepointLeafs.count ; i++
@@ -400,17 +396,14 @@ class TreeView:UIView, PointLeafProtocol
     
     func unselectAllLeafsOnCurrentProjectLeaf()
     {
-        for item in currentProjectLeaf.pointLeafs
+        if(currentProjectLeaf != nil)
         {
-            item.unselectLeaf()
-            
-            unselectAllLeafsOnPointLeaf(item as PointLeaf)
-            /*
-            if(item != currentFilepointLeaf)
+            for item in currentProjectLeaf.pointLeafs
             {
                 item.unselectLeaf()
+                
+                unselectAllLeafsOnPointLeaf(item as PointLeaf)
             }
-            */
         }
     }
     
@@ -447,122 +440,48 @@ class TreeView:UIView, PointLeafProtocol
         }
     }
     
-    func unselectAllOverlayLeafs()
-    {
-        for var i = 0 ; i < overlayLeafs.count ; i++
-        {
-            overlayLeafs[i].selected = false
-        }
-    }
-    
-    func getSelectedOverlayNode() -> OverlayLeaf?
-    {
-        for var i = 0 ; i < overlayLeafs.count ; i++
-        {
-            if(overlayLeafs[i].selected)
-            {
-                return overlayLeafs[i]
-            }
-        }
-        return nil
-    }
+
  
     func overlaySelected(sender:UITapGestureRecognizer)
     {
         var overlayLeaf = sender.view?.superview as OverlayLeaf
         
-        for item in overlayLeafs
-        {
-            if(item != overlayLeaf)
-            {
-                item.unselectLeaf()
-            }
-        }
+        unselectOverlayLeafs()
+        unselectAllLeafsOnCurrentProjectLeaf()
         
         for item in projectLeafs
         {
             item.unselectLeaf()
         }
-        /*
-        for item in currentProjectLeaf.pointLeafs
-        {
-            if(item != currentFilepointLeaf)
-            {
-                item.unselectLeaf()
-            }
-        }
-        */
+
         overlayLeaf.selectLeaf()
+        currentOverlayLeaf = overlayLeaf
         
         setNeedsDisplay()
         
+        delegate?.hideImageInstancesScrollView()
         //remove imageinstances from scrollview
         //delegate!.setScrollViewSize(CGSizeMake(self.frame.width, self.frame.height))
     }
     
-    var actionForOverlay = false
-    func showActionButtonsForOverlay(sender:UITapGestureRecognizer)
+    func getSelectedOverlayNode() -> OverlayLeaf?
     {
-        var node = sender.view
-        if(node != nil)
-        {
-            actionForOverlay = true
-            self.bringSubviewToFront(deleteNodeButton)
-            var deleteNodeButtonY = node!.center.y + (node!.frame.height * 2)
-            var deleteNodeButtonX = node!.center.x > self.frame.width / 2 ? node!.center.x - node!.frame.width : node!.center.x + node!.frame.width
-            deleteNodeButton.alpha = 0.75
-            deleteNodeButton.center = CGPointMake(deleteNodeButtonX,deleteNodeButtonY)
-            
-            self.bringSubviewToFront(jumpToFilepointButton)
-            jumpToFilepointButton.alpha = 0.75
-            jumpToFilepointButton.center = CGPointMake(deleteNodeButton.center.x,deleteNodeButton.center.y - deleteNodeButton.frame.height - 2 )
-            
-            self.bringSubviewToFront(setEditNodeButton)
-            setEditNodeButton.alpha = 0.75
-            setEditNodeButton.center = CGPointMake(jumpToFilepointButton.center.x,jumpToFilepointButton.center.y - jumpToFilepointButton.frame.height - 2 )
-            
-            unselectAllOverlayLeafs()
-            
-            (node as OverlayLeaf).selected = true
-        }
-        
+        return currentOverlayLeaf
     }
     
-    func showActionButtonsForProject(sender:AnyObject)
+    func unselectOverlayLeafs()
     {
-        //TODO: should handle doubletap of nodes that are not selected
-        if(currentProjectLeaf != nil)
+        for item in overlayLeafs
         {
-            self.bringSubviewToFront(deleteNodeButton)
-            var buttonY = currentProjectLeaf.center.y > self.frame.height / 2 ? currentProjectLeaf.center.y - currentProjectLeaf.frame.height : currentProjectLeaf.center.y + currentProjectLeaf.frame.height
-            var buttonX = currentProjectLeaf.center.x > self.frame.width / 2 ? currentProjectLeaf.center.x - currentProjectLeaf.frame.width : currentProjectLeaf.center.x + currentProjectLeaf.frame.width
-            deleteNodeButton.alpha = 0.75
-            deleteNodeButton.center = CGPointMake(buttonX,buttonY)
+            item.unselectLeaf()
         }
     }
     
-    func showActionButtonsForFilepoint(sender:AnyObject)
-    {
-        //TODO: should handle doubletap of nodes that are not selected
-        if(currentFilepointLeaf != nil)
-        {
-            self.bringSubviewToFront(deleteNodeButton)
-            var jumpToFilepointButtonY = currentFilepointLeaf.center.y > self.frame.height / 2 ? currentFilepointLeaf.center.y - currentFilepointLeaf.frame.height : currentFilepointLeaf.center.y + currentFilepointLeaf.frame.height
-            var jumpToFilepointButtonX = currentFilepointLeaf.center.x > self.frame.width / 2 ? currentFilepointLeaf.center.x - currentFilepointLeaf.frame.width : currentFilepointLeaf.center.x + currentFilepointLeaf.frame.width
-            deleteNodeButton.alpha = 0.75
-            deleteNodeButton.center = CGPointMake(jumpToFilepointButtonX,jumpToFilepointButtonY)
-            
-            self.bringSubviewToFront(jumpToFilepointButton)
-            jumpToFilepointButton.alpha = 0.75
-            jumpToFilepointButton.center = CGPointMake(deleteNodeButton.center.x,deleteNodeButton.center.y - deleteNodeButton.frame.height - 2 )
-        }
-    }
     
     
     func projectSelected(sender:UITapGestureRecognizer)
     {
         currentFilepointLeaf = nil
-        fadeoutActionButtons()
         var selectedProjectLeaf = (sender as UITapGestureRecognizer).view?.superview
         projectSelected(selectedProjectLeaf as PointLeaf)
     }
@@ -572,6 +491,7 @@ class TreeView:UIView, PointLeafProtocol
         //remove all buttons
         removeProjectLeafChildren()
         
+        unselectOverlayLeafs()
         for item in projectLeafs
         {
             if(item == pointLeaf)
@@ -602,6 +522,7 @@ class TreeView:UIView, PointLeafProtocol
     {
         currentFilepointLeaf = selectedFilepointLeaf
         
+        unselectOverlayLeafs()
         for item in projectLeafs
         {
             item.unselectLeaf()
@@ -800,26 +721,7 @@ class TreeView:UIView, PointLeafProtocol
         pointLeaf.removeFromSuperview()
     }
     
-    func deleteNode()
-    {
-        if(actionForOverlay)
-        {
-            actionForOverlay = false
-            delegate?.deleteOverlayNode()
-        }
-        else if(currentFilepointLeaf != nil)
-        {
-            delegate?.deleteFilepointNode()
-            
-        }
-        else if (currentProjectLeaf != nil)
-        {
-            delegate?.deleteProjectNode()
-            
 
-            
-        }
-    }
     
     func findPointLeafForImagefileAndSetNewCurrentImageInstance(imagefile:Imagefile)
     {
@@ -860,32 +762,35 @@ class TreeView:UIView, PointLeafProtocol
         }
     }
     
-    func fadeoutActionButtons()
+    func deleteOverlay()
     {
-        jumpToFilepointButton.alpha = 0
-        deleteNodeButton.alpha = 0
-        setEditNodeButton.alpha = 0
+        delegate?.deleteOverlayNode()
+        setNeedsDisplay()
     }
     
-    func setEditNode()
+    func deleteNode()
     {
-        if(actionForOverlay)
+        if(currentFilepointLeaf != nil)
         {
-            actionForOverlay = false
-            delegate?.setEditOverlay()
+            delegate?.deleteFilepointNode()
+            
         }
+            
+        else if (currentProjectLeaf != nil)
+        {
+            delegate?.deleteProjectNode()
+            
+        }
+        setNeedsDisplay()
+    }
+    
+    func showOverlay()
+    {
+        delegate?.showOverlay()
     }
     
     func showNode()
     {
-        if(actionForOverlay)
-        {
-            actionForOverlay = false
-            delegate?.showOverlay()
-        }
-        else
-        {
-            delegate?.jumpToFilepoint()
-        }
+        delegate?.jumpToFilepoint()
     }
 }

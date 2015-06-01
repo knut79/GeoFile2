@@ -224,8 +224,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if(scrollView == overviewScrollView)
         {
-            visibleContentView.fadeoutActionButtons()
-            visibleContentView.unselectAllOverlayLeafs()
+
         }
 
     }
@@ -532,7 +531,6 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             animated: true,
             completion: nil)
         
-        visibleContentView.fadeoutActionButtons()
     }
     
     func deleteFilepointNode()
@@ -571,20 +569,14 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             animated: true,
             completion: nil)
         
-        visibleContentView.fadeoutActionButtons()
     }
 
     func showOverlay()
     {
-        visibleContentView.fadeoutActionButtons()
-        //TODO:
-    }
-    
-    func setEditOverlay()
-    {
         let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
         self.performSegueWithIdentifier("showProjectInMap", sender: nil)
     }
+    
 
     func deleteOverlayNode()
     {
@@ -614,7 +606,6 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             animated: true,
             completion: nil)
         
-        visibleContentView.fadeoutActionButtons()
     }
     
     override func toTreeView(images:[UIImage]?)
@@ -641,7 +632,17 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showFilepoint") {
             var svc = segue!.destinationViewController as FilepointViewController
-            svc.currentFilepoint = self.visibleContentView.currentFilepointLeaf.filepoint
+            if let pointLeaf = self.visibleContentView.currentFilepointLeaf
+            {
+                svc.currentFilepoint = pointLeaf.filepoint
+                svc.currentImagefile = pointLeaf.currentImage
+            }
+            else if let projectLeaf = self.visibleContentView.currentProjectLeaf
+            {
+                svc.project = projectLeaf.project
+                svc.currentImagefile = projectLeaf.currentImage
+                svc.oneLevelFromProject = true
+            }
         }
         else if (segue.identifier == "showFilepointList") {
             var svc = segue!.destinationViewController as FilepointListViewController

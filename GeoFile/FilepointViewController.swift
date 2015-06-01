@@ -123,7 +123,12 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             backOneLevelButton.enabled = false
             backOneLevelButton.alpha = 0.5
-            currentImagefile = project?.firstImagefile
+            
+            //currentImage could be sat from treeview
+            if(currentImagefile == nil)
+            {
+                currentImagefile = project?.firstImagefile
+            }
         }
 
         drawView.hidden = true

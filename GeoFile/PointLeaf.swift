@@ -13,7 +13,6 @@ protocol PointLeafProtocol
 {
     func projectSelected(sender:UITapGestureRecognizer)
     func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
-    func showActionButtonsForFilepoint(sender:AnyObject)
 }
 
 class PointLeaf:UIView

@@ -26,9 +26,8 @@ class ImageInstanceWithIcon:UIView
         let imageView = UIImageView(frame: CGRectMake(self.frame.width * 0.05, self.frame.height * 0.05, self.frame.width * 0.9, self.frame.height * 0.9))
         imageView.image = image
         self.addSubview(imageView)
-        
-        
-        iconLabel = UILabel(frame: CGRectMake(self.frame.width * 0.75, 0, self.frame.width * 0.25, self.frame.height * 0.25))
+
+        iconLabel = UILabel(frame: CGRectMake(self.frame.width * 0.70, 0, self.frame.width * 0.3, self.frame.height * 0.3))
         iconLabel.font = UIFont.systemFontOfSize(8)
         iconLabel.text = workType(rawValue:Int(imagefile.worktype))?.icon
         iconLabel.textAlignment = NSTextAlignment.Center
