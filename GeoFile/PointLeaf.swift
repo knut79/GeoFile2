@@ -115,7 +115,10 @@ class PointLeaf:UIView
     
     func initImagefiles(imagefiles:NSSet, singleTapRecognizer:UITapGestureRecognizer, topImageFile:Imagefile? = nil)
     {
-        
+        if imagefiles.count == 0
+        {
+            return
+        }
         //top element
         var topElement = topImageFile ?? imagefiles.allObjects.last as Imagefile
         

@@ -665,11 +665,14 @@ class TreeView:UIView, PointLeafProtocol
         {
             return true
         }
-        for item in filepointToCheck.firstImagefile!.filepoints
+        if let firstimage = filepointToCheck.firstImagefile
         {
-            if(isOnBranchWith(item as Filepoint, onBranchWith: onBranchWith))
+            for item in firstimage.filepoints
             {
-                return true
+                if(isOnBranchWith(item as Filepoint, onBranchWith: onBranchWith))
+                {
+                    return true
+                }
             }
         }
         return false

@@ -508,16 +508,30 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     func deleteProjectNode()
     {
         var titlePrompt = UIAlertController(title: "Delete",
-            message: "Sure you want to delete this project and all its content",
+            message: "Sure you want to delete this image and all its content",
             preferredStyle: .Alert)
         
         titlePrompt.addAction(UIAlertAction(title: "Ok",
             style: .Default,
             handler: { (action) -> Void in
-                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.project!)
-                self.save()
-                self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
-                self.visibleContentView!.fetchProjects()
+                //if less than 2 images we might ass well delete the whole node
+                if(self.visibleContentView!.currentProjectLeaf.project?.imagefiles.count < 2)
+                {
+                    self.visibleContentView!.removePointLeaf(self.visibleContentView!.currentProjectLeaf)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.project!)
+                    self.save()
+                    
+                }
+                else
+                {
+                    self.visibleContentView!.removePointLeafChildren(self.visibleContentView!.currentProjectLeaf)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.currentImage)
+                    self.save()
+                    self.visibleContentView!.currentProjectLeaf.reloadImageInstances()
+                }
+                
+                //self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
+                //self.visibleContentView!.fetchProjects()
                 self.visibleContentView!.setNeedsDisplay()
                 
                 
@@ -533,6 +547,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
     }
     
+    //MARK: TODO: rename to delete imageinstance
     func deleteFilepointNode()
     {
         var titlePrompt = UIAlertController(title: "Delete",
@@ -542,9 +557,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         titlePrompt.addAction(UIAlertAction(title: "Ok",
             style: .Default,
             handler: { (action) -> Void in
+                /*
                 var parent = self.visibleContentView!.currentFilepointLeaf.filepoint!.imagefile!.filepoint
-                //println("aaaa parentID \(parent!.objectID) ")
-                //println("aaaa basenodeD \(self.visibleContentView!.currentFilepointLeaf!.filepoint.objectID) ")
                 self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint!)
                 self.save()
                 if(parent == nil)
@@ -557,7 +571,23 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
                 {
                     self.visibleContentView!.findLeafForFilepointAndSelectIt(parent!)
                 }
+                */
+                //if less than 2 images we might ass well delete the whole node
+                if(self.visibleContentView!.currentFilepointLeaf.imageInstances.count < 2)
+                {
+                    self.visibleContentView!.removePointLeaf(self.visibleContentView!.currentFilepointLeaf)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint!)
+                    self.save()
+                }
+                else
+                {
+                    self.visibleContentView!.removePointLeafChildren(self.visibleContentView!.currentFilepointLeaf)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.currentImage)
+                    self.save()
+                    self.visibleContentView!.currentFilepointLeaf.reloadImageInstances()
+                }
                 
+                self.visibleContentView!.setNeedsDisplay()
                 
         }))
         titlePrompt.addAction(UIAlertAction(title: "Cancel",
