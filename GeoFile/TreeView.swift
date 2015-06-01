@@ -18,9 +18,10 @@ protocol TreeViewProtocol
     func deleteProjectNode()
     func deleteOverlayNode()
     func setContentsize(size:CGSize)
-    func setupImageInstancesScrollView(pointLeaf:PointLeaf)
-    func setScrollViewSizeBig()
-    func setScrollViewSizeSmall()
+    func showImageInstancesScrollView(pointLeaf:PointLeaf)
+    func hideImageInstancesScrollView()
+    func setTreeviewScrollViewSizeBig()
+    func setTreeviewScrollViewSizeSmall()
 }
 
 class TreeView:UIView, PointLeafProtocol
@@ -395,59 +396,7 @@ class TreeView:UIView, PointLeafProtocol
         }
     }
     
-    
-    func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
-    {
-        //fadeoutActionButtons()
-        
-        var selectedFilepointLeaf = (sender as UITapGestureRecognizer).view?.superview
-        filepointSelectedFromFilepoint(selectedFilepointLeaf as PointLeaf)
-    }
-    
-    func filepointSelectedFromFilepoint(selectedFilepointLeaf:PointLeaf)
-    {
-        
-        
-        currentFilepointLeaf = selectedFilepointLeaf
-        /*
-        var filepointLeafs = currentProjectLeaf.pointLeafs
-        
-        for var i = 0 ;  i < filepointLeafs.count ; i++
-        {
-            if(filepointLeafs[i] == selectedFilepointLeaf )
-            {
-                currentFilepointLeaf = filepointLeafs[i]
-                selectedLeaf.hidden = false
-                selectedLeaf.center = currentFilepointLeaf.center
-            }
-            else
-            {
-                findSelecedFilepointLeaf(filepointLeafs[i],pointLeafPushed: selectedFilepointLeaf)
-            }
-        }
-        
-        currentFilepointLeaf.selected = true
-        
-        //remove all buttons
-        removeProjectLeafs()
-        */
-        
-        
-        
-        for item in projectLeafs
-        {
-            item.unselectLeaf()
-        }
-        unselectAllLeafsOnCurrentProjectLeaf()
 
-        //buildNodesUpToSelectedNode()
-        buildForNode(currentFilepointLeaf)
-        
-        currentFilepointLeaf.selectLeaf()
-        
-        setNeedsDisplay()
-
-    }
     
     func unselectAllLeafsOnCurrentProjectLeaf()
     {
@@ -621,7 +570,7 @@ class TreeView:UIView, PointLeafProtocol
     func projectSelected(pointLeaf:PointLeaf)
     {
         //remove all buttons
-        removeProjectLeafs()
+        removeProjectLeafChildren()
         
         for item in projectLeafs
         {
@@ -635,31 +584,38 @@ class TreeView:UIView, PointLeafProtocol
             }
         }
 
-        
         currentProjectLeaf = pointLeaf
-        /*
-        for var i = 0 ;  i < projectLeafs.count ; i++
-        {
-            if(projectLeafs[i] == pointLeat)
-            {
-                currentProjectLeaf = projectLeafs[i]
-                selectedLeaf.hidden = false
-                selectedLeaf.center = currentProjectLeaf.center
-            }
-            
-            projectLeafs[i].selected = false
-            projectLeafs[i].backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
-        }
-
-        currentProjectLeaf.selected = true
-        jumpToFilepointButton.alpha = 0
-        */
         fetchFilepointsFromProject()
-        
-        //expandFrame(CGPointMake(projectLeafs.last!.button.frame.maxX, projectLeafs.last!.button.frame.maxY))//   projectButtons.last?.frame.maxX, projectButtons.last?.frame.maxY!))
         setNeedsDisplay()
+        delegate?.showImageInstancesScrollView(currentProjectLeaf)
+    }
+    
+    func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
+    {
+        //fadeoutActionButtons()
+        
+        var selectedFilepointLeaf = (sender as UITapGestureRecognizer).view?.superview
+        filepointSelectedFromFilepoint(selectedFilepointLeaf as PointLeaf)
+    }
+    
+    func filepointSelectedFromFilepoint(selectedFilepointLeaf:PointLeaf)
+    {
+        currentFilepointLeaf = selectedFilepointLeaf
+        
+        for item in projectLeafs
+        {
+            item.unselectLeaf()
+        }
+        unselectAllLeafsOnCurrentProjectLeaf()
+        
+        //buildNodesUpToSelectedNode()
+        buildForNode(currentFilepointLeaf)
+        currentFilepointLeaf.selectLeaf()
+        
+        setNeedsDisplay()
+        delegate?.showImageInstancesScrollView(currentFilepointLeaf)
 
-        delegate?.setupImageInstancesScrollView(currentProjectLeaf)
+        
     }
 
     func getProjectleafForFilepoint(_filepoint:Filepoint) -> PointLeaf?
@@ -781,13 +737,14 @@ class TreeView:UIView, PointLeafProtocol
         }
     }
     
+    
     func isOnBranchWith(filepointToCheck:Filepoint,onBranchWith:Filepoint) -> Bool
     {
         if(filepointToCheck == onBranchWith)
         {
             return true
         }
-        for item in (filepointToCheck.imagefiles.allObjects.first as Imagefile).filepoints
+        for item in filepointToCheck.firstImagefile!.filepoints
         {
             if(isOnBranchWith(item as Filepoint, onBranchWith: onBranchWith))
             {
@@ -803,7 +760,7 @@ class TreeView:UIView, PointLeafProtocol
         {
             for var y = 0 ;  y < projectLeafs[i].pointLeafs.count ; y++
             {
-                removeFilepointLeaf(projectLeafs[i].pointLeafs[y])
+                removePointLeaf(projectLeafs[i].pointLeafs[y])
             }
             projectLeafs[i].removeFromSuperview()
             projectLeafs[i].pointLeafs = []
@@ -812,26 +769,35 @@ class TreeView:UIView, PointLeafProtocol
         selectedLeaf.hidden = true
     }
     
-    func removeProjectLeafs()
+    func removeProjectLeafChildren()
     {
         for var i = 0 ;  i < projectLeafs.count ; i++
         {
             for var y = 0 ;  y < projectLeafs[i].pointLeafs.count ; y++
             {
-                removeFilepointLeaf(projectLeafs[i].pointLeafs[y])
+                removePointLeaf(projectLeafs[i].pointLeafs[y])
             }
             projectLeafs[i].pointLeafs = []
         }
     }
     
-    func removeFilepointLeaf(filepointLeaf:PointLeaf)
+    func removePointLeafChildren(pointLeaf:PointLeaf)
     {
-        for var i = 0 ;  i < filepointLeaf.pointLeafs.count ; i++
+        for var i = 0 ;  i < pointLeaf.pointLeafs.count ; i++
         {
-            removeFilepointLeaf(filepointLeaf.pointLeafs[i])
+            removePointLeaf(pointLeaf.pointLeafs[i])
         }
-        filepointLeaf.pointLeafs = []
-        filepointLeaf.removeFromSuperview()
+        pointLeaf.pointLeafs = []
+    }
+    
+    func removePointLeaf(pointLeaf:PointLeaf)
+    {
+        for var i = 0 ;  i < pointLeaf.pointLeafs.count ; i++
+        {
+            removePointLeaf(pointLeaf.pointLeafs[i])
+        }
+        pointLeaf.pointLeafs = []
+        pointLeaf.removeFromSuperview()
     }
     
     func deleteNode()
@@ -858,6 +824,33 @@ class TreeView:UIView, PointLeafProtocol
     func findPointLeafForImagefileAndSetNewCurrentImageInstance(imagefile:Imagefile)
     {
         
+        var found = false
+        for item in currentProjectLeaf.imageInstances
+        {
+            if item.imagefile == imagefile
+            {
+                currentProjectLeaf.setImageInstanceOnTop(item)
+                removePointLeafChildren(currentProjectLeaf)
+                fetchFilepointsFromProject()
+                found = true
+                break
+            }
+        }
+        
+        if !found
+        {
+            for item in currentFilepointLeaf.imageInstances
+            {
+                if item.imagefile == imagefile
+                {
+                    currentFilepointLeaf.setImageInstanceOnTop(item)
+                    removePointLeafChildren(currentFilepointLeaf)
+                    buildForNode(currentFilepointLeaf)
+                }
+            }
+        }
+        
+        setNeedsDisplay()
     }
     
     func save() {

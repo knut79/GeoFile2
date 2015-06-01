@@ -114,45 +114,68 @@ class PointLeaf:UIView
     }
     
     
-    func initImagefiles(imagefiles:NSSet, singleTapRecognizer:UITapGestureRecognizer)
+    func initImagefiles(imagefiles:NSSet, singleTapRecognizer:UITapGestureRecognizer, topImageFile:Imagefile? = nil)
     {
+        
+        //top element
+        var topElement = topImageFile ?? imagefiles.allObjects.last as Imagefile
+        
+        var imageSizeWidth = imageInstanceSides
+        var imageSizeHeight = imageInstanceSides
+        var margin = (leafSize.width / 2) - (imageSizeWidth / 2)
+        var topImageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin,margin, imageSizeWidth, imageSizeHeight),imagefile: topElement)
+        topImageInstance.userInteractionEnabled = true
+        singleTapRecognizer.numberOfTapsRequired = 1
+        topImageInstance.addGestureRecognizer(singleTapRecognizer)
+        currentImageInstance = topImageInstance
+        currentImage = topElement
+        
+        
+        imageInstances.append(topImageInstance)
         
         var index = imagefiles.count
         for imageitem in imagefiles
         {
-            index--
-            //var image = UIImage(data: (imageitem as Imagefile).file)
+            if(imageitem as Imagefile == topElement)
+            {
+                continue
+            }
             
-            var imageSizeWidth = imageInstanceSides
-            var imageSizeHeight = imageInstanceSides
-            var margin = (leafSize.width / 2) - (imageSizeWidth / 2)
+            index--
+
             var imageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin + (CGFloat(index) * 5),margin + (CGFloat(index) * 3), imageSizeWidth, imageSizeHeight),imagefile: imageitem as Imagefile)
             imageInstance.alpha = 1 / CGFloat(index)
-            //imageInstance.image = image
-            
-            imageInstance.userInteractionEnabled = true
-            singleTapRecognizer.numberOfTapsRequired = 1
-            imageInstance.addGestureRecognizer(singleTapRecognizer)
-            
             imageInstances.append(imageInstance)
-            
             self.addSubview(imageInstance)
-            
+
+            /*
             if(Int(index) == 0)
             {
-                
                 imageInstance.userInteractionEnabled = true
                 singleTapRecognizer.numberOfTapsRequired = 1
                 imageInstance.addGestureRecognizer(singleTapRecognizer)
 
-
                 currentImageInstance = imageInstance
                 currentImage = imageitem as Imagefile
             }
+            */
+        }
+        
+        self.addSubview(topImageInstance)
+    }
+    
+    func setImageInstanceOnTop(imageInstance:ImageInstanceWithIcon)
+    {
+        reloadImageInstances(topImageFile: imageInstance.imagefile)
+        if(xselected)
+        {
+            self.currentImageInstance.transform = CGAffineTransformScale(self.currentImageInstance.transform, 2, 2)
+            self.bringSubviewToFront(self.deleteButton)
+            self.bringSubviewToFront(self.showButton)
         }
     }
     
-    func reloadImageInstances()
+    func reloadImageInstances(topImageFile:Imagefile? = nil)
     {
         for item in imageInstances
         {
@@ -160,14 +183,16 @@ class PointLeaf:UIView
         }
         imageInstances = []
         
-        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepoint:")
+        
         if let fp = filepoint
         {
-            initImagefiles(fp.imagefiles,singleTapRecognizer: singleTapRec)
+            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepoint:")
+            initImagefiles(fp.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
         else if let proj = project
         {
-            initImagefiles(proj.imagefiles,singleTapRecognizer: singleTapRec)
+            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelected:")
+            initImagefiles(proj.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
     }
     

@@ -9,107 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GeoFile/TreeViewController.swift"
-            timestampString = "454819184.00477"
+            filePath = "GeoFile/TreeView.swift"
+            timestampString = "454850542.54764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
-            landmarkName = "addImageToFilepoint(_:filepointLeaf:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/TreeViewController.swift"
-            timestampString = "454819184.00477"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
-            landmarkName = "addImageToProject(_:projectLeaf:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/TreeViewController.swift"
-            timestampString = "454819184.00477"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
-            landmarkName = "setupImageInstancesScrollView(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/TreeViewController.swift"
-            timestampString = "454819184.00477"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
-            landmarkName = "setupImageInstancesScrollView(_:)"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GeoFile.TreeViewController.setContentsize (GeoFile.TreeViewController)(C.CGSize) -&gt; ()"
-                  moduleName = "GeoFile"
-                  urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/TreeViewController.swift"
-                  timestampString = "454813611.301718"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "173"
-                  endingLineNumber = "173"
-                  offsetFromSymbolStart = "0">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "protocol witness for GeoFile.TreeViewProtocol.setContentsize &lt;A : GeoFile.TreeViewProtocol&gt;(inout GeoFile.TreeViewProtocol.Self)(C.CGSize) -&gt; () in conformance GeoFile.TreeViewController : GeoFile.TreeViewProtocol"
-                  moduleName = "GeoFile"
-                  urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/TreeViewController.swift"
-                  timestampString = "454813611.301982"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "173"
-                  endingLineNumber = "173"
-                  offsetFromSymbolStart = "20">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/TreeViewController.swift"
-            timestampString = "454819184.00477"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "setupImageInstancesScrollView(_:)"
+            startingLineNumber = "828"
+            endingLineNumber = "828"
+            landmarkName = "findPointLeafForImagefileAndSetNewCurrentImageInstance(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -120,28 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/TreeView.swift"
-            timestampString = "454819184.00477"
+            timestampString = "454850542.54764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "662"
-            endingLineNumber = "662"
-            landmarkName = "projectSelected(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/ImageInstanceWithIcon.swift"
-            timestampString = "454813796.804122"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "init(frame:imagefile:)"
+            startingLineNumber = "834"
+            endingLineNumber = "834"
+            landmarkName = "findPointLeafForImagefileAndSetNewCurrentImageInstance(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -152,28 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/TreeView.swift"
-            timestampString = "454819184.00477"
+            timestampString = "454849986.198065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "548"
-            endingLineNumber = "548"
-            landmarkName = "overlaySelected(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/PointLeaf.swift"
-            timestampString = "454819608.495584"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
-            landmarkName = "selectLeaf()"
+            startingLineNumber = "729"
+            endingLineNumber = "729"
+            landmarkName = "buildForNode(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -184,28 +58,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/TreeView.swift"
-            timestampString = "454819838.796968"
+            timestampString = "454850599.651755"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "615"
-            endingLineNumber = "615"
-            landmarkName = "projectSelected(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GeoFile/TreeView.swift"
-            timestampString = "454819845.307045"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "624"
-            endingLineNumber = "624"
-            landmarkName = "projectSelected(_:)"
+            startingLineNumber = "846"
+            endingLineNumber = "846"
+            landmarkName = "findPointLeafForImagefileAndSetNewCurrentImageInstance(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

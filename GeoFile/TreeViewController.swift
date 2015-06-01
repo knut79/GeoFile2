@@ -89,11 +89,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         return true
     }
     
-    func setupImageInstancesScrollView(pointLeaf:PointLeaf)
+    func showImageInstancesScrollView(pointLeaf:PointLeaf)
     {
-        setScrollViewSizeSmall()
+        setTreeviewScrollViewSizeSmall()
 
-        
         /*
         var imageInstances:[ImageInstanceWithIcon]? = []
         for imagefile in pointLeaf.project!.imagefiles
@@ -101,7 +100,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
             imageInstances?.append(imageView)
         }
-        */
+*/
         
         
         if(imageInstancesScrollView != nil)
@@ -129,7 +128,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
                 
                 var tapRecognizer = UITapGestureRecognizer(target: self, action: "imageinstancesTapped:")
                 tapRecognizer.numberOfTapsRequired = 1
-                imageView.addGestureRecognizer(tapRecognizer)
+                newImageView.addGestureRecognizer(tapRecognizer)
                 
                 self.imageInstancesScrollView.addSubview(newImageView)
                 if(pointLeaf.currentImage == imageView.imagefile)
@@ -177,28 +176,46 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         }
     }
     
+    func hideImageInstancesScrollView()
+    {
+        setTreeviewScrollViewSizeBig()
+
+        if(imageInstancesScrollView != nil)
+        {
+            imageInstancesScrollView.removeFromSuperview()
+            imageInstancesScrollView = nil
+        }
+    }
+    
     func imageinstancesTapped(sender:UITapGestureRecognizer)
     {
+        for view in self.imageInstancesScrollView.subviews
+        {
+            (view as UIView).layer.borderWidth = 0
+        }
+        
         if let imageInstanceWithIcon = sender.view as? ImageInstanceWithIcon
         {
+            imageInstanceWithIcon.layer.borderColor = UIColor.greenColor().CGColor
+            imageInstanceWithIcon.layer.borderWidth = 2.0
             visibleContentView.findPointLeafForImagefileAndSetNewCurrentImageInstance(imageInstanceWithIcon.imagefile)
+            
+            //hideImageInstancesScrollView()
         }
     }
     
     func setContentsize(size:CGSize)
     {
-        //let newWidth = overviewScrollView.contentSize.width < size.width ? size.width : overviewScrollView.contentSize.width
-        //let newHeight = overviewScrollView.contentSize.height < size.height ? size.height : overviewScrollView.contentSize.height
-        overviewScrollView.contentSize = size // CGSizeMake(newWidth,newHeight)
+        overviewScrollView.contentSize = size
     }
     
-    func setScrollViewSizeSmall()
+    func setTreeviewScrollViewSizeSmall()
     {
         let strechedHeight = UIScreen.mainScreen().bounds.size.height - buttonBarHeight - incommingFilesViewHeight
         overviewScrollView.frame.size = CGSizeMake(UIScreen.mainScreen().bounds.size.width, strechedHeight)
     }
     
-    func setScrollViewSizeBig()
+    func setTreeviewScrollViewSizeBig()
     {
         let strechedHeight = UIScreen.mainScreen().bounds.size.height - buttonBarHeight
         overviewScrollView.frame.size = CGSizeMake(UIScreen.mainScreen().bounds.size.width, strechedHeight)
@@ -223,7 +240,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
         
         //set up frame for treeview
-        setScrollViewSizeSmall()
+        setTreeviewScrollViewSizeSmall()
         
         incommingFilesView.hidden = false
         self.view.bringSubviewToFront(incommingFilesView)
