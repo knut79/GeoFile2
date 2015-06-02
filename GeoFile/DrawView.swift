@@ -183,7 +183,8 @@ class DrawView: DrawingBase{
     }
     
 
-    func setZoomscale(zscale:CGFloat)
+    
+    func setZoomscale_custom(zscale:CGFloat)
     {
         self.zoomscale = zscale
     }
@@ -280,8 +281,8 @@ class DrawView: DrawingBase{
     }
 
     var touchBegan = false
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        lastPoint = touches.anyObject()?.locationInView(self)
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        lastPoint = (touches.first as? UITouch)?.locationInView(self)  //touches.anyObject()?.locationInView(self)
         hideColorButtons()
         touchBegan = true
         switch(drawType)
@@ -315,8 +316,8 @@ class DrawView: DrawingBase{
     }
     
     var angleMidpointSat = false
-    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
-        var newPoint = touches.anyObject()?.locationInView(self)
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
+        var newPoint = (touches.first as? UITouch)?.locationInView(self)  //touches.anyObject()?.locationInView(self)
         switch(drawType)
         {
         case .free:
@@ -349,8 +350,8 @@ class DrawView: DrawingBase{
         self.setNeedsDisplay()
     }
     
-    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
-        var newPoint = touches.anyObject()?.locationInView(self)
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+        var newPoint = (touches.first as? UITouch)?.locationInView(self) //touches.anyObject()?.locationInView(self)
         switch(drawType)
         {
         case .measure:
@@ -427,7 +428,7 @@ class DrawView: DrawingBase{
         CGContextBeginPath(context)
         CGContextSetLineCap(context, kCGLineCapRound)
         var linewidth = drawingLineWidth * zoomscale
-        println("linewidth \(linewidth) zoomscale \(zoomscale)")
+        //println("linewidth \(linewidth) zoomscale \(zoomscale)")
         CGContextSetLineWidth(context, linewidth)
         for line in lines
         {
@@ -512,7 +513,7 @@ class DrawView: DrawingBase{
             {
                 _angle = (_angle - 360.0) * -1
             }
-            println("angle \(_angle)")
+            //println("angle \(_angle)")
             
             
             var midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);
@@ -562,25 +563,25 @@ class DrawView: DrawingBase{
 
     func setMeasurementText(sender:UITapGestureRecognizer)->Void
     {
-        delegate?.setMeasurementText(sender.view as UILabel)
+        delegate?.setMeasurementText(sender.view as! UILabel)
     }
     
     func setAngleText(sender:UITapGestureRecognizer)->Void
     {
         for angle in angles
         {
-            if(angle.getLabel() == (sender.view as UILabel))
+            if(angle.getLabel() == (sender.view as! UILabel))
             {
                 angle.hardSetText = true
             }
         }
         //(sender.view as UILabel).text = "198 °"
-        delegate?.setAngleText(sender.view as UILabel)
+        delegate?.setAngleText(sender.view as! UILabel)
     }
     
     func setDrawntextText(sender:UITapGestureRecognizer)->Void
     {
-        delegate?.setDrawntextText(sender.view as UILabel)
+        delegate?.setDrawntextText(sender.view as! UILabel)
     }
     
     func freeDraw()

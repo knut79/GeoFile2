@@ -29,7 +29,7 @@ func getFilesFromInbox() -> [UIImage]
     var paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,.UserDomainMask,true)
     if(paths != nil)
     {
-        var documentsDirectory: String = paths[0] as String
+        var documentsDirectory: String = paths[0] as! String
         //print(" documentsdirectory \(documentsDirectory)")
         var inboxPath = documentsDirectory.stringByAppendingString("/Inbox")
         //print(" inboxPath \(inboxPath)")
@@ -38,7 +38,7 @@ func getFilesFromInbox() -> [UIImage]
         var dirFiles = filemgr.contentsOfDirectoryAtPath(inboxPath, error: &error)
         if(dirFiles != nil &&  dirFiles?.count > 0)
         {
-            var url = NSURL.fileURLWithPath(inboxPath.stringByAppendingPathComponent(dirFiles![0] as String))
+            var url = NSURL.fileURLWithPath(inboxPath.stringByAppendingPathComponent(dirFiles![0] as! String))
             var request = NSURLRequest(URL: url!)
             //pdfWebView.scalesPageToFit = true
             //pdfWebView.loadRequest(request)
@@ -46,7 +46,7 @@ func getFilesFromInbox() -> [UIImage]
             
             for item in dirFiles!
             {
-                var path = inboxPath.stringByAppendingPathComponent(item as String)
+                var path = inboxPath.stringByAppendingPathComponent(item as! String)
                 filemgr.removeItemAtPath(path, error: &error)
                 /*
                 if(filemgr.isDeletableFileAtPath(path))
@@ -78,7 +78,7 @@ func pdfToImages(url:NSURL) -> [UIImage]
     
     for var currentPage = 1 ; currentPage <= Int(numberOfPages) ; currentPage++
     {
-        var page = CGPDFDocumentGetPage(pdf, UInt(currentPage))
+        var page = CGPDFDocumentGetPage(pdf, currentPage)
         
         //test
         var pageRect = CGPDFPageGetBoxRect(page,kCGPDFTrimBox)

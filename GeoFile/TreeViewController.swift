@@ -22,7 +22,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
 
     var passingFilepoint:Filepoint?
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var incommingFilesView: UIView!
     var incommingFilesViewHeight:CGFloat = 100
     var imageInstancesScrollView:UIScrollView!
@@ -191,7 +191,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     {
         for view in self.imageInstancesScrollView.subviews
         {
-            (view as UIView).layer.borderWidth = 0
+            (view as! UIView).layer.borderWidth = 0
         }
         
         if let imageInstanceWithIcon = sender.view as? ImageInstanceWithIcon
@@ -297,11 +297,11 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     
     var projectDropLeaf:PointLeaf?
     var filepointDropLeaf:PointLeaf?
-    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         
         self.touchesMoved(touches, withEvent: event)
         
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch//touches.anyObject()
         var touchLocation = touch!.locationInView(self.overviewScrollView)
         
         //check overlay node
@@ -445,10 +445,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     
     var currentTouchedImageView:UIImageView?
     var startPoint:CGPoint!
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         //var pointLabel = currentFileAndPoints.getLastAddedPointObj().originPointLabel
         
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch //touches.anyObject()
         
         var touchLocation = touch!.locationInView(self.incommingFilesView)
         
@@ -481,9 +481,9 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         }
     }
     
-    override func touchesMoved(touches: NSSet, withEvent event: UIEvent)  {
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent)  {
         
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch //touches.anyObject()
         
         
         //var theImageView = touch?.view
@@ -501,7 +501,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     func jumpToFilepoint()
     {
         
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
+        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
         self.performSegueWithIdentifier("showFilepoint", sender: nil)
     }
     
@@ -603,7 +603,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
 
     func showOverlay()
     {
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
+        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
         self.performSegueWithIdentifier("showProjectInMap", sender: nil)
     }
     
@@ -648,12 +648,12 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     {
         if(self.visibleContentView.currentProjectLeaf != nil || self.visibleContentView.currentFilepointLeaf != nil)
         {
-            self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as FilepointListViewController
+            self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as! FilepointListViewController
             self.performSegueWithIdentifier("showFilepointList", sender: nil)
         }
         else
         {
-            self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as ProjectListViewController
+            self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as! ProjectListViewController
             self.performSegueWithIdentifier("showProjectList", sender: nil)
         }
         
@@ -661,7 +661,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showFilepoint") {
-            var svc = segue!.destinationViewController as FilepointViewController
+            var svc = segue!.destinationViewController as! FilepointViewController
             if let pointLeaf = self.visibleContentView.currentFilepointLeaf
             {
                 svc.currentFilepoint = pointLeaf.filepoint
@@ -675,10 +675,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             }
         }
         else if (segue.identifier == "showFilepointList") {
-            var svc = segue!.destinationViewController as FilepointListViewController
+            var svc = segue!.destinationViewController as! FilepointListViewController
             if(self.visibleContentView.currentFilepointLeaf != nil)
             {
-                svc.imagefile = self.visibleContentView.currentFilepointLeaf.filepoint!.imagefiles.allObjects.first as Imagefile
+                svc.imagefile = self.visibleContentView.currentFilepointLeaf.filepoint!.imagefiles.allObjects.first as! Imagefile
             }
                 /*
             else if(self.visibleContentView.currentProjectLeaf != nil)
@@ -688,7 +688,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             */
         }
         else if (segue.identifier == "showProjectInMap") {
-            var svc = segue!.destinationViewController as MapOverviewViewController
+            var svc = segue!.destinationViewController as! MapOverviewViewController
             if let projectLeaf = self.visibleContentView.currentProjectLeaf
             {
                 svc.project = projectLeaf.project

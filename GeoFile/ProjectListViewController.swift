@@ -18,7 +18,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     //var topNavigationBar:TopNavigationView!
     
     // Retreive the managedObjectContext from AppDelegate
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     // Create the table view as soon as this class loads
     var projectsTableView = UITableView(frame: CGRectZero, style: .Plain)
     
@@ -54,7 +54,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("RelationCell") as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("RelationCell") as! UITableViewCell
         //cell.textLabel?.text = "\(indexPath.row)"
         
         // Get the LogItem for this index
@@ -65,7 +65,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         //cell.editing = false
         if(projectItem.imagefiles.count > 0)
         {
-            var imageData = (projectItem.imagefiles.allObjects.first as Imagefile).file
+            var imageData = (projectItem.imagefiles.allObjects.first as! Imagefile).file
             if let image = UIImage(data: imageData)
             {
                 cell.imageView?.image = image
@@ -80,7 +80,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         project = projectItem
         if(project?.imagefiles.count > 0)
         {
-            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
+            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
         }
         else
@@ -205,7 +205,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         save()
         
         editPosition = true
-        let mapViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
+        let mapViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
         self.performSegueWithIdentifier("showProjectInMap", sender: nil)
         editPosition = false
     }
@@ -273,17 +273,17 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
 
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showProjectInMap") {
-            var svc = segue!.destinationViewController as MapOverviewViewController
+            var svc = segue!.destinationViewController as! MapOverviewViewController
             svc.editProjectAtIndex = currentProjectItemIndex
             svc.editProject = editPosition
         }
         else if (segue.identifier == "showFilepoint") {
-            var svc = segue!.destinationViewController as FilepointViewController
+            var svc = segue!.destinationViewController as! FilepointViewController
             svc.project = project
             svc.oneLevelFromProject = true
         }
         else if (segue.identifier == "showTreeView") {
-            var svc = segue!.destinationViewController as TreeViewController
+            var svc = segue!.destinationViewController as! TreeViewController
             svc.pdfImages = self.pdfImages
             
         }

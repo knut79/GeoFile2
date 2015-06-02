@@ -21,7 +21,7 @@ class Overlay: NSManagedObject {
     @NSManaged var active: Boolean
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, file: NSData) -> Overlay{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Overlay", inManagedObjectContext: moc) as Overlay
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Overlay", inManagedObjectContext: moc) as! Overlay
         newitem.title = title
         newitem.file = file
         newitem.active = 0

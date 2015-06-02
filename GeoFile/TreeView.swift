@@ -29,7 +29,7 @@ class TreeView:UIView, PointLeafProtocol
     var imageViewTest:UIImageView!
     //var projectButtons:[UIButton] = []
     var delegate:TreeViewProtocol?
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var projectLeafs = [PointLeaf]()
     var overlayLeafs = [OverlayLeaf]()
     var currentFilepointLeaf:PointLeaf!
@@ -341,7 +341,7 @@ class TreeView:UIView, PointLeafProtocol
         {
             for item in currentImagefile.filepoints
             {
-                let filepointLeaf = PointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
+                let filepointLeaf = PointLeaf(_filePoint:item as! Filepoint,_parent:nil,viewRef:self)
                 currentProjectLeaf.pointLeafs.append(filepointLeaf)
                 filepointLeaf.center = CGPointMake(filepointLeaf.frame.width + xOffset, yOffset + ((filepointLeaf.frame.height) * CGFloat(i)))
                 expandContentsize(filepointLeaf.frame)
@@ -360,7 +360,7 @@ class TreeView:UIView, PointLeafProtocol
         var i = 0
         for item in filepointLeaf.currentImage!.filepoints
         {
-            let newFilepointLeaf = PointLeaf(_filePoint:item as Filepoint,_parent:nil,viewRef:self)
+            let newFilepointLeaf = PointLeaf(_filePoint:item as! Filepoint,_parent:nil,viewRef:self)
             filepointLeaf.pointLeafs.append(newFilepointLeaf)
             newFilepointLeaf.center = CGPointMake(xOffset + leafSize.width, yOffset + ((leafSize.height) * CGFloat(i)))
             expandContentsize(newFilepointLeaf.frame)
@@ -444,7 +444,7 @@ class TreeView:UIView, PointLeafProtocol
  
     func overlaySelected(sender:UITapGestureRecognizer)
     {
-        var overlayLeaf = sender.view?.superview as OverlayLeaf
+        var overlayLeaf = sender.view?.superview as! OverlayLeaf
         
         unselectOverlayLeafs()
         unselectAllLeafsOnCurrentProjectLeaf()
@@ -479,11 +479,11 @@ class TreeView:UIView, PointLeafProtocol
     
     
     
-    func projectSelected(sender:UITapGestureRecognizer)
+    func projectSelectedAction(sender:UITapGestureRecognizer)
     {
         currentFilepointLeaf = nil
         var selectedProjectLeaf = (sender as UITapGestureRecognizer).view?.superview
-        projectSelected(selectedProjectLeaf as PointLeaf)
+        projectSelected(selectedProjectLeaf as! PointLeaf)
     }
     
     func projectSelected(pointLeaf:PointLeaf)
@@ -510,12 +510,12 @@ class TreeView:UIView, PointLeafProtocol
         delegate?.showImageInstancesScrollView(currentProjectLeaf)
     }
     
-    func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
+    func filepointSelectedFromFilepointAction(sender:UITapGestureRecognizer)
     {
         //fadeoutActionButtons()
         
         var selectedFilepointLeaf = (sender as UITapGestureRecognizer).view?.superview
-        filepointSelectedFromFilepoint(selectedFilepointLeaf as PointLeaf)
+        filepointSelectedFromFilepoint(selectedFilepointLeaf as! PointLeaf)
     }
     
     func filepointSelectedFromFilepoint(selectedFilepointLeaf:PointLeaf)
@@ -545,7 +545,7 @@ class TreeView:UIView, PointLeafProtocol
         {
             for filepoint in projectLeaf.currentImage!.filepoints
             {
-                if(isOnBranchWith(filepoint as Filepoint, onBranchWith:_filepoint))
+                if(isOnBranchWith(filepoint as! Filepoint, onBranchWith:_filepoint))
                 {
                     return projectLeaf
                 }
@@ -669,7 +669,7 @@ class TreeView:UIView, PointLeafProtocol
         {
             for item in firstimage.filepoints
             {
-                if(isOnBranchWith(item as Filepoint, onBranchWith: onBranchWith))
+                if(isOnBranchWith(item as! Filepoint, onBranchWith: onBranchWith))
                 {
                     return true
                 }

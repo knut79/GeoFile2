@@ -43,26 +43,26 @@ class CustomViewController:UIViewController, TopNavigationViewProtocol
     
     func toMapView()
     {
-        self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
         self.performSegueWithIdentifier("showProjectInMap", sender: nil)
     }
     
     func toListView()
     {
-        self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as FilepointListViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as! FilepointListViewController
         self.performSegueWithIdentifier("showFilepointList", sender: nil)
     }
     
     func toTreeView(images:[UIImage]?)
     {
         pdfImages = images
-        self.storyboard!.instantiateViewControllerWithIdentifier("TreeViewController") as TreeViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("TreeViewController") as! TreeViewController
         self.performSegueWithIdentifier("showTreeView", sender: nil)
     }
     
     func toTreeView()
     {
-        self.storyboard!.instantiateViewControllerWithIdentifier("TreeViewController") as TreeViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("TreeViewController") as! TreeViewController
         self.performSegueWithIdentifier("showTreeView", sender: nil)
     }
     

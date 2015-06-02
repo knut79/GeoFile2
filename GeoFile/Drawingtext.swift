@@ -19,7 +19,7 @@ class Drawingtext: NSManagedObject {
     
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, centerPoint: CGPoint, color:drawColorEnum, text:String, size:Int ) -> Drawingtext{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingtext", inManagedObjectContext: moc) as Drawingtext
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingtext", inManagedObjectContext: moc) as! Drawingtext
         newitem.centerX = Float(centerPoint.x)
         newitem.centerY = Float(centerPoint.y)
         newitem.text = text

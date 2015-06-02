@@ -41,19 +41,19 @@ class FilepointView2:DrawingBase
             
             for item in imagefileitem.measures
             {
-                var measure = item as Drawingmeasure
+                var measure = item as! Drawingmeasure
                 drawMeasurement(context,measurement: measure)
             }
             
             for item in imagefileitem.angles
             {
-                var angle = item as Drawingangle
+                var angle = item as! Drawingangle
                 drawAngle(context,angle: angle)
             }
             
             for item in imagefileitem.lines
             {
-                var line = item as Drawingline
+                var line = item as! Drawingline
                 setStrokeColor(context,color: drawColorEnum(rawValue: Int(line.color))! )
                 CGContextSetLineWidth(context, drawingLineWidth);
                 CGContextMoveToPoint(context, CGFloat(line.startX), CGFloat(line.startY))
@@ -64,7 +64,7 @@ class FilepointView2:DrawingBase
             
             for item in imagefileitem.texts
             {
-                var text = item as Drawingtext
+                var text = item as! Drawingtext
                 drawText(text)
             }
         }
@@ -125,7 +125,7 @@ class FilepointView2:DrawingBase
         {
             _angle = (_angle - 360.0) * -1
         }
-        println("angle \(_angle)")
+        //println("angle \(_angle)")
         
         
         var midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);

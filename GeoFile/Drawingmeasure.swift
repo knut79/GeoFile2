@@ -20,7 +20,7 @@ class Drawingmeasure: NSManagedObject {
     
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, startPoint:CGPoint, endPoint: CGPoint, color:drawColorEnum, text:String) -> Drawingmeasure{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingmeasure", inManagedObjectContext: moc) as Drawingmeasure
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingmeasure", inManagedObjectContext: moc) as! Drawingmeasure
         newitem.startX = Float(startPoint.x)
         newitem.startY = Float(startPoint.y)
         newitem.endX = Float(endPoint.x)

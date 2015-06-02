@@ -20,7 +20,7 @@ class Drawingline: NSManagedObject {
 
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, startPoint:CGPoint, endPoint: CGPoint, color:drawColorEnum, lastTouchBegan:Bool) -> Drawingline{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingline", inManagedObjectContext: moc) as Drawingline
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingline", inManagedObjectContext: moc) as! Drawingline
         newitem.startX = Float(startPoint.x)
         newitem.startY = Float(startPoint.y)
         newitem.endX = Float(endPoint.x)

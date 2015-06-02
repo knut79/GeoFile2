@@ -11,8 +11,8 @@ import Foundation
 
 protocol PointLeafProtocol
 {
-    func projectSelected(sender:UITapGestureRecognizer)
-    func filepointSelectedFromFilepoint(sender:UITapGestureRecognizer)
+    func projectSelectedAction(sender:UITapGestureRecognizer)
+    func filepointSelectedFromFilepointAction(sender:UITapGestureRecognizer)
 }
 
 class PointLeaf:UIView
@@ -49,7 +49,7 @@ class PointLeaf:UIView
         setInitialValues(viewRef!)
         
 
-        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelected:")
+        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelectedAction:")
         initImagefiles(_project.imagefiles,singleTapRecognizer: singleTapRec)
     }
 
@@ -64,7 +64,7 @@ class PointLeaf:UIView
         setInitialValues(viewRef!)
         
         parent = _parent
-        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepoint:")
+        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepointAction:")
         initImagefiles(_filePoint.imagefiles,singleTapRecognizer: singleTapRec)
     }
     
@@ -120,7 +120,7 @@ class PointLeaf:UIView
             return
         }
         //top element
-        var topElement = topImageFile ?? imagefiles.allObjects.last as Imagefile
+        var topElement = topImageFile ?? imagefiles.allObjects.last as! Imagefile
         
         var imageSizeWidth = imageInstanceSides
         var imageSizeHeight = imageInstanceSides
@@ -138,14 +138,14 @@ class PointLeaf:UIView
         var index = imagefiles.count
         for imageitem in imagefiles
         {
-            if(imageitem as Imagefile == topElement)
+            if(imageitem as! Imagefile == topElement)
             {
                 continue
             }
             
             index--
 
-            var imageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin + (CGFloat(index) * 5),margin + (CGFloat(index) * 3), imageSizeWidth, imageSizeHeight),imagefile: imageitem as Imagefile)
+            var imageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin + (CGFloat(index) * 5),margin + (CGFloat(index) * 3), imageSizeWidth, imageSizeHeight),imagefile: imageitem as! Imagefile)
             imageInstance.alpha = 1 / CGFloat(index)
             imageInstances.append(imageInstance)
             self.addSubview(imageInstance)
@@ -188,12 +188,12 @@ class PointLeaf:UIView
         
         if let fp = filepoint
         {
-            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepoint:")
+            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepointAction:")
             initImagefiles(fp.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
         else if let proj = project
         {
-            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelected:")
+            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelectedAction:")
             initImagefiles(proj.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
     }

@@ -22,7 +22,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     var saveEditProjectButton:CustomButton!
     var newProjectView:NewProjectView?
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var projectItems = [Project]()
     
     var editProject = false
@@ -81,7 +81,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         gmaps = GMSMapView(frame: CGRectMake(0, buttonBarHeight , self.view.bounds.width,
             self.view.bounds.height - (buttonBarHeight*2)))
         
-        if let map = gmaps? {
+        if let map = gmaps {
             map.myLocationEnabled = true
             map.camera = camera
             map.delegate = self
@@ -161,8 +161,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
 
     
     var touchLocationFromCenterInOverlay:CGPoint!
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        var touch = touches.anyObject()
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        var touch = touches.first as? UITouch//touches.anyObject()
         //var theImageView = touch?.view
         if let ovview = newOverlayToSet
         {
@@ -171,9 +171,9 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             println("sizes \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height) and positions \(touchLocationFromCenterInOverlay.x) \(touchLocationFromCenterInOverlay.y)")
         }
     }
-    override func touchesMoved(touches: NSSet, withEvent event: UIEvent)  {
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent)  {
         
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch //touches.anyObject()
         //var theImageView = touch?.view
         if let view = newOverlayToSet
         {
@@ -369,7 +369,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         if status == .AuthorizedWhenInUse {
             locationManager.startUpdatingLocation()
             
-            if let map = gmaps? {
+            if let map = gmaps {
                 map.myLocationEnabled = true
                 map.settings.myLocationButton = true
             }
@@ -378,7 +378,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
         if let location = locations.first as? CLLocation {
-            if let map = gmaps? {
+            if let map = gmaps {
             
                 var target = initialTarget ?? location.coordinate
                 map.camera = GMSCameraPosition(target: target, zoom: 15, bearing: 0, viewingAngle: 0)
@@ -398,7 +398,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
                         self.currentLocation = location
                         self.localAddressSet = true
                         
-                        self.placemark = CLPlacemark(placemark: stuff[0] as CLPlacemark)
+                        self.placemark = CLPlacemark(placemark: stuff[0] as! CLPlacemark)
                         
                         println("\(self.placemark.country)")
                         println("\(self.placemark.administrativeArea)")
@@ -511,7 +511,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         else*/
         if(project?.imagefiles.count > 0)
         {
-            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as FilepointViewController
+            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
         }
         else
@@ -694,7 +694,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             for imagefile in project.imagefiles
             {
                 
-                printTestImagefile(imagefile as Imagefile, depth:0)
+                printTestImagefile(imagefile as! Imagefile, depth:0)
 
             }
         }
@@ -715,7 +715,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             println("\(depthstring) filepoint id \(filepoint.objectID)")
             for imagefile in filepoint.imagefiles
             {
-                printTestImagefile(imagefile as Imagefile,depth: depth + 1)
+                printTestImagefile(imagefile as! Imagefile,depth: depth + 1)
             }
             
         }
@@ -799,7 +799,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        var image = info[UIImagePickerControllerOriginalImage] as UIImage
+        var image = info[UIImagePickerControllerOriginalImage] as! UIImage
         
         dismissViewControllerAnimated(true, completion: nil)
         
@@ -819,7 +819,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     //MARK: Storyboard and segue
     func test()
     {
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("TestViewController") as TestViewController
+        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("TestViewController") as! TestViewController
         self.performSegueWithIdentifier("showTestViewController", sender: nil)
     }
 
@@ -829,7 +829,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     }
     
     override func toListView() {
-        self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as ProjectListViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as! ProjectListViewController
         self.performSegueWithIdentifier("showProjectList", sender: nil)
     }
     
@@ -837,17 +837,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showFilepoint") {
-            var svc = segue!.destinationViewController as FilepointViewController
+            var svc = segue!.destinationViewController as! FilepointViewController
             svc.project = project
             svc.oneLevelFromProject = true
         }
         else if (segue.identifier == "showTreeView") {
-            var svc = segue!.destinationViewController as TreeViewController
+            var svc = segue!.destinationViewController as! TreeViewController
             svc.pdfImages = self.pdfImages
         }
         else if (segue.identifier == "showFilepointList") {
-            var svc = segue!.destinationViewController as FilepointListViewController
-            svc.imagefile = project?.imagefiles.allObjects.first as Imagefile
+            var svc = segue!.destinationViewController as! FilepointListViewController
+            svc.imagefile = project?.imagefiles.allObjects.first as? Imagefile
         }
     }
     

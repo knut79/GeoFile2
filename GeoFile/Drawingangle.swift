@@ -22,7 +22,7 @@ class Drawingangle: NSManagedObject {
     
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, startPoint:CGPoint, midPoint:CGPoint, endPoint: CGPoint, color:drawColorEnum, text:String) -> Drawingangle{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingangle", inManagedObjectContext: moc) as Drawingangle
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Drawingangle", inManagedObjectContext: moc) as! Drawingangle
         newitem.startX = Float(startPoint.x)
         newitem.startY = Float(startPoint.y)
         newitem.midX = Float(midPoint.x)

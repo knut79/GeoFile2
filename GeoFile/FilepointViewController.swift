@@ -36,7 +36,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     var hideAddMenuButton:CustomButton!
 
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var imagefileItems = [Imagefile]()
 
     var addPictureButton: CustomButton!
@@ -168,7 +168,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             tapRecognizer.numberOfTapsRequired = 1
             point.addGestureRecognizer(tapRecognizer)
 
-            var position = CGPointMake(CGFloat((item as Filepoint).x), CGFloat((item as Filepoint).y))
+            var position = CGPointMake(CGFloat((item as! Filepoint).x), CGFloat((item as! Filepoint).y))
             point.center = CGPointMake(position.x * overviewScrollView.zoomScale,position.y * overviewScrollView.zoomScale)
             point.center = CGPointMake(point.center.x + xVoidOffset,point.center.y + yVoidOffset)
 
@@ -189,7 +189,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             println("number of files in project \(project?.imagefiles.count)")
             for item in project!.imagefiles
             {
-                imagefileItems.append(item as Imagefile)
+                imagefileItems.append(item as! Imagefile)
             }
         }
         else
@@ -197,7 +197,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             println("number of filepoints on filepoint \(currentFilepoint!.filepoints.count)")
             for item in currentFilepoint!.imagefiles
             {
-                imagefileItems.append(item as Imagefile)
+                imagefileItems.append(item as! Imagefile)
             }
         }
     }
@@ -288,7 +288,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             for imagefile in project!.imagefiles
             {
-                let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
+                let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as! Imagefile)
                 imageInstances?.append(imageView)
             }
         }
@@ -296,7 +296,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             for imagefile in currentFilepoint!.imagefiles
             {
-                let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
+                let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as! Imagefile)
                 imageInstances?.append(imageView)
             }
         }
@@ -507,7 +507,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     var newFilepoint:PointElement?
     func pointTapped(sender:UITapGestureRecognizer)->Void
     {
-        var pointTapped =  sender.view as PointElement
+        var pointTapped =  sender.view as! PointElement
         var filepointToNavigateTowards = pointTapped.filepoint
         
         if(filepointToNavigateTowards != nil && filepointToNavigateTowards!.imagefiles.count > 0)
@@ -584,11 +584,11 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     func imageinstancesBigTapped(sender:UITapGestureRecognizer) -> Void
     {
 
-        if (sender.view! as ImageInstanceWithIcon).imagefile == self.currentImagefile
+        if (sender.view! as! ImageInstanceWithIcon).imagefile == self.currentImagefile
         {
             return
         }
-        var imageinstance = sender.view as ImageInstanceWithIcon
+        var imageinstance = sender.view as! ImageInstanceWithIcon
         var imageViewForAnimation = UIImageView(frame: self.overviewScrollView.frame)
 
         imageViewForAnimation.transform = CGAffineTransformScale(imageViewForAnimation.transform, 0.1, 0.1)
@@ -756,7 +756,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
 
         drawView.delegate = self
         drawView.setImage(makeImage(self.overviewScrollView,xOffset: overviewScrollView.contentOffset.x, yOffset: overviewScrollView.contentOffset.y))
-        drawView.setZoomscale(overviewScrollView.zoomScale)
+        drawView.setZoomscale_custom(overviewScrollView.zoomScale)
         drawView.showButtons()
         drawView.resetDrawingValues()
         drawView.hidden = false
@@ -906,13 +906,13 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     private var xOffset: CGFloat = 0.0
     private var yOffset: CGFloat = 0.0
     
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         //var pointLabel = currentFileAndPoints.getLastAddedPointObj().originPointLabel
         if(childPointsAndLabels.count <= 0)
         {
             return
         }
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch //touches.anyObject()
         var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
         var touchLocation = touch!.locationInView(self.view)
         var isInnView = CGRectContainsPoint(pointLabel.frame,touchLocation)
@@ -922,7 +922,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             self.hideAddMenu()
             
-            let point = touches.anyObject()!.locationInView(self.view)
+            let point = (touches.first as? UITouch)!.locationInView(self.view) //touches.anyObject()!.locationInView(self.view)
             xOffset = point.x - pointLabel.center.x
             yOffset = point.y - pointLabel.center.y
             //pointLabel.transform = CGAffineTransformMakeRotation(10.0 * CGFloat(Float(M_PI)) / 180.0)
@@ -933,12 +933,12 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
     }
     
-    override func touchesMoved(touches: NSSet, withEvent event: UIEvent)  {
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent)  {
         if(childPointsAndLabels.count <= 0)
         {
             return
         }
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch //touches.anyObject()
         var touchLocation = touch!.locationInView(self.view)
         var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
         var isInnView = CGRectContainsPoint(pointLabel.frame,touchLocation)
@@ -946,7 +946,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         if(isInnView)
         {
             var pointLabel = childPointsAndLabels[childPointsAndLabels.count - 1]
-            let point = touches.anyObject()!.locationInView(self.view)
+            let point = (touches.first as? UITouch)!.locationInView(self.view) //touches.anyObject()!.locationInView(self.view)
             pointLabel.center = CGPointMake(point.x - xOffset, point.y - yOffset)
         }
         else
@@ -956,7 +956,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         
     }
     
-    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         //var pointLabel = currentFileAndPoints.getLastAddedPointObj().originPointLabel
         //get last added label
         if(childPointsAndLabels.count <= 0)
@@ -967,7 +967,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         
         self.touchesMoved(touches, withEvent: event)
 
-        var touch = touches.anyObject()
+        var touch = touches.first as? UITouch //touches.anyObject()
         var touchLocation = touch!.locationInView(self.view)
         var isInnView = CGRectContainsPoint(pointLabel.frame,touchLocation)
         
@@ -1108,7 +1108,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        var image = info[UIImagePickerControllerOriginalImage] as UIImage
+        var image = info[UIImagePickerControllerOriginalImage] as! UIImage
         dismissViewControllerAnimated(true, completion: nil)
         var imageData =  UIImageJPEGRepresentation(image,1.0) as NSData
         if saveImageFromLibraryAsNewInstance
@@ -1125,18 +1125,18 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showFilepointList") {
-            var svc = segue!.destinationViewController as FilepointListViewController
+            var svc = segue!.destinationViewController as! FilepointListViewController
             svc.imagefile = currentImagefile
             
         }
         else if (segue.identifier == "showTreeView") {
-            var svc = segue!.destinationViewController as TreeViewController
+            var svc = segue!.destinationViewController as! TreeViewController
             svc.passingFilepoint = currentFilepoint
             svc.pdfImages = self.pdfImages
 
         }
         else if (segue.identifier == "showProjectInMap") {
-            var svc = segue!.destinationViewController as MapOverviewViewController
+            var svc = segue!.destinationViewController as! MapOverviewViewController
             svc.project = project
 
         }

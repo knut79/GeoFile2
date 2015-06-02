@@ -26,7 +26,7 @@ class Imagefile: NSManagedObject {
     
     //added on picture with coordinates on parent filepoint
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData, tags:String?, worktype:workType) -> Imagefile{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Imagefile", inManagedObjectContext: moc) as Imagefile
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Imagefile", inManagedObjectContext: moc) as! Imagefile
         newitem.title = title
         newitem.file = file
         

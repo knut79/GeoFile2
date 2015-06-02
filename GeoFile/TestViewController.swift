@@ -13,7 +13,7 @@ class TestViewController: UIViewController {
     
     @IBOutlet weak var testImageView: UIImageView!
     // Retreive the managedObjectContext from AppDelegate
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var projectItems = [Project]()
 
