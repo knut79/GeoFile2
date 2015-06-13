@@ -42,6 +42,8 @@
 
 //send 📤
 
+//📷
+
 enum drawColorEnum: Int
 {
     case white = 0,black,red,blue
@@ -50,6 +52,29 @@ enum drawColorEnum: Int
 enum leafType: Int
 {
     case mappoint = 0,imagepoint
+}
+
+enum commonTags:Int
+{
+    case skinnebrudd = 0
+    case asfalt
+    case vannavløp
+    case skinnegang
+    
+    var description: String {
+        switch self {
+        case .skinnebrudd:
+            return "skinnebrudd"
+        case .asfalt:
+            return "asfalt"
+        case .vannavløp:
+            return "vannavløp"
+        case .skinnegang:
+            return "skinnegang"
+        default:
+            return "skinnegang"
+        }
+    }
 }
 
 enum workType:Int

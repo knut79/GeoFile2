@@ -43,7 +43,7 @@ class TestViewController: UIViewController {
     
     func populateProject()
     {
-        Project.createInManagedObjectContext(self.managedObjectContext!, title: "a title", lat: -23.3453, long: 12.2323)
+        Project.createInManagedObjectContext(self.managedObjectContext!, title: "a title", lat: -23.3453, long: 12.2323, tags: "")
         
         save()
     }

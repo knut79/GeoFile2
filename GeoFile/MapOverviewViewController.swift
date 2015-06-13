@@ -12,7 +12,7 @@ import AVFoundation
 import MobileCoreServices
 
 
-class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewProjectProtocol, UIImagePickerControllerDelegate,UINavigationControllerDelegate, CLLocationManagerDelegate, CameraProtocol,UIGestureRecognizerDelegate, SetOverlayButtonsProtocol{
+class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewProjectProtocol, UIImagePickerControllerDelegate,UINavigationControllerDelegate, CLLocationManagerDelegate, CameraProtocol,UIGestureRecognizerDelegate, SetOverlayButtonsProtocol, TagCheckViewProtocol{
     
 
     var gmaps: GMSMapView?
@@ -48,12 +48,13 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     var setOverlayButton:CustomButton!
     var cancelOverlayButton:CustomButton!
-    
-
-
-    
 
     var overlayToSet:Overlay?
+    
+    var tagsScrollView:TagCheckScrollView!
+    var tagsScrollViewOpenButton:UIButton!
+    
+    var marks:[MarkerItem]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,7 +71,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         topNavigationBar.showForViewtype(.map)
         
         addProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        addProjectButton.setTitle("Add project", forState: .Normal)
+        //addProjectButton.setTitle("Add project", forState: .Normal)
+        addProjectButton.setTitle("Opprett nytt arbeid", forState: .Normal)
         addProjectButton.addTarget(self, action: "addNewProject", forControlEvents: .TouchUpInside)
         self.view.addSubview(addProjectButton)
 
@@ -89,9 +91,20 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             self.view.addSubview(gmaps!)
         }
         
+        tagsScrollViewOpenButton = UIButton(frame: CGRectMake(buttonIconSideSmall * 0.75, gmaps!.frame.minY + (buttonIconSideSmall * 0.75), buttonIconSideSmall, buttonIconSideSmall))
+        let funnelIcon = UIImage(named: "funnel.png")
+        tagsScrollViewOpenButton.setImage(funnelIcon, forState: UIControlState.Normal)
+        tagsScrollViewOpenButton.addTarget(self, action: "showTagsScrollView", forControlEvents: UIControlEvents.TouchUpInside)
+        tagsScrollViewOpenButton.layer.borderWidth = 2
+        tagsScrollViewOpenButton.layer.borderColor = UIColor.blackColor().CGColor
+        self.view.addSubview(tagsScrollViewOpenButton)
         
-        
+        tagsScrollView = TagCheckScrollView(frame: CGRectMake(elementMargin,elementMargin + buttonBarHeight,self.view.frame.width * 0.5, self.view.frame.height * 0.5))
+        tagsScrollView.delegate = self
+        tagsScrollView.alpha = 0
 
+        self.view.addSubview(tagsScrollView!)
+        
         if let overlay = overlayToSet
         {
             setNewOverlay(overlay)
@@ -112,7 +125,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         fetchOverlays()
         
-        setMarkers(editProject,atIndex: editProjectAtIndex)
+        initMarkers(editProject,atIndex: editProjectAtIndex)
+        setupMarkers(nil)
     }
     
     func setNewOverlay(overlay:Overlay)
@@ -158,7 +172,45 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         self.view.addSubview(cancelOverlayButton)
     }
     
-
+    func showTagsScrollView()
+    {
+        let rightLocation = tagsScrollView.center
+        tagsScrollView.transform = CGAffineTransformScale(tagsScrollView.transform, 0.1, 0.1)
+        tagsScrollView.center = tagsScrollViewOpenButton.center
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            
+            self.tagsScrollView.transform = CGAffineTransformIdentity
+            self.tagsScrollView.alpha = 1
+            self.tagsScrollView.center = rightLocation
+            }, completion: { (value: Bool) in
+                self.tagsScrollView.transform = CGAffineTransformIdentity
+                self.tagsScrollView.alpha = 1
+                self.tagsScrollView.center = rightLocation
+        })
+        
+    }
+    
+    //MARK: 
+    func closeTagCheckView()
+    {
+        let rightLocation = tagsScrollView.center
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            
+            self.tagsScrollView.transform = CGAffineTransformScale(self.tagsScrollView.transform, 0.1, 0.1)
+            self.tagsScrollView.alpha = 0
+            self.tagsScrollView.center = self.tagsScrollViewOpenButton.center
+            }, completion: { (value: Bool) in
+                self.tagsScrollView.transform = CGAffineTransformScale(self.tagsScrollView.transform, 0.1, 0.1)
+                self.tagsScrollView.alpha = 0
+                self.tagsScrollView.center = rightLocation
+                
+        })
+    }
+    
+    func reloadMarks(tags:[String])
+    {
+        setupMarkers(tags)
+    }
     
     var touchLocationFromCenterInOverlay:CGPoint!
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
@@ -428,8 +480,9 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     }
 
     
-    func setMarkers(edit:Bool,atIndex:Int)
+    func initMarkers(edit:Bool,atIndex:Int)
     {
+        marks = []
         var index = 0
         for item in projectItems
         {
@@ -454,8 +507,37 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             marker.position = CLLocationCoordinate2DMake(item.latitude, item.longitude)
             marker.appearAnimation = kGMSMarkerAnimationPop
             
-            marker.map = gmaps
+            //marker.map = gmaps
+            marks.append(MarkerItem(gmsmarker: marker, tagsString: item.tags, statusTODO: ""))
             index++
+        }
+    }
+    
+    func setupMarkers(filters:[String]?)
+    {
+        for item in marks
+        {
+            if filters == nil
+            {
+                item.gmsmarker.map = gmaps
+            }
+            else
+            {
+                var foundValue = false
+                for filter in filters!
+                {
+                    if item.tags.rangeOfString(filter) != nil
+                    {
+                        foundValue = true
+                        item.gmsmarker.map = gmaps
+                    }
+                }
+                if !foundValue
+                {
+                    item.gmsmarker.map = nil
+                }
+            }
+            
         }
     }
 
@@ -565,7 +647,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectmarker.icon = UIImage(named: "flag_icon")
         newProjectmarker.draggable = false
         
-        Project.createInManagedObjectContext(self.managedObjectContext!, title: newProjectTitle, lat:newProjectmarker.position.latitude, long: newProjectmarker.position.longitude)
+        var tags = newProjectView!.getTags()
+        Project.createInManagedObjectContext(self.managedObjectContext!, title: newProjectTitle, lat:newProjectmarker.position.latitude, long: newProjectmarker.position.longitude, tags: tags)
         save()
         fetchProjects()
     }
@@ -577,7 +660,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectmarker.icon = UIImage(named: "flag_icon")
         newProjectmarker.draggable = false
         
-        Project.createInManagedObjectContext(self.managedObjectContext!, title: newProjectTitle, lat:currentLocation.coordinate.latitude, long: currentLocation.coordinate.longitude)
+        var tags = newProjectView!.getTags()
+        Project.createInManagedObjectContext(self.managedObjectContext!, title: newProjectTitle, lat:currentLocation.coordinate.latitude, long: currentLocation.coordinate.longitude, tags: tags)
         save()
         fetchProjects()
     }

@@ -44,6 +44,11 @@ class PointLeaf:UIView
         var rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
         super.init(frame: rect)
 
+        //test
+        self.layer.borderWidth = 2
+        self.layer.borderColor = UIColor.blackColor().CGColor
+        //end test
+        
         project = _project
         
         setInitialValues(viewRef!)
@@ -58,6 +63,10 @@ class PointLeaf:UIView
     {
         var rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
         super.init(frame: rect)
+        //test
+        self.layer.borderWidth = 2
+        self.layer.borderColor = UIColor.blackColor().CGColor
+        //end test
         
         filepoint = _filePoint
         

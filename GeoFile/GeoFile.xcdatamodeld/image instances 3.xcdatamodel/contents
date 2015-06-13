@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14D136" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="CommonTag" representedClassName="GeoFile.CommonTag" syncable="YES">
+        <attribute name="category" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="tag" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Drawingangle" representedClassName="GeoFile.Drawingangle" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="endX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="endY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="midX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="midY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="imagefile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Imagefile" inverseName="angles" inverseEntity="Imagefile" syncable="YES"/>
+    </entity>
+    <entity name="Drawingline" representedClassName="GeoFile.Drawingline" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="endX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="endY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lastTouchBegan" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="startX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="imagefile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Imagefile" inverseName="lines" inverseEntity="Imagefile" syncable="YES"/>
+    </entity>
+    <entity name="Drawingmeasure" representedClassName="GeoFile.Drawingmeasure" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="endX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="endY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="imagefile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Imagefile" inverseName="measures" inverseEntity="Imagefile" syncable="YES"/>
+    </entity>
+    <entity name="Drawingtext" representedClassName="GeoFile.Drawingtext" syncable="YES">
+        <attribute name="centerX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="centerY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="endX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="endY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="startX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="imagefile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Imagefile" inverseName="texts" inverseEntity="Imagefile" syncable="YES"/>
+    </entity>
+    <entity name="Filepoint" representedClassName="GeoFile.Filepoint" syncable="YES">
+        <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="x" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="y" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="imagefile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Imagefile" inverseName="filepoints" inverseEntity="Imagefile" syncable="YES"/>
+        <relationship name="imagefiles" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Imagefile" inverseName="filepoint" inverseEntity="Imagefile" syncable="YES"/>
+    </entity>
+    <entity name="Imagefile" representedClassName="GeoFile.Imagefile" syncable="YES">
+        <attribute name="file" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="worktype" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="angles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Drawingangle" inverseName="imagefile" inverseEntity="Drawingangle" syncable="YES"/>
+        <relationship name="filepoint" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Filepoint" inverseName="imagefiles" inverseEntity="Filepoint" syncable="YES"/>
+        <relationship name="filepoints" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Filepoint" inverseName="imagefile" inverseEntity="Filepoint" syncable="YES"/>
+        <relationship name="lines" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Drawingline" inverseName="imagefile" inverseEntity="Drawingline" syncable="YES"/>
+        <relationship name="measures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Drawingmeasure" inverseName="imagefile" inverseEntity="Drawingmeasure" syncable="YES"/>
+        <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="imagefiles" inverseEntity="Project" syncable="YES"/>
+        <relationship name="texts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Drawingtext" inverseName="imagefile" inverseEntity="Drawingtext" syncable="YES"/>
+    </entity>
+    <entity name="Overlay" representedClassName="GeoFile.Overlay" syncable="YES">
+        <attribute name="active" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="bearing" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="file" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="filetype" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="latitudeNE" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="latitudeSW" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitudeNE" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitudeSW" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Project" representedClassName="GeoFile.Project" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="imagefiles" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Imagefile" inverseName="project" inverseEntity="Imagefile" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Drawingangle" positionX="144" positionY="432" width="128" height="178"/>
+        <element name="Drawingline" positionX="117" positionY="405" width="128" height="148"/>
+        <element name="Drawingmeasure" positionX="135" positionY="423" width="128" height="150"/>
+        <element name="Drawingtext" positionX="126" positionY="414" width="128" height="195"/>
+        <element name="Filepoint" positionX="117" positionY="324" width="128" height="150"/>
+        <element name="Imagefile" positionX="126" positionY="441" width="128" height="223"/>
+        <element name="Overlay" positionX="117" positionY="378" width="128" height="195"/>
+        <element name="Project" positionX="90" positionY="279" width="128" height="120"/>
+        <element name="CommonTag" positionX="117" positionY="432" width="128" height="75"/>
+    </elements>
+</model>

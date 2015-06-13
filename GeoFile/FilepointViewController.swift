@@ -745,6 +745,33 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             animated: true,
             completion: nil)
     }
+    
+    func setDtextText(label:UILabel)
+    {
+        var textPrompt = UIAlertController(title: "Enter",
+            message: "Enter text",
+            preferredStyle: .Alert)
+        
+        var textTextField: UITextField?
+        textPrompt.addTextFieldWithConfigurationHandler {
+            (textField) -> Void in
+            textTextField = textField
+            textField.textAlignment = NSTextAlignment.Center
+            textField.placeholder = "Enter text"
+            textField.keyboardType = UIKeyboardType.Default
+        }
+        
+        textPrompt.addAction(UIAlertAction(title: "OK",
+            style: .Default,
+            handler: { (action) -> Void in
+                label.text = textTextField!.text
+        }))
+        
+        
+        self.presentViewController(textPrompt,
+            animated: true,
+            completion: nil)
+    }
     //MARK: Draw
     func draw()
     {
@@ -813,6 +840,17 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             
             var newMeasure = Drawingmeasure.createInManagedObjectContext(self.managedObjectContext!,startPoint: start,endPoint: end,color: measure.color,text: measure.getLabel().text!)
             currentImagefile!.addDrawingMeasure(newMeasure)
+        }
+        
+        for dtext in drawView.dTexts
+        {
+            
+            var start = CGPointMake((dtext.start.x + xVoidOffset) / overviewScrollView.zoomScale, (dtext.start.y + yVoidOffset) / overviewScrollView.zoomScale)
+            var end = CGPointMake((dtext.end.x + xVoidOffset) / overviewScrollView.zoomScale,
+                (dtext.end.y + yVoidOffset) / overviewScrollView.zoomScale)
+            
+            var newDtext = Drawingtext.createInManagedObjectContext(self.managedObjectContext!,startPoint: start,endPoint: end,color: dtext.color,text: dtext.getLabel().text!, size:Int(drawingTextPointSize))
+            currentImagefile!.addDrawingText(newDtext)
         }
         
         for angle in drawView.angles

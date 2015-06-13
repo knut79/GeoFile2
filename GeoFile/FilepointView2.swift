@@ -65,13 +65,14 @@ class FilepointView2:DrawingBase
             for item in imagefileitem.texts
             {
                 var text = item as! Drawingtext
-                drawText(text)
+                drawText(context,text: text)
             }
         }
     }
     
-    func drawText(text:Drawingtext)
+    func drawText(context:CGContext,text:Drawingtext)
     {
+        /*
         var label = UILabel(frame: CGRectMake(0,0,100,40))
         label.font = UIFont.systemFontOfSize(drawingTextPointSize)
         label.text = text.text
@@ -79,6 +80,20 @@ class FilepointView2:DrawingBase
         label.textColor = getUIColor( drawColorEnum(rawValue: Int(text.color))!)
         self.addSubview(label)
         label.center = text.center
+        */
+        
+
+        var angle = angleOfPointsToFixedPoint(text.start, p2: text.end)
+
+        var label = UILabel(frame: CGRectMake(0,0,100,40))
+        label.font = UIFont.systemFontOfSize(drawingTextPointSize)
+        label.textAlignment = NSTextAlignment.Center
+        label.text = text.text
+        label.textColor = getUIColor( drawColorEnum(rawValue: Int(text.color))!)
+        label.center = getPointBetweenPoints(CGPointMake(CGFloat(text.startX),CGFloat(text.startY)), p2: CGPointMake(CGFloat(text.endX),CGFloat(text.endY)), offset: CGPointMake(10, -10))
+        self.addSubview(label)
+        label.transform = CGAffineTransformIdentity
+        label.transform = CGAffineTransformMakeRotation(angle * CGFloat(M_PI) / 180.0)
     }
     
     func drawAngle(context:CGContext,angle:Drawingangle)

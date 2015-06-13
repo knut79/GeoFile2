@@ -15,13 +15,15 @@ class Project: NSManagedObject {
     @NSManaged var latitude: Double
     @NSManaged var title: String
     @NSManaged var imagefiles: NSSet
+    @NSManaged var tags: String
     
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, lat: Double, long: Double ) -> Project{
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, lat: Double, long: Double, tags:String ) -> Project{
         let newitem = NSEntityDescription.insertNewObjectForEntityForName("Project", inManagedObjectContext: moc) as! Project
         newitem.latitude = lat
         newitem.longitude = long
         newitem.title = title
         newitem.imagefiles = NSMutableSet()
+        newitem.tags = tags
         
         return newitem
     }
@@ -36,10 +38,10 @@ class Project: NSManagedObject {
                 {
                     if( (item as! Imagefile).worktype == Int16(workType.info.rawValue))
                     {
-                        return item as! Imagefile
+                        return item as? Imagefile
                     }
                 }
-                return self.imagefiles.allObjects.first as! Imagefile
+                return self.imagefiles.allObjects.first as? Imagefile
             }
             else
             {

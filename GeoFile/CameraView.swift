@@ -39,6 +39,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     var confirmImageButton:CustomButton!
     
     var pictureOverlayTemplate:UIImageView!
+    var scaffoldToggleButton:CustomButton!
     
     
     var setImageTypeView:UIView!
@@ -55,44 +56,92 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
 
     
     init(frame: CGRect, image:UIImage?,showtypes:Bool = false) {
-        super.init(frame: frame)
+        let testFrame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height)
+        super.init(frame: testFrame)
         
-        chooseFromLibraryButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        chooseFromLibraryButton.setTitle("Camera roll", forState: .Normal)
+        var buttonSize = CGRectMake(0, 0, buttonIconSideSmall * 2, buttonIconSideSmall)
+        var buttonSizeBig = CGRectMake(0, 0, buttonIconSideSmall * 2, buttonIconSideSmall * 2)
+        
+        //chooseFromLibraryButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        chooseFromLibraryButton = CustomButton(frame: buttonSize)
+        //chooseFromLibraryButton.setTitle("Camera roll", forState: .Normal)
+        
+        let imageFilmroll = UIImage(named: "filmrollIcon.jpg")
+        chooseFromLibraryButton.setImage(imageFilmroll, forState: .Normal)
         chooseFromLibraryButton.addTarget(self, action: "chooseImageFromPhotoLibrary", forControlEvents: .TouchUpInside)
+
         self.addSubview(chooseFromLibraryButton)
         
-        chooseFromCameraButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        chooseFromCameraButton.setTitle("Take picture", forState: .Normal)
+        //cancelButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*3), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        cancelButton = CustomButton(frame: buttonSize)
+        cancelButton.setTitle("🔙", forState: .Normal)
+        cancelButton.addTarget(self, action: "cancelImageFromCamera", forControlEvents: .TouchUpInside)
+
+        self.addSubview(cancelButton)
+        
+        //chooseFromCameraButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        chooseFromCameraButton = CustomButton(frame: buttonSizeBig)
+        chooseFromCameraButton.setTitle("Capture", forState: .Normal)
         chooseFromCameraButton.addTarget(self, action: "takeImageFromCamera", forControlEvents: .TouchUpInside)
+
         self.addSubview(chooseFromCameraButton)
         
-        retakeImageButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        retakeImageButton.setTitle("Retake image", forState: .Normal)
-        retakeImageButton.addTarget(self, action: "retakeImageFromCamera", forControlEvents: .TouchUpInside)
-        self.addSubview(retakeImageButton)
-        retakeImageButton.hidden = true
         
-        confirmImageButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        confirmImageButton.setTitle("Use image", forState: .Normal)
+        scaffoldToggleButton = CustomButton(frame: buttonSize)
+        let imageScaffold = UIImage(named: "scaffoldIcon.jpeg")
+        scaffoldToggleButton.setImage(imageScaffold, forState: .Normal)
+        scaffoldToggleButton.addTarget(self, action: "toggleScaffold", forControlEvents: .TouchUpInside)
+
+        self.addSubview(scaffoldToggleButton)
+        
+        //confirmImageButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        confirmImageButton = CustomButton(frame: buttonSizeBig)
+        confirmImageButton.setTitle("OK", forState: .Normal)
         confirmImageButton.addTarget(self, action: "confirmImageFromCamera", forControlEvents: .TouchUpInside)
         self.addSubview(confirmImageButton)
         confirmImageButton.hidden = true
         
         
-        cancelButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*3), UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        cancelButton.setTitle("Cancel", forState: .Normal)
-        cancelButton.addTarget(self, action: "cancelImageFromCamera", forControlEvents: .TouchUpInside)
-        self.addSubview(cancelButton)
+        //retakeImageButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        retakeImageButton = CustomButton(frame: buttonSize)
+        retakeImageButton.setTitle("Retake", forState: .Normal)
+        retakeImageButton.addTarget(self, action: "retakeImageFromCamera", forControlEvents: .TouchUpInside)
+        self.addSubview(retakeImageButton)
+        retakeImageButton.hidden = true
         
-        imageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 3)))
+        //imageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 3)))
+        imageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height))
         self.addSubview(imageView)
         
-        pictureOverlayTemplate = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 3)))
+        //pictureOverlayTemplate = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight * 3)))
+        pictureOverlayTemplate = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height))
         pictureOverlayTemplate.backgroundColor = UIColor.redColor()
         pictureOverlayTemplate.alpha = 0.5
         self.addSubview(pictureOverlayTemplate)
         
+        var buttonMargin = buttonIconSideSmall * 0.75
+        
+        
+        cancelButton.center = CGPointMake(buttonMargin + chooseFromLibraryButton.frame.width / 2, UIScreen.mainScreen().bounds.size.height - (chooseFromLibraryButton.frame.height / 2) - buttonMargin)
+        
+        chooseFromLibraryButton.center = CGPointMake(buttonMargin + scaffoldToggleButton.frame.width / 2, cancelButton.frame.minY - scaffoldToggleButton.frame.height)
+        
+        scaffoldToggleButton.center = CGPointMake(buttonMargin + scaffoldToggleButton.frame.width / 2, chooseFromLibraryButton.frame.minY - scaffoldToggleButton.frame.height)
+        
+        chooseFromCameraButton.center = CGPointMake(UIScreen.mainScreen().bounds.size.width - (chooseFromCameraButton.frame.width / 2) - buttonMargin, UIScreen.mainScreen().bounds.size.height - (chooseFromCameraButton.frame.height / 2) - buttonMargin)
+
+        
+
+        retakeImageButton.center = chooseFromLibraryButton.center
+
+        confirmImageButton.center = chooseFromCameraButton.center
+ 
+        self.bringSubviewToFront(retakeImageButton)
+        self.bringSubviewToFront(confirmImageButton)
+        self.bringSubviewToFront(chooseFromCameraButton)
+        self.bringSubviewToFront(chooseFromLibraryButton)
+        self.bringSubviewToFront(cancelButton)
+        self.bringSubviewToFront(scaffoldToggleButton)
         
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         let devices = AVCaptureDevice.devices()
@@ -213,6 +262,19 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
         self.delegate?.savePictureFromCamera(self.imageData,saveAsNewInstance: (pictureOverlayTemplate.image != nil),worktype:selectedType)
     }
     
+    func toggleScaffold()
+    {
+        if pictureOverlayTemplate.hidden
+        {
+            
+           pictureOverlayTemplate.hidden  = false
+        }
+        else
+        {
+            pictureOverlayTemplate.hidden = true
+        }
+    }
+    
     func retakeImageFromCamera()
     {
         self.imageView.hidden = true
@@ -229,6 +291,13 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
         //cancelButton.hidden = hidden
         chooseFromCameraButton.hidden = hidden
         chooseFromLibraryButton.hidden = hidden
+        scaffoldToggleButton.hidden = hidden
+        if(hidden == false)
+        {
+            self.bringSubviewToFront(chooseFromCameraButton)
+            self.bringSubviewToFront(chooseFromLibraryButton)
+            self.bringSubviewToFront(scaffoldToggleButton)
+        }
     }
     
 
@@ -236,6 +305,11 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     {
         confirmImageButton.hidden = hidden
         retakeImageButton.hidden = hidden
+        if(hidden == false)
+        {
+            self.bringSubviewToFront(confirmImageButton)
+            self.bringSubviewToFront(retakeImageButton)
+        }
     }
     
     func updateDeviceSettings(focusValue : Float, isoValue : Float) {
@@ -254,15 +328,25 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
             println("error: \(err?.localizedDescription)")
         }
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+         //previewLayer?.frame = self.layer.frame
+        var bounds = imageView.frame//imageView.bounds // self.layer.bounds
+        previewLayer!.frame = bounds
+        previewLayer!.bounds = imageView.bounds
+        //AVLayerVideoGravityResizeAspect
+        //AVLayerVideoGravityResize
+        previewLayer!.videoGravity = AVLayerVideoGravityResize//AVLayerVideoGravityResizeAspectFill
+        
+        //previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
         self.layer.addSublayer(previewLayer)
         //self.view.layer.addSublayer(previewLayer)
         //imagePickerView.bringSubviewToFront(chooseFromCameraButton)
         self.bringSubviewToFront(chooseFromCameraButton)
+        self.bringSubviewToFront(scaffoldToggleButton)
         self.bringSubviewToFront(chooseFromLibraryButton)
         self.bringSubviewToFront(cancelButton)
         self.bringSubviewToFront(retakeImageButton)
         self.bringSubviewToFront(confirmImageButton)
-        previewLayer?.frame = self.layer.frame
+       
         captureSession.startRunning()
     }
     

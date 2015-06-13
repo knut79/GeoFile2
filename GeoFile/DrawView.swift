@@ -11,6 +11,7 @@ import Foundation
 protocol DrawViewProtocol {
     
     func setMeasurementText(label:UILabel)
+    func setDtextText(label:UILabel)
     func setAngleText(label:UILabel)
     func setDrawntextText(label:UILabel)
     func cancelDraw()
@@ -23,8 +24,12 @@ class DrawView: DrawingBase{
     
     var lines:[Line] = []
     var measures:[Measure] = []
+    var dTexts:[Dtext] = []
     var drawnTexts:[Drawntext] = []
     var currentMeasure:Measure!
+    var currentDtext:Dtext!
+    var tempDtextLabelSize:CGRect!
+    var tempDtextLabel:UILabel!
     var tempMeasureLabelSize:CGRect!
     var tempMeasureLabel:UILabel!
     var tempTextLabelSize:CGRect!
@@ -71,6 +76,7 @@ class DrawView: DrawingBase{
         
         buttonSize = CGRectMake(0, 0, buttonIconSideSmall, buttonIconSideSmall)
         tempMeasureLabelSize = CGRectMake(0, 0, 100, 25)
+        tempDtextLabelSize = CGRectMake(0, 0, 100, 25)
         tempAngleLabelSize = CGRectMake(0, 0, 100, 25)
         tempTextLabelSize = CGRectMake(0, 0, 300, 25)
         
@@ -178,6 +184,7 @@ class DrawView: DrawingBase{
         markButtonOnDrawtype()
         
         populateNewTempMeasuleLabel()
+        populateNewTempDtextLabel()
         populateNewTempAngleLabel()
         populateNewTempTextLabel()
     }
@@ -193,6 +200,8 @@ class DrawView: DrawingBase{
     {
         lines = []
         measures = []
+        dTexts = []
+        tempDtextLabel.hidden = true
         tempMeasureLabel.hidden = true
         angles = []
         tempAngleLabel.hidden = true
@@ -222,6 +231,23 @@ class DrawView: DrawingBase{
         blueButton.hidden = isHidden
         chooseColorButton.hidden = isHidden
         choosenColorLabel.hidden = isHidden
+    }
+    
+    func populateNewTempDtextLabel()
+    {
+        tempDtextLabel = UILabel(frame: tempDtextLabelSize)
+        tempDtextLabel.font = UIFont.systemFontOfSize(drawingTextPointSize * zoomscale)
+        tempDtextLabel.text = "Tap to enter text"
+        tempDtextLabel.textAlignment = NSTextAlignment.Center
+        tempDtextLabel.backgroundColor = UIColor.clearColor()
+        tempDtextLabel.hidden = true
+        tempDtextLabel.userInteractionEnabled = true
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setDtextText:")
+        tapRecognizer.numberOfTapsRequired = 1
+        tempDtextLabel.addGestureRecognizer(tapRecognizer)
+        tempDtextLabel.layer.borderColor = UIColor.grayColor().CGColor
+        tempDtextLabel.layer.borderWidth = 2.0;
+        self.addSubview(tempDtextLabel)
     }
     
     func populateNewTempMeasuleLabel()
@@ -291,6 +317,7 @@ class DrawView: DrawingBase{
             tempMeasureLabel.hidden = true
             tempAngleLabel.hidden = true
             tempTextLabel.hidden = true
+            tempDtextLabel.hidden = true
         case .measure:
             tempMeasureLabel.textColor = getUIColor(colorPicked)
             break
@@ -298,6 +325,8 @@ class DrawView: DrawingBase{
             tempAngleLabel.textColor = getUIColor(colorPicked)
             break
         case .text:
+            tempDtextLabel.textColor = getUIColor(colorPicked)
+            /*
             tempTextLabel.textColor = getUIColor(colorPicked)
             if(drawnTexts.last?.label!.text != tempTextLabel.text)
             {
@@ -309,6 +338,7 @@ class DrawView: DrawingBase{
                 drawnTexts.append(Drawntext(label: tempTextLabel, color: colorPicked))
                 populateNewTempTextLabel()
             }
+            */
         default:
             break
             
@@ -326,8 +356,10 @@ class DrawView: DrawingBase{
         case .measure:
             tempMeasureLabel.hidden = false
             currentMeasure = Measure(start: lastPoint, end: newPoint!, color: colorPicked, text: "?")
-
             break
+        case .text:
+            tempDtextLabel.hidden = false
+            currentDtext = Dtext(start: lastPoint, end: newPoint!, color: colorPicked, text: "?")
         case .angle:
             if(angleMidpointSat)
             {
@@ -356,12 +388,17 @@ class DrawView: DrawingBase{
         {
         case .measure:
             undoArtifactList.append(.measure)
-            //measures.append(Measure(start: lastPoint, end: newPoint!, color: colorPicked, text: "?"))
             currentMeasure = Measure(start: lastPoint, end: newPoint!, color: colorPicked, text: "?")
             currentMeasure.setLabel(label: tempMeasureLabel)
             measures.append(currentMeasure)
             populateNewTempMeasuleLabel()
             break
+        case .text:
+            undoArtifactList.append(.text)
+            currentDtext = Dtext(start: lastPoint, end: newPoint!, color: colorPicked, text: "?")
+            currentDtext.setLabel(label: tempDtextLabel)
+            dTexts.append(currentDtext)
+            populateNewTempDtextLabel()
         case .free:
             undoArtifactList.append(.free)
             break
@@ -389,7 +426,10 @@ class DrawView: DrawingBase{
     func clear()
     {
         lines = []
-        
+        for item in dTexts
+        {
+            item.getLabel().removeFromSuperview()
+        }
         for item in measures
         {
             item.getLabel().removeFromSuperview()
@@ -404,10 +444,13 @@ class DrawView: DrawingBase{
         }
         currentAngle = nil
         currentMeasure = nil
+        currentDtext = nil
         tempAngleLabel.hidden = true
         tempMeasureLabel.hidden = true
+        tempDtextLabel.hidden = true
         tempTextLabel.hidden = true
         measures = []
+        dTexts = []
         angles = []
         setNeedsDisplay()
         
@@ -442,6 +485,11 @@ class DrawView: DrawingBase{
         {
             drawMeasumrement(context,measurement: measurement,label: measurement.getLabel(), color: measurement.color)
         }
+        for text in dTexts
+        {
+           drawDtext(context,dtext: text,label: text.getLabel(), color: text.color)
+            text.getLabel().layer.borderWidth = 0.0;
+        }
         for angle in angles
         {
             drawAngle(context, angle: angle, label: angle.getLabel(), color: angle.color)
@@ -458,6 +506,13 @@ class DrawView: DrawingBase{
             if(currentMeasure != nil)
             {
                 drawMeasumrement(context,measurement: currentMeasure,label: tempMeasureLabel, color: colorPicked)
+            }
+        }
+        if(drawType == .text)
+        {
+            if(currentDtext != nil)
+            {
+                drawDtext(context,dtext: currentDtext,label: tempDtextLabel, color: colorPicked)
             }
         }
         if(drawType == .angle)
@@ -527,6 +582,32 @@ class DrawView: DrawingBase{
         }
     }
 
+    func drawDtext(context:CGContext,dtext:Dtext,label:UILabel, color:drawColorEnum)
+    {
+        CGContextBeginPath(context)
+        setStrokeColor(context,color: color)
+        CGContextSetLineCap(context, kCGLineCapRound)
+        
+        
+        var xDist = (dtext.end.x - dtext.start.x)
+        var yDist = (dtext.end.y - dtext.start.y)
+        var distance = sqrt((xDist * xDist) + (yDist * yDist))
+        
+        var angle = angleOfPointsToFixedPoint(dtext.start, p2: dtext.end)
+
+        
+        label.center = getPointBetweenPoints(dtext.start, p2: dtext.end, offset: CGPointMake(10, -10))
+
+        
+        
+        println("degrees \(angle)")
+        label.transform = CGAffineTransformIdentity
+        label.frame.size = CGSizeMake(distance,label.frame.size.height)
+        label.transform = CGAffineTransformMakeRotation(angle * CGFloat(M_PI) / 180.0)
+        
+    }
+    
+    
     func drawMeasumrement(context:CGContext,measurement:Measure,label:UILabel, color:drawColorEnum)
     {
         CGContextBeginPath(context)
@@ -564,6 +645,11 @@ class DrawView: DrawingBase{
     func setMeasurementText(sender:UITapGestureRecognizer)->Void
     {
         delegate?.setMeasurementText(sender.view as! UILabel)
+    }
+    
+    func setDtextText(sender:UITapGestureRecognizer)->Void
+    {
+        delegate?.setDtextText(sender.view as! UILabel)
     }
     
     func setAngleText(sender:UITapGestureRecognizer)->Void
@@ -706,7 +792,8 @@ class DrawView: DrawingBase{
                 undoAngleDraw()
                 break
             case .text:
-                undoDrawntextDraw()
+                undoDTextDraw()
+                //undoDrawntextDraw()
             default:
                 break
             }
@@ -716,6 +803,16 @@ class DrawView: DrawingBase{
         //reset all controll buttons
         markButtonOnDrawtype()
         
+    }
+    
+    func undoDTextDraw()
+    {
+        if dTexts.count > 0
+        {
+            dTexts.last?.getLabel().removeFromSuperview()
+            dTexts.removeLast()
+            setNeedsDisplay()
+        }
     }
     
     func undoMeasureDraw()
