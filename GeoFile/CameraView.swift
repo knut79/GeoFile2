@@ -25,7 +25,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     var delegate: CameraProtocol?
     
     var imageView:UIImageView!
-    var selectedType:workType = workType.info
+    var selectedType:workType = workType.arbeid
     var chooseFromCameraButton:CustomButton!
     var chooseFromLibraryButton:CustomButton!
     var cancelButton:CustomButton!
@@ -42,26 +42,28 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     var scaffoldToggleButton:CustomButton!
     
     
+    /*
     var setImageTypeView:UIView!
     var setTypeHeadingLabel:UILabel!
     var setTypeButton:CustomButton!
     var setTypePickerView:UIPickerView!
     var typeSelectedLabel:UILabel?
+    */
     
     
-    
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
     
-    init(frame: CGRect, image:UIImage?,showtypes:Bool = false) {
+    init(frame: CGRect, image:UIImage?,worktype:workType) {
         let testFrame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height)
         super.init(frame: testFrame)
         
-        var buttonSize = CGRectMake(0, 0, buttonIconSideSmall * 2, buttonIconSideSmall)
-        var buttonSizeBig = CGRectMake(0, 0, buttonIconSideSmall * 2, buttonIconSideSmall * 2)
+        let buttonSize = CGRectMake(0, 0, buttonIconSideSmall * 2, buttonIconSideSmall)
+        let buttonSizeBig = CGRectMake(0, 0, buttonIconSideSmall * 2, buttonIconSideSmall * 2)
         
+        self.selectedType = worktype
         //chooseFromLibraryButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         chooseFromLibraryButton = CustomButton(frame: buttonSize)
         //chooseFromLibraryButton.setTitle("Camera roll", forState: .Normal)
@@ -119,7 +121,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
         pictureOverlayTemplate.alpha = 0.5
         self.addSubview(pictureOverlayTemplate)
         
-        var buttonMargin = buttonIconSideSmall * 0.75
+        let buttonMargin = buttonIconSideSmall * 0.75
         
         
         cancelButton.center = CGPointMake(buttonMargin + chooseFromLibraryButton.frame.width / 2, UIScreen.mainScreen().bounds.size.height - (chooseFromLibraryButton.frame.height / 2) - buttonMargin)
@@ -165,6 +167,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
         //if image is provided it should be saved as a paralell picture instance , not on a new point
         if image != nil
         {
+            /*
             setImageTypeView = UIView(frame: self.bounds)
             setImageTypeView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.8)
             
@@ -194,18 +197,19 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
             setImageTypeView.addSubview(setTypeButton)
             setImageTypeView.addSubview(setTypeHeadingLabel)
             
+
             typeSelectedLabel = UILabel(frame: CGRectMake(self.frame.width - buttonIconSide, 0, buttonIconSide, buttonIconSide))
             typeSelectedLabel!.textAlignment = NSTextAlignment.Center
             typeSelectedLabel?.hidden = true
-            
+            */
             
             pictureOverlayTemplate.image = image
             pictureOverlayTemplate.hidden = false
             self.bringSubviewToFront(pictureOverlayTemplate)
-            self.addSubview(typeSelectedLabel!)
+            //self.addSubview(typeSelectedLabel!)
             
             
-            self.addSubview(setImageTypeView)
+            //self.addSubview(setImageTypeView)
         }
     }
     
@@ -216,7 +220,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return workType.count
     }
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return "\(workType(rawValue: row)!.icon) \(workType(rawValue: row)!.description)" //"\(workType(rawValue: row)?.description) \(workType(rawValue: row)?.icon)"
     }
     
@@ -225,19 +229,21 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
         selectedType = workType(rawValue: row)!
     }
     
+    /*
     func setType()
     {
         typeSelectedLabel!.text = selectedType.icon
         typeSelectedLabel?.hidden = false
         setImageTypeView.removeFromSuperview()
     }
+    */
     
     var videoConnection:AVCaptureConnection!
     func takeImageFromCamera(){
         
-        println("running AV chooseImageFromCamera")
+        print("running AV chooseImageFromCamera")
         pictureOverlayTemplate.hidden = true
-        typeSelectedLabel?.hidden = true
+        //typeSelectedLabel?.hidden = true
         if videoConnection != nil {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageOutput.connectionWithMediaType(AVMediaTypeVideo))
                 { (imageDataSampleBuffer, error) -> Void in
@@ -279,7 +285,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     {
         self.imageView.hidden = true
         pictureOverlayTemplate.hidden = false
-        typeSelectedLabel?.hidden = false
+        //typeSelectedLabel?.hidden = false
         self.hiddenBaseButtons(false)
         self.hiddenConfirmPreviewButtons(true)
         captureSession.stopRunning()
@@ -314,22 +320,29 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
     
     func updateDeviceSettings(focusValue : Float, isoValue : Float) {
         if let device = captureDevice {
-            if(device.lockForConfiguration(nil)) {
+            do{
+                try device.lockForConfiguration()
                 device.focusMode = AVCaptureFocusMode.ContinuousAutoFocus
                 device.unlockForConfiguration()
+                
+            } catch {
+                print(error)
             }
         }
     }
     
     func beginSession() {
-        var err : NSError? = nil
-        captureSession.addInput(AVCaptureDeviceInput(device: captureDevice, error: &err))
-        if err != nil {
-            println("error: \(err?.localizedDescription)")
-        }
+
+        do{
+         try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
+        
+            } catch let error1 as NSError{
+            print(error1)
+            }
+
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
          //previewLayer?.frame = self.layer.frame
-        var bounds = imageView.frame//imageView.bounds // self.layer.bounds
+        let bounds = imageView.frame//imageView.bounds // self.layer.bounds
         previewLayer!.frame = bounds
         previewLayer!.bounds = imageView.bounds
         //AVLayerVideoGravityResizeAspect
@@ -337,7 +350,7 @@ class CameraView: UIView, UIPickerViewDelegate, UIPickerViewDataSource
         previewLayer!.videoGravity = AVLayerVideoGravityResize//AVLayerVideoGravityResizeAspectFill
         
         //previewLayer!.position=CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
-        self.layer.addSublayer(previewLayer)
+        self.layer.addSublayer(previewLayer!)
         //self.view.layer.addSublayer(previewLayer)
         //imagePickerView.bringSubviewToFront(chooseFromCameraButton)
         self.bringSubviewToFront(chooseFromCameraButton)

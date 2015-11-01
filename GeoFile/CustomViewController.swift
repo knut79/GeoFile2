@@ -66,7 +66,7 @@ class CustomViewController:UIViewController, TopNavigationViewProtocol
         self.performSegueWithIdentifier("showTreeView", sender: nil)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 

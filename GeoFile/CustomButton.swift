@@ -8,9 +8,10 @@
 
 import Foundation
 
+
 class CustomButton:UIButton {
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -22,4 +23,6 @@ class CustomButton:UIButton {
         self.layer.borderColor = UIColor.grayColor().CGColor
         self.layer.borderWidth = 2.0;
     }
+
+    
 }

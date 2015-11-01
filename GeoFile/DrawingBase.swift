@@ -9,7 +9,7 @@
 import Foundation
 class DrawingBase: UIView{
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -24,21 +24,21 @@ class DrawingBase: UIView{
        
         CGContextSaveGState(ctxt)
         
-        var newPoint = CGPointMake(x, y)
+        let newPoint = CGPointMake(x, y)
         let pi:CGFloat =  CGFloat(M_PI)
-        var distance:CGFloat = 8
+        let distance:CGFloat = 8
         var angleInRadians:CGFloat = pi / CGFloat(180.0) * ((360 - angle) % 360)
-        var point1 = CGPointMake(newPoint.x + CGFloat(distance) * CGFloat(sinf(Float(angleInRadians))), newPoint.y + CGFloat(distance) * CGFloat(cosf(Float(angleInRadians))));
+        let point1 = CGPointMake(newPoint.x + CGFloat(distance) * CGFloat(sinf(Float(angleInRadians))), newPoint.y + CGFloat(distance) * CGFloat(cosf(Float(angleInRadians))));
         angleInRadians = pi / CGFloat(180.0) * ((180 - angle) % 360)
-        var point2 = CGPointMake(newPoint.x + CGFloat(distance) * CGFloat(sinf(Float(angleInRadians))), newPoint.y + CGFloat(distance) * CGFloat(cosf(Float(angleInRadians))));
+        let point2 = CGPointMake(newPoint.x + CGFloat(distance) * CGFloat(sinf(Float(angleInRadians))), newPoint.y + CGFloat(distance) * CGFloat(cosf(Float(angleInRadians))));
         
         CGContextMoveToPoint(ctxt, point1.x, point1.y)
         CGContextAddLineToPoint(ctxt, x, y)
         CGContextAddLineToPoint(ctxt, point2.x, point2.y)
         
         
-        CGContextSetLineCap(ctxt, kCGLineCapSquare)
-        CGContextSetLineJoin(ctxt, kCGLineJoinMiter)
+        CGContextSetLineCap(ctxt, CGLineCap.Square)
+        CGContextSetLineJoin(ctxt, CGLineJoin.Miter)
         CGContextSetLineWidth(ctxt, 4)
         
         CGContextStrokePath(ctxt)
@@ -58,8 +58,6 @@ class DrawingBase: UIView{
             CGContextSetRGBStrokeColor(context, 1, 0, 0, 1)
         case .blue:
             CGContextSetRGBStrokeColor(context, 0, 0, 1, 1)
-        default:
-            CGContextSetRGBStrokeColor(context, 1, 1, 1, 1)
         }
     }
     
@@ -70,7 +68,7 @@ class DrawingBase: UIView{
         var area:CGFloat = 0
         for (var i = 0; i < (vertices.count); i++)
         {
-            var j = (i + 1) % vertices.count;
+            let j = (i + 1) % vertices.count;
             area += vertices[i].x * vertices[j].y;
             area -= vertices[j].x * vertices[i].y;
             
@@ -103,8 +101,8 @@ class DrawingBase: UIView{
             CGContextAddLineToPoint(ctxt, x, y)
             CGContextAddLineToPoint(ctxt, x+R, y+R)
         }
-        CGContextSetLineCap(ctxt, kCGLineCapSquare)
-        CGContextSetLineJoin(ctxt, kCGLineJoinMiter)
+        CGContextSetLineCap(ctxt, CGLineCap.Square)
+        CGContextSetLineJoin(ctxt, CGLineJoin.Miter)
         CGContextSetLineWidth(ctxt, 4)
         
         //CGContextRotateCTM(ctxt,45.0)
@@ -176,8 +174,8 @@ class DrawingBase: UIView{
             point2 = CGPointMake(p2.x - offset.x, p2.y + offset.y)
         }
         
-        var xVal = (point1.x + point2.x ) / 2
-        var yVal = (point1.y + point2.y) / 2
+        let xVal = (point1.x + point2.x ) / 2
+        let yVal = (point1.y + point2.y) / 2
         
         return CGPointMake(xVal, yVal)
         
@@ -186,8 +184,8 @@ class DrawingBase: UIView{
     //TODO: is used both in drawview and here .....  implement a separate class for drawing helper methods
     func pointPairToBearingDegrees(startingPoint:CGPoint, endingPoint:CGPoint) -> CGFloat
     {
-        var originPoint = CGPointMake(endingPoint.x - startingPoint.x, endingPoint.y - startingPoint.y); // get origin point to origin by subtracting end from start
-        var bearingRadians = atan2f(Float(originPoint.y), Float(originPoint.x)); // get bearing in radians
+        let originPoint = CGPointMake(endingPoint.x - startingPoint.x, endingPoint.y - startingPoint.y); // get origin point to origin by subtracting end from start
+        let bearingRadians = atan2f(Float(originPoint.y), Float(originPoint.x)); // get bearing in radians
         var bearingDegrees = bearingRadians * (180.0 / Float(M_PI)); // convert to degrees
         bearingDegrees = (bearingDegrees > 0.0 ? bearingDegrees : (360.0 + bearingDegrees)); // correct discontinuity
         return CGFloat(bearingDegrees);

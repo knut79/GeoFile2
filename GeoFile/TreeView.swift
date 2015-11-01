@@ -61,7 +61,7 @@ class TreeView:UIView, PointLeafProtocol
 
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -71,24 +71,24 @@ class TreeView:UIView, PointLeafProtocol
     override func drawRect(rect: CGRect) {
         //[[UIColor brownColor] set];
 
-        var currentContext = UIGraphicsGetCurrentContext()
-        CGContextSetLineCap(currentContext, kCGLineCapRound)
+        let currentContext = UIGraphicsGetCurrentContext()
+        CGContextSetLineCap(currentContext, CGLineCap.Round)
         for item in projectLeafs
         {
-            drawFilepointsFromProject(currentContext,projectLeaf: item)
+            drawFilepointsFromProject(currentContext!,projectLeaf: item)
         }
         
         //draw for overlaynodes
         CGContextSetLineWidth(currentContext,3.0)
-        var ra:[CGFloat] = [6,6]
+        let ra:[CGFloat] = [6,6]
         CGContextSetLineDash(currentContext, 0.0, ra, 2);
-        var fromX = overlayDropzone.center.x
-        var fromY = overlayDropzone.center.y
+        let fromX = overlayDropzone.center.x
+        let fromY = overlayDropzone.center.y
         CGContextMoveToPoint(currentContext,fromX, fromY)
         for item in overlayLeafs
         {
-            var toX = item.center.x
-            var toY = item.center.y
+            let toX = item.center.x
+            let toY = item.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
             CGContextMoveToPoint(currentContext,toX, toY)
@@ -97,31 +97,30 @@ class TreeView:UIView, PointLeafProtocol
     
     func drawFilepointsFromProject(currentContext:CGContext, projectLeaf:PointLeaf)
     {
-        CGContextSetLineCap(currentContext, kCGLineCapRound)
+        CGContextSetLineCap(currentContext, CGLineCap.Round)
         if(projectLeaf.pointLeafs.count > 0)
         {
             CGContextSetLineWidth(currentContext,3.0)
             //draw horizontal line
-            var x:CGFloat = projectLeaf.center.x
-            var y = projectLeaf.center.y
-            var drawToX:CGFloat = x + leafHorizontalMargin //x + (horizontalLineLength/2)
+            let x:CGFloat = projectLeaf.center.x
+            let y = projectLeaf.center.y
+            let drawToX:CGFloat = x + leafHorizontalMargin //x + (horizontalLineLength/2)
             CGContextMoveToPoint(currentContext,x, y);
             CGContextAddLineToPoint(currentContext,drawToX, y);
             CGContextStrokePath(currentContext);
         }
         
-        var selectedItem:PointLeaf?
         for item in projectLeaf.pointLeafs
         {
             //draw horizontal line backwards
             CGContextSetLineWidth(currentContext,3.0)
             //var x = item.frame.minX
-            var x = item.center.x
-            var y = item.center.y
-            var drawToX = x -  (leafHorizontalMargin / 2) //( horizontalLineLength / 2 )
+            let x = item.center.x
+            let y = item.center.y
+            let drawToX = x -  (leafHorizontalMargin / 2) //( horizontalLineLength / 2 )
             CGContextMoveToPoint(currentContext,x, y)
             CGContextAddLineToPoint(currentContext,drawToX, y)
-            CGContextStrokePath(currentContext);
+            CGContextStrokePath(currentContext)
             
 
             drawFilepointsFromFilepoint(currentContext,filepointLeaf: item)
@@ -131,15 +130,15 @@ class TreeView:UIView, PointLeafProtocol
         //vertical line
         if let item = projectLeaf.pointLeafs.first
         {
-            var firstItem = item as PointLeaf
-            var fromX = firstItem.frame.minX + (leafHorizontalRestMargin / 2)
-            var fromY = firstItem.center.y
+            let firstItem = item as PointLeaf
+            let fromX = firstItem.frame.minX + (leafHorizontalRestMargin / 2)
+            let fromY = firstItem.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
             
             //var lastButtonItem = selectedItem == nil ? projectLeaf.filepointLeafs.last!.button : selectedItem!.button
-            var lastItem = projectLeaf.pointLeafs.last!
-            var toX = lastItem.frame.minX + (leafHorizontalRestMargin / 2)
-            var toY = lastItem.center.y
+            let lastItem = projectLeaf.pointLeafs.last!
+            let toX = lastItem.frame.minX + (leafHorizontalRestMargin / 2)
+            let toY = lastItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
         }
@@ -150,34 +149,31 @@ class TreeView:UIView, PointLeafProtocol
     
     func drawFilepointsFromFilepoint(currentContext:CGContext, filepointLeaf:PointLeaf)
     {
-        CGContextSetLineCap(currentContext, kCGLineCapRound)
+        CGContextSetLineCap(currentContext, CGLineCap.Round)
         if(filepointLeaf.pointLeafs.count > 0)
         {
             //draw horizontal line
             let item = filepointLeaf
             CGContextSetLineWidth(currentContext,3.0)
-            var x = item.center.x
-            var y = item.center.y
-            var drawToX = x + leafHorizontalMargin//( horizontalLineLength / 2 )
+            let x = item.center.x
+            let y = item.center.y
+            let drawToX = x + leafHorizontalMargin
             CGContextMoveToPoint(currentContext,x, y);
             CGContextAddLineToPoint(currentContext,drawToX, y);
             CGContextStrokePath(currentContext);
         }
         
-        var selectedItem:PointLeaf?
         for item in filepointLeaf.pointLeafs
         {
             //draw horizontal line
             if(item.isDescendantOfView(self))
             {
-                //var lengths:[CGFloat] = [CGFloat(0),CGFloat(0.5 * 2)]
-                //CGContextSetLineDash(currentContext, 0.0, lengths, 2)
                 if(item.filepoint!.x != 0 && item.filepoint!.y != 0)
                 {
                     CGContextSetLineWidth(currentContext,3.0)
-                    var x = item.center.x
-                    var y = item.center.y
-                    var drawToX = x - (leafHorizontalMargin / 2) //( horizontalLineLength / 2 )
+                    let x = item.center.x
+                    let y = item.center.y
+                    let drawToX = x - (leafHorizontalMargin / 2)
                     CGContextMoveToPoint(currentContext,x, y)
                     CGContextAddLineToPoint(currentContext,drawToX, y)
                     CGContextStrokePath(currentContext);
@@ -192,16 +188,16 @@ class TreeView:UIView, PointLeafProtocol
         //vertical line
         if let item = filepointLeaf.pointLeafs.first
         {
-            var firstItem = item
-            var fromX = firstItem.frame.minX + (leafHorizontalRestMargin / 2)//+ (horizontalLineLength/2)
-            var fromY = firstItem.center.y
+            let firstItem = item
+            let fromX = firstItem.frame.minX + (leafHorizontalRestMargin / 2)//+ (horizontalLineLength/2)
+            let fromY = firstItem.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
         
 
             //var lastButtonItem = getLastFilepointWithCoordinates(filepointLeaf).button
-            var lastItem = filepointLeaf.pointLeafs.last!
-            var toX = lastItem.frame.minX + (leafHorizontalRestMargin / 2) // (horizontalLineLength/2)
-            var toY = lastItem.center.y
+            let lastItem = filepointLeaf.pointLeafs.last!
+            let toX = lastItem.frame.minX + (leafHorizontalRestMargin / 2) // (horizontalLineLength/2)
+            let toY = lastItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
             CGContextStrokePath(currentContext)
         }
@@ -234,10 +230,10 @@ class TreeView:UIView, PointLeafProtocol
         
     func populateTestOverlays()
     {
-        var image = UIImage(named: "pictureOverviewSmall.png")
-        var imageData = UIImageJPEGRepresentation(image,0.0)
+        let image = UIImage(named: "pictureOverviewSmall.png")
+        let imageData = UIImageJPEGRepresentation(image!,0.0)
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
-        var newfilepointItem = Overlay.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData)
+        Overlay.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData!)
         save()
     }
     
@@ -255,11 +251,11 @@ class TreeView:UIView, PointLeafProtocol
         
         addOverlayNode()
         let fetchRequest = NSFetchRequest(entityName: "Overlay")
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Overlay] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Overlay] {
             var i = 1
             for item in fetchResults
             {
-                var node = OverlayLeaf(overlay:item as Overlay, viewRef:self)
+                let node = OverlayLeaf(overlay:item as Overlay, viewRef:self)
                 node.center =  CGPointMake(overlayDropzone.center.x + (node.frame.width * CGFloat(i)),  overlayDropzone.center.y)
                 overlayLeafs.append(node)
                 expandContentsize(node.frame)
@@ -275,7 +271,7 @@ class TreeView:UIView, PointLeafProtocol
         projectLeafs = []
         let fetchRequest = NSFetchRequest(entityName: "Project")
         let overlayNodeMargin = overlayDropzone.frame.height * 0.8
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Project] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Project] {
             var i = 0
             for item in fetchResults
             {
@@ -300,12 +296,12 @@ class TreeView:UIView, PointLeafProtocol
         let newWidth = self.frame.width < rect.maxX ? rect.maxX : self.frame.width
         let newHeight = self.frame.height < rect.maxY ? rect.maxY : self.frame.height
         
-        println(" new maxx and y \(rect.maxX) \(rect.maxY)")
-        var newSize  = CGSizeMake(newWidth + elementMargin, newHeight + elementMargin)
+        print(" new maxx and y \(rect.maxX) \(rect.maxY)")
+        let newSize  = CGSizeMake(newWidth + elementMargin, newHeight + elementMargin)
         self.frame.size = newSize
         
         
-        println(" new self.frame \(self.frame.origin.x) \(self.frame.origin.y) \(self.frame.width) \(self.frame.height)")
+        print(" new self.frame \(self.frame.origin.x) \(self.frame.origin.y) \(self.frame.width) \(self.frame.height)")
         delegate?.setContentsize(newSize)
     }
 
@@ -325,10 +321,8 @@ class TreeView:UIView, PointLeafProtocol
                 expandContentsize(filepointLeaf.frame)
                 self.addSubview(filepointLeaf)
                 i++
-
             }
         }
-        
     }
     
     func fetchFilepointsFromFilepoint(filepointLeaf:PointLeaf)
@@ -347,8 +341,6 @@ class TreeView:UIView, PointLeafProtocol
             i++
         }
     }
-   
-    
     
     func findSelecedFilepointLeaf(filepointLeaf:PointLeaf, pointLeafPushed:PointLeaf)
     {
@@ -403,7 +395,7 @@ class TreeView:UIView, PointLeafProtocol
     
     func findLeafForFilepointAndSelectIt(filepointToCheck:Filepoint, pointLeafs:[PointLeaf]? = nil)
     {
-        var _pointsLeafs = pointLeafs ?? currentProjectLeaf.pointLeafs!
+        let _pointsLeafs = pointLeafs ?? currentProjectLeaf.pointLeafs!
 
         for item in _pointsLeafs
         {
@@ -422,7 +414,7 @@ class TreeView:UIView, PointLeafProtocol
  
     func overlaySelected(sender:UITapGestureRecognizer)
     {
-        var overlayLeaf = sender.view?.superview as! OverlayLeaf
+        let overlayLeaf = sender.view?.superview as! OverlayLeaf
         
         unselectOverlayLeafs()
         unselectAllLeafsOnCurrentProjectLeaf()
@@ -460,7 +452,7 @@ class TreeView:UIView, PointLeafProtocol
     func projectSelectedAction(sender:UITapGestureRecognizer)
     {
         currentFilepointLeaf = nil
-        var selectedProjectLeaf = (sender as UITapGestureRecognizer).view?.superview
+        let selectedProjectLeaf = (sender as UITapGestureRecognizer).view?.superview
         projectSelected(selectedProjectLeaf as! PointLeaf)
     }
     
@@ -495,7 +487,7 @@ class TreeView:UIView, PointLeafProtocol
     {
         //fadeoutActionButtons()
         
-        var selectedFilepointLeaf = (sender as UITapGestureRecognizer).view?.superview
+        let selectedFilepointLeaf = (sender as UITapGestureRecognizer).view?.superview
         filepointSelectedFromFilepoint(selectedFilepointLeaf as! PointLeaf)
     }
     
@@ -629,7 +621,7 @@ class TreeView:UIView, PointLeafProtocol
     func buildForNode(filepointLeaf:PointLeaf)
     {
         fetchFilepointsFromFilepoint(filepointLeaf)
-        println("filepointLeaf.filepoint id is \(filepointLeaf.filepoint!.objectID)")
+        print("filepointLeaf.filepoint id is \(filepointLeaf.filepoint!.objectID)")
         for filepointLeafItem in filepointLeaf.pointLeafs
         {
             if(isOnBranchWith(filepointLeafItem.filepoint!, onBranchWith:currentFilepointLeaf.filepoint!))
@@ -744,9 +736,10 @@ class TreeView:UIView, PointLeafProtocol
     }
     
     func save() {
-        var error : NSError?
-        if(managedObjectContext!.save(&error) ) {
-            println(error?.localizedDescription)
+        do{
+            try managedObjectContext!.save()
+        } catch {
+            print(error)
         }
     }
     

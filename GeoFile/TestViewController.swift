@@ -35,7 +35,7 @@ class TestViewController: UIViewController {
         let fetchRequest = NSFetchRequest(entityName: "Project")
         
         
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Project] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Project] {
             projectItems = fetchResults
         }
     }
@@ -48,12 +48,11 @@ class TestViewController: UIViewController {
         save()
     }
 
-
-    
     func save() {
-        var error : NSError?
-        if(managedObjectContext!.save(&error) ) {
-            println(error?.localizedDescription)
+        do{
+            try managedObjectContext!.save()
+        } catch {
+            print(error)
         }
     }
 

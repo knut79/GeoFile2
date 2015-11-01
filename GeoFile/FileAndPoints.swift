@@ -37,7 +37,7 @@ class FileAndPoints
     
     func addPoint(point:CGPoint, label:UILabel)
     {
-        var fileAndPoints = FileAndPoints(origin:point,originLabel:label,parentRef:self)
+        let fileAndPoints = FileAndPoints(origin:point,originLabel:label,parentRef:self)
         refPoints.append(fileAndPoints)
         
     }

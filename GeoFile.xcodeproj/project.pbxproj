@@ -35,6 +35,7 @@
 		728A1F631B2668E100FEF953 /* TagCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A1F621B2668E100FEF953 /* TagCheckView.swift */; };
 		728A1F671B29CC7000FEF953 /* CommonTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A1F661B29CC7000FEF953 /* CommonTag.swift */; };
 		728A1F691B2B128A00FEF953 /* MarkerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A1F681B2B128A00FEF953 /* MarkerItem.swift */; };
+		728A1F6C1B2E322D00FEF953 /* EmailComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A1F6B1B2E322D00FEF953 /* EmailComposer.swift */; };
 		729A56901AE819500034418E /* TreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A568F1AE819500034418E /* TreeView.swift */; };
 		729A56961AE9A4AE0034418E /* PointLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56951AE9A4AE0034418E /* PointLeaf.swift */; };
 		729A56981AEAFAEE0034418E /* TopNavigationBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */; };
@@ -131,6 +132,10 @@
 		728A1F651B29C4DF00FEF953 /* image instances 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "image instances 3.xcdatamodel"; sourceTree = "<group>"; };
 		728A1F661B29CC7000FEF953 /* CommonTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTag.swift; sourceTree = "<group>"; };
 		728A1F681B2B128A00FEF953 /* MarkerItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkerItem.swift; sourceTree = "<group>"; };
+		728A1F6B1B2E322D00FEF953 /* EmailComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailComposer.swift; sourceTree = "<group>"; };
+		728A1F6D1B38D48100FEF953 /* image instances 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "image instances 4.xcdatamodel"; sourceTree = "<group>"; };
+		728A1F6E1B4C1F5C00FEF953 /* image instances 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "image instances 5.xcdatamodel"; sourceTree = "<group>"; };
+		728A1F6F1B4C956600FEF953 /* image instances 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "image instances 6.xcdatamodel"; sourceTree = "<group>"; };
 		729A568F1AE819500034418E /* TreeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeView.swift; sourceTree = "<group>"; };
 		729A56951AE9A4AE0034418E /* PointLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointLeaf.swift; sourceTree = "<group>"; };
 		729A56971AEAFAEE0034418E /* TopNavigationBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopNavigationBarView.swift; sourceTree = "<group>"; };
@@ -287,6 +292,14 @@
 			name = Map;
 			sourceTree = "<group>";
 		};
+		728A1F6A1B2E321700FEF953 /* Email */ = {
+			isa = PBXGroup;
+			children = (
+				728A1F6B1B2E322D00FEF953 /* EmailComposer.swift */,
+			);
+			name = Email;
+			sourceTree = "<group>";
+		};
 		72A598711AD005FA00918CCD /* DataClasses */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +351,7 @@
 		72FE6A271AC0234B00FF792D /* GeoFile */ = {
 			isa = PBXGroup;
 			children = (
+				728A1F6A1B2E321700FEF953 /* Email */,
 				728A1F641B270AA300FEF953 /* Map */,
 				728A1F581B22731400FEF953 /* Draw */,
 				7249D4731B15DC8B008AE9CF /* Treeview */,
@@ -449,7 +463,9 @@
 		72FE6A1D1AC0234B00FF792D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = knut;
 				TargetAttributes = {
 					72FE6A241AC0234B00FF792D = {
@@ -557,6 +573,7 @@
 				728A1F671B29CC7000FEF953 /* CommonTag.swift in Sources */,
 				72A598821AD4A2F300918CCD /* Project.swift in Sources */,
 				72A2A95F1AF8C20C00E4C49F /* Overlay.swift in Sources */,
+				728A1F6C1B2E322D00FEF953 /* EmailComposer.swift in Sources */,
 				720E94DE1AFE960C007946FA /* Drawingangle.swift in Sources */,
 				727A21331AF042690067BC4A /* StaticFunctions.swift in Sources */,
 				72FE6A6E1AC0492400FF792D /* FilepointViewController.swift in Sources */,
@@ -628,6 +645,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -699,6 +717,7 @@
 				INFOPLIST_FILE = GeoFile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.datadullum.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GeoFile-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -717,6 +736,7 @@
 				INFOPLIST_FILE = GeoFile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.datadullum.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GeoFile-Bridging-Header.h";
 			};
@@ -726,16 +746,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GeoFileTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.datadullum.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoFile.app/GeoFile";
 			};
@@ -745,12 +763,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = GeoFileTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.datadullum.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoFile.app/GeoFile";
 			};
@@ -792,6 +808,9 @@
 		72FE6A2C1AC0234B00FF792D /* GeoFile.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				728A1F6F1B4C956600FEF953 /* image instances 6.xcdatamodel */,
+				728A1F6E1B4C1F5C00FEF953 /* image instances 5.xcdatamodel */,
+				728A1F6D1B38D48100FEF953 /* image instances 4.xcdatamodel */,
 				728A1F651B29C4DF00FEF953 /* image instances 3.xcdatamodel */,
 				728A1F5D1B2512EF00FEF953 /* image instances 2.xcdatamodel */,
 				720E94DA1AFE89E1007946FA /* GeoFile 12.xcdatamodel */,
@@ -808,7 +827,7 @@
 				72A598801AD49FFB00918CCD /* GeoFile 4.xcdatamodel */,
 				72FE6A2D1AC0234B00FF792D /* GeoFile.xcdatamodel */,
 			);
-			currentVersion = 728A1F651B29C4DF00FEF953 /* image instances 3.xcdatamodel */;
+			currentVersion = 728A1F6F1B4C956600FEF953 /* image instances 6.xcdatamodel */;
 			path = GeoFile.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

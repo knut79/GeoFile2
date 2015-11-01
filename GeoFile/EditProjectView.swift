@@ -19,7 +19,7 @@ class EditProjectView: UIView
     var titleTextBox:UITextField!
     var delegate: EditProjectProtocol?
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -35,17 +35,17 @@ class EditProjectView: UIView
         titleTextBox.placeholder = "Title"
         self.addSubview(titleTextBox)
         
-        var setPositionButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*3) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        let setPositionButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*3) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         setPositionButton.setTitle("Edit position", forState: .Normal)
         setPositionButton.addTarget(self, action: "editProjectPosition", forControlEvents: .TouchUpInside)
         self.addSubview(setPositionButton)
         
-        var cancelButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*4) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        let cancelButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*4) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         cancelButton.setTitle("Cancel", forState: .Normal)
         cancelButton.addTarget(self, action: "cancelEditProject", forControlEvents: .TouchUpInside)
         self.addSubview(cancelButton)
         
-        var saveButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*5) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        let saveButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*5) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveButton.setTitle("Save", forState: .Normal)
         saveButton.addTarget(self, action: "saveEditProject", forControlEvents: .TouchUpInside)
         self.addSubview(saveButton)

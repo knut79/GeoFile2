@@ -20,7 +20,7 @@ class TagCheckView: UIView
     var tagTitle:String!
     var delegate:TagCheckItemProtocol!
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     

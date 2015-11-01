@@ -35,18 +35,18 @@ class PointLeaf:UIView
     var pointLeafs:[PointLeaf]!
     var viewRef:UIView!
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     init(_project:Project,viewRef:UIView?)
     {
-        var rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
+        let rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
         super.init(frame: rect)
 
         //test
-        self.layer.borderWidth = 2
-        self.layer.borderColor = UIColor.blackColor().CGColor
+        //self.layer.borderWidth = 2
+        //self.layer.borderColor = UIColor.blackColor().CGColor
         //end test
         
         project = _project
@@ -61,11 +61,11 @@ class PointLeaf:UIView
     
     init(_filePoint:Filepoint, _parent:PointLeaf?,viewRef:UIView?)
     {
-        var rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
+        let rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
         super.init(frame: rect)
         //test
-        self.layer.borderWidth = 2
-        self.layer.borderColor = UIColor.blackColor().CGColor
+        //self.layer.borderWidth = 2
+        //self.layer.borderColor = UIColor.blackColor().CGColor
         //end test
         
         filepoint = _filePoint
@@ -128,13 +128,16 @@ class PointLeaf:UIView
         {
             return
         }
-        //top element
-        var topElement = topImageFile ?? imagefiles.allObjects.last as! Imagefile
+        let sortDescriptor = NSSortDescriptor(key: "sort", ascending: false)
+        let sortedImagefiles = imagefiles.sortedArrayUsingDescriptors([sortDescriptor])
         
-        var imageSizeWidth = imageInstanceSides
-        var imageSizeHeight = imageInstanceSides
-        var margin = (leafSize.width / 2) - (imageSizeWidth / 2)
-        var topImageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin,margin, imageSizeWidth, imageSizeHeight),imagefile: topElement)
+        //top element
+        let topElement = topImageFile ?? sortedImagefiles.last as! Imagefile
+        
+        let imageSizeWidth = imageInstanceSides
+        let imageSizeHeight = imageInstanceSides
+        let margin = (leafSize.width / 2) - (imageSizeWidth / 2)
+        let topImageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin,margin, imageSizeWidth, imageSizeHeight),imagefile: topElement)
         topImageInstance.userInteractionEnabled = true
         singleTapRecognizer.numberOfTapsRequired = 1
         topImageInstance.addGestureRecognizer(singleTapRecognizer)
@@ -144,8 +147,8 @@ class PointLeaf:UIView
         
         imageInstances.append(topImageInstance)
         
-        var index = imagefiles.count
-        for imageitem in imagefiles
+        var index = sortedImagefiles.count
+        for imageitem in sortedImagefiles
         {
             if(imageitem as! Imagefile == topElement)
             {
@@ -154,7 +157,7 @@ class PointLeaf:UIView
             
             index--
 
-            var imageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin + (CGFloat(index) * 5),margin + (CGFloat(index) * 3), imageSizeWidth, imageSizeHeight),imagefile: imageitem as! Imagefile)
+            let imageInstance = ImageInstanceWithIcon(frame: CGRectMake(margin + (CGFloat(index) * 5),margin + (CGFloat(index) * 3), imageSizeWidth, imageSizeHeight),imagefile: imageitem as! Imagefile)
             imageInstance.alpha = 1 / CGFloat(index)
             imageInstances.append(imageInstance)
             self.addSubview(imageInstance)
@@ -177,7 +180,7 @@ class PointLeaf:UIView
     
     func setImageInstanceOnTop(imageInstance:ImageInstanceWithIcon)
     {
-        reloadImageInstances(topImageFile: imageInstance.imagefile)
+        reloadImageInstances(imageInstance.imagefile)
         if(xselected)
         {
             self.currentImageInstance.transform = CGAffineTransformScale(self.currentImageInstance.transform, 2, 2)

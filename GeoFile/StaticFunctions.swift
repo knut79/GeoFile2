@@ -25,29 +25,42 @@ func findProjectOfFilepoint(filepoint:Filepoint) -> Project
 func getFilesFromInbox() -> [UIImage]
 {
     var pdfImages:[UIImage] = []
-    var filemgr = NSFileManager()
+    let filemgr = NSFileManager()
     var paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,.UserDomainMask,true)
-    if(paths != nil)
+    if paths.count > 0
     {
-        var documentsDirectory: String = paths[0] as! String
+        let documentsDirectory: String = paths[0] 
         //print(" documentsdirectory \(documentsDirectory)")
-        var inboxPath = documentsDirectory.stringByAppendingString("/Inbox")
+        let inboxPath = documentsDirectory.stringByAppendingString("/Inbox")
         //print(" inboxPath \(inboxPath)")
         
         var error:NSError?
-        var dirFiles = filemgr.contentsOfDirectoryAtPath(inboxPath, error: &error)
+        var dirFiles: [AnyObject]?
+        do {
+            dirFiles = try filemgr.contentsOfDirectoryAtPath(inboxPath)
+        } catch let error1 as NSError {
+            error = error1
+            dirFiles = nil
+        }
         if(dirFiles != nil &&  dirFiles?.count > 0)
         {
-            var url = NSURL.fileURLWithPath(inboxPath.stringByAppendingPathComponent(dirFiles![0] as! String))
-            var request = NSURLRequest(URL: url!)
+            //let url = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("fanfare2", ofType: "wav")!)
+            //let url = NSURL(fileURLWithPath: inboxPath.stringByAppendingPathComponent(dirFiles![0] as! String))
+            let url = NSURL(fileURLWithPath: inboxPath).URLByAppendingPathComponent(dirFiles![0] as! String)
+            //var request = NSURLRequest(URL: url)
             //pdfWebView.scalesPageToFit = true
             //pdfWebView.loadRequest(request)
-            pdfImages = pdfToImages(url!)
+            pdfImages = pdfToImages(url)
             
             for item in dirFiles!
             {
-                var path = inboxPath.stringByAppendingPathComponent(item as! String)
-                filemgr.removeItemAtPath(path, error: &error)
+                //let path = inboxPath.stringByAppendingPathComponent(item as! String)
+                let path = NSURL(fileURLWithPath: inboxPath).URLByAppendingPathComponent(item as! String)
+                do {
+                    try filemgr.removeItemAtPath(path.path!)
+                } catch let error1 as NSError {
+                    print(error1)
+                }
                 /*
                 if(filemgr.isDeletableFileAtPath(path))
                 {
@@ -58,7 +71,7 @@ func getFilesFromInbox() -> [UIImage]
         }
         if(error != nil)
         {
-            print(" error \(error?.description) ")
+            print(" error \(error?.description) ", terminator: "")
         }
     }
     return pdfImages
@@ -67,33 +80,33 @@ func getFilesFromInbox() -> [UIImage]
 func pdfToImages(url:NSURL) -> [UIImage]
 {
     //var imageSize = CGSizeMake(280, 320)
-    var imageSize = CGSizeMake(612, 792)
+    let imageSize = CGSizeMake(612, 792)
     //var imageSize = CGSizeMake(600, 1024)
     
-    var pdf = CGPDFDocumentCreateWithURL(url);
+    let pdf = CGPDFDocumentCreateWithURL(url);
     
-    var numberOfPages = CGPDFDocumentGetNumberOfPages(pdf)
+    let numberOfPages = CGPDFDocumentGetNumberOfPages(pdf)
     
     var pdfImages:[UIImage] = []
     
     for var currentPage = 1 ; currentPage <= Int(numberOfPages) ; currentPage++
     {
-        var page = CGPDFDocumentGetPage(pdf, currentPage)
+        let page = CGPDFDocumentGetPage(pdf, currentPage)
         
         //test
-        var pageRect = CGPDFPageGetBoxRect(page,kCGPDFTrimBox)
+        let pageRect = CGPDFPageGetBoxRect(page,CGPDFBox.TrimBox)
         var pageSize = pageRect.size
-        pageSize = MEDSizeScaleAspectFit(pageSize, imageSize)
+        pageSize = MEDSizeScaleAspectFit(pageSize, maxSize: imageSize)
         //end test
         
         UIGraphicsBeginImageContextWithOptions(pageSize, false, 0.0)
         //UIGraphicsBeginImageContext(imageSize);
         
-        var context = UIGraphicsGetCurrentContext();
+        let context = UIGraphicsGetCurrentContext();
         
         //test
-        CGContextSetInterpolationQuality(context, kCGInterpolationHigh)
-        CGContextSetRenderingIntent(context, kCGRenderingIntentDefault)
+        CGContextSetInterpolationQuality(context, CGInterpolationQuality.High)
+        CGContextSetRenderingIntent(context, CGColorRenderingIntent.RenderingIntentDefault)
         //end test
         
         //var pdfURL = CFBundleCopyResourceURL(CFBundleGetMainBundle(), path, nil, nil);
@@ -107,7 +120,7 @@ func pdfToImages(url:NSURL) -> [UIImage]
         CGContextSaveGState(context);
         
         //var pdfTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, CGRectMake(0, 0, pageSize.width, pageSize.height), 0, true);
-        var pdfTransform = CGPDFPageGetDrawingTransform(page, kCGPDFTrimBox, CGRectMake(0, 0, pageSize.width, pageSize.height), 0, true);
+        let pdfTransform = CGPDFPageGetDrawingTransform(page, CGPDFBox.TrimBox, CGRectMake(0, 0, pageSize.width, pageSize.height), 0, true);
         
         CGContextConcatCTM(context, pdfTransform);
         
@@ -121,7 +134,7 @@ func pdfToImages(url:NSURL) -> [UIImage]
         
         CGContextRestoreGState(context);
         
-        var resultingImage = UIGraphicsGetImageFromCurrentImageContext();
+        let resultingImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
         pdfImages.append(resultingImage)
@@ -133,8 +146,8 @@ func pdfToImages(url:NSURL) -> [UIImage]
 
 func MEDSizeScaleAspectFit(size:CGSize, maxSize:CGSize) -> CGSize
 {
-    var originalAspectRatio = size.width / size.height;
-    var maxAspectRatio = maxSize.width / maxSize.height;
+    let originalAspectRatio = size.width / size.height;
+    let maxAspectRatio = maxSize.width / maxSize.height;
     var newSize = maxSize;
     // The largest dimension will be the `maxSize`, and then we need to scale
     // the other dimension down relative to it, while maintaining the aspect
@@ -150,14 +163,14 @@ func MEDSizeScaleAspectFit(size:CGSize, maxSize:CGSize) -> CGSize
 
 func pdfToImage(url:NSURL) -> (UIImage)
 {
-    var imageSize = CGSizeMake(280, 320)
+    let imageSize = CGSizeMake(280, 320)
     UIGraphicsBeginImageContext(imageSize);
     
-    var context = UIGraphicsGetCurrentContext();
+    let context = UIGraphicsGetCurrentContext();
     
     //var pdfURL = CFBundleCopyResourceURL(CFBundleGetMainBundle(), path, nil, nil);
     
-    var pdf = CGPDFDocumentCreateWithURL(url);
+    let pdf = CGPDFDocumentCreateWithURL(url);
     
     CGContextTranslateCTM(context, 0.0, imageSize.height);
     
@@ -178,8 +191,8 @@ func pdfToImage(url:NSURL) -> (UIImage)
     
     For more generic rendering code, i always do the rotation like this:
     */
-    var numberOfPages = CGPDFDocumentGetNumberOfPages(pdf)
-    var page = CGPDFDocumentGetPage(pdf, numberOfPages)
+    let numberOfPages = CGPDFDocumentGetNumberOfPages(pdf)
+    let page = CGPDFDocumentGetPage(pdf, numberOfPages)
     
     /*
     var rotation = CGPDFPageGetRotationAngle(page);
@@ -207,7 +220,7 @@ func pdfToImage(url:NSURL) -> (UIImage)
     CGContextScaleCTM(context, 1.0, -1.0);
     CGContextSaveGState(context);
     
-    var pdfTransform = CGPDFPageGetDrawingTransform(page, kCGPDFCropBox, CGRectMake(0, 0, imageSize.width, imageSize.height), 0, true);
+    let pdfTransform = CGPDFPageGetDrawingTransform(page, CGPDFBox.CropBox, CGRectMake(0, 0, imageSize.width, imageSize.height), 0, true);
     
     CGContextConcatCTM(context, pdfTransform);
     
@@ -221,7 +234,7 @@ func pdfToImage(url:NSURL) -> (UIImage)
     
     CGContextRestoreGState(context);
     
-    var resultingImage = UIGraphicsGetImageFromCurrentImageContext();
+    let resultingImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     //UIImageJPEGRepresentation(image, 1)
@@ -239,4 +252,34 @@ func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
     
     let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
     return scaledImage
+}
+
+func convertImageToGrayScale(image:UIImage) -> UIImage
+{
+    // Create image rectangle with current image width/height
+    let imageRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    
+    // Grayscale color space
+    let colorSpace = CGColorSpaceCreateDeviceGray()
+    
+    //let bitmapInfo = CGBitmapInfo(CGImageAlphaInfo.None.rawValue)
+    // Create bitmap content with current image size and grayscale colorspace
+    
+    
+    //let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.None.rawValue)
+    let context = CGBitmapContextCreate(nil, Int(image.size.width), Int(image.size.height), 8, 0, colorSpace, CGBitmapInfo().rawValue)
+    // Draw image into current context, with specified rectangle
+    // using previously defined context (with grayscale colorspace)
+    CGContextDrawImage(context, imageRect, image.CGImage);
+    
+    // Create bitmap image info from pixel data in current context
+    let imageRef = CGBitmapContextCreateImage(context);
+    
+    // Create a new UIImage object
+    let newImage = UIImage(CGImage: imageRef!)
+    
+
+    
+    // Return the new grayscale image
+    return newImage
 }

@@ -48,7 +48,7 @@ class SetOverlayButtons : NSObject{
         mapLocked = true
         
         //adding buttons for overlay
-        var buttonSize = CGRectMake(0, 0, buttonIconSideSmall, buttonIconSideSmall)
+        let buttonSize = CGRectMake(0, 0, buttonIconSideSmall, buttonIconSideSmall)
         lockUnlockButton = CustomButton(frame: buttonSize)
         lockUnlockButton.setTitle("🔓", forState: .Normal)
         lockUnlockButton.addTarget(self, action: "lockMapToggle:", forControlEvents: .TouchUpInside)
@@ -322,7 +322,7 @@ class SetOverlayButtons : NSObject{
     
     func zoomInOverlay()
     {
-        var currentTransform = newOverlayToSet.transform
+        let currentTransform = newOverlayToSet.transform
         newOverlayToSet.transform = CGAffineTransformIdentity
         
         let scale:CGFloat = 1.01
@@ -335,7 +335,7 @@ class SetOverlayButtons : NSObject{
     
     func zoomOutOverlay()
     {
-        var currentTransform = newOverlayToSet.transform
+        let currentTransform = newOverlayToSet.transform
         newOverlayToSet.transform = CGAffineTransformIdentity
         
         let scale:CGFloat = 1.01

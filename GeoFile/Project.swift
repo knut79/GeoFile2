@@ -16,6 +16,7 @@ class Project: NSManagedObject {
     @NSManaged var title: String
     @NSManaged var imagefiles: NSSet
     @NSManaged var tags: String
+    @NSManaged var status: Int16
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, lat: Double, long: Double, tags:String ) -> Project{
         let newitem = NSEntityDescription.insertNewObjectForEntityForName("Project", inManagedObjectContext: moc) as! Project
@@ -24,6 +25,7 @@ class Project: NSManagedObject {
         newitem.title = title
         newitem.imagefiles = NSMutableSet()
         newitem.tags = tags
+        newitem.status = Int16(workType.arbeid.rawValue)
         
         return newitem
     }
@@ -32,34 +34,74 @@ class Project: NSManagedObject {
     var firstImagefile:Imagefile?
         {
         get{
-            if imagefiles.count > 0
+            let sortDescriptor = NSSortDescriptor(key: "worktype", ascending: true)
+            let sortedArray = self.imagefiles.sortedArrayUsingDescriptors([sortDescriptor])
+            if let firstelement = sortedArray.first
             {
-                for item in imagefiles
-                {
-                    if( (item as! Imagefile).worktype == Int16(workType.info.rawValue))
-                    {
-                        return item as? Imagefile
-                    }
-                }
-                return self.imagefiles.allObjects.first as? Imagefile
+                return firstelement as? Imagefile
             }
             else
             {
                 return nil
             }
+
         }
     }
+    
+    var sortedImagefiles:[Imagefile]
+        {
+        get{
+            let sortedArray:[Imagefile] = []
+            let sortDescriptor = NSSortDescriptor(key: "worktype", ascending: true)
+            self.imagefiles.sortedArrayUsingDescriptors([sortDescriptor])
+            
+            //_?????
+            //sortedArray = self.imagefiles.sortedArrayUsingDescriptors([sortDescriptor])
+            
+            return sortedArray
+        }
+    }
+    
+
     
     
     var filepoints:NSSet
         {
         get{
-            return (self.imagefiles.allObjects.first as! Imagefile).filepoints
+            return (self.firstImagefile)!.filepoints
         }
     }
 }
 
 extension Project {
+    
+    func getSort(documentType:Bool = false) -> Int16
+    {
+        var sortedArray:[Imagefile] = []
+        let sortDescriptor = NSSortDescriptor(key: "sort", ascending: true)
+        let sortDescriptor2 = NSSortDescriptor(key: "documenttype", ascending: documentType)
+        sortedArray = (self.imagefiles.sortedArrayUsingDescriptors([sortDescriptor,sortDescriptor2]) as? [Imagefile])!
+
+
+        /*
+        sortedArray.filter( { (imgf: Imagefile) -> Bool in
+            return imgf.documenttype == documentType
+        })
+        */
+        
+        return sortedArray.first == nil ? 0 : sortedArray.first!.sort
+    }
+    
+    func lockImageFiles()
+    {
+        for item in self.imagefiles
+        {
+            if (item as! Imagefile).dokumenttype == false
+            {
+                (item as! Imagefile).locked = true
+            }
+        }
+    }
     
     func addImagefile(imagefile:Imagefile) {
         

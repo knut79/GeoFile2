@@ -16,7 +16,7 @@ class Drawingline: NSManagedObject {
     @NSManaged var endX: Float
     @NSManaged var endY: Float
     @NSManaged var color: Int16
-    @NSManaged var lastTouchBegan: Boolean
+    @NSManaged var lastTouchBegan: DarwinBoolean
 
     
     class func createInManagedObjectContext(moc: NSManagedObjectContext, startPoint:CGPoint, endPoint: CGPoint, color:drawColorEnum, lastTouchBegan:Bool) -> Drawingline{
@@ -25,7 +25,7 @@ class Drawingline: NSManagedObject {
         newitem.startY = Float(startPoint.y)
         newitem.endX = Float(endPoint.x)
         newitem.endY = Float(endPoint.y)
-        newitem.lastTouchBegan = lastTouchBegan ? 1 : 0
+        newitem.lastTouchBegan = lastTouchBegan ? true : false
         newitem.color = Int16(color.rawValue)
         return newitem
     }

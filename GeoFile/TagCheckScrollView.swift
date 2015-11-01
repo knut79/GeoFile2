@@ -27,7 +27,7 @@ class TagCheckScrollView: UIView , UIScrollViewDelegate, TagCheckItemProtocol{
     var closeButton:UIButton!
     var delegate:TagCheckViewProtocol!
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
     }

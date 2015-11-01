@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class ProjectListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate, EditProjectProtocol,TopNavigationViewProtocol {
+class ProjectListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate, EditProjectProtocol {
     
 
     var project: Project?
@@ -54,24 +54,26 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("RelationCell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("RelationCell")
         //cell.textLabel?.text = "\(indexPath.row)"
         
         // Get the LogItem for this index
         let projectItem = projectItems[indexPath.row]
         
-        cell.textLabel?.text = projectItem.title
-        cell.showsReorderControl = true
+        cell!.textLabel?.text = projectItem.title
+        cell!.showsReorderControl = true
         //cell.editing = false
         if(projectItem.imagefiles.count > 0)
         {
-            var imageData = (projectItem.imagefiles.allObjects.first as! Imagefile).file
-            if let image = UIImage(data: imageData)
+            if let imageData = (projectItem.firstImagefile)?.file
             {
-                cell.imageView?.image = image
+                if let image = UIImage(data: imageData)
+                {
+                    cell!.imageView?.image = image
+                }
             }
         }
-        return cell
+        return cell!
     }
     
     // MARK: UITableViewDelegate
@@ -80,12 +82,12 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         project = projectItem
         if(project?.imagefiles.count > 0)
         {
-            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
+            self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
         }
         else
         {
-            var titlePrompt = UIAlertController(title: "Cant navigate",
+            let titlePrompt = UIAlertController(title: "Cant navigate",
                 message: "No image set for project",
                 preferredStyle: .Alert)
             titlePrompt.addAction(UIAlertAction(title: "OK",
@@ -107,7 +109,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         if(editingStyle == .Delete ) {
             let projectItem = projectItems[indexPath.row]
             
-            var titlePrompt = UIAlertController(title: "Delete",
+            let titlePrompt = UIAlertController(title: "Delete",
                 message: "Sure you want to delete this project",
                 preferredStyle: .Alert)
             
@@ -135,9 +137,9 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     }
     
 
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
-        var editAction = UITableViewRowAction(style: .Normal, title: "Edit") { (action, indexPath) -> Void in
+        let editAction = UITableViewRowAction(style: .Normal, title: "Edit") { (action, indexPath) -> Void in
             tableView.editing = false
             self.editProjectAtIndex(indexPath)
             //println("shareAction")
@@ -151,7 +153,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         }
         doneAction.backgroundColor = UIColor.greenColor()*/
         
-        var deleteAction = UITableViewRowAction(style: .Default, title: "Delete") { (action, indexPath) -> Void in
+        let deleteAction = UITableViewRowAction(style: .Default, title: "Delete") { (action, indexPath) -> Void in
             tableView.editing = false
             self.deleteProjectAtIndex(indexPath)
             //println("deleteAction")
@@ -201,11 +203,11 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     func editProjectPosition()
     {
         let projectItem = projectItems[currentProjectItemIndex]
-        projectItem.title = editProjectView.titleTextBox.text
+        projectItem.title = editProjectView.titleTextBox.text!
         save()
         
         editPosition = true
-        let mapViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
         self.performSegueWithIdentifier("showProjectInMap", sender: nil)
         editPosition = false
     }
@@ -218,7 +220,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     func saveEditProject()
     {
         let projectItem = projectItems[currentProjectItemIndex]
-        projectItem.title = editProjectView.titleTextBox.text
+        projectItem.title = editProjectView.titleTextBox.text!
         save()
         projectsTableView.reloadData()
         editProjectView.removeFromSuperview()
@@ -229,7 +231,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         projectItems = []
         let fetchRequest = NSFetchRequest(entityName: "Project")
 
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Project] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Project] {
             
             for item in fetchResults
             {
@@ -242,13 +244,14 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     }
     
     func save() {
-        var error : NSError?
-        if(managedObjectContext!.save(&error) ) {
-            println(error?.localizedDescription)
+        do{
+            try managedObjectContext!.save()
+        } catch {
+            print(error)
         }
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -273,17 +276,17 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
 
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showProjectInMap") {
-            var svc = segue!.destinationViewController as! MapOverviewViewController
+            let svc = segue!.destinationViewController as! MapOverviewViewController
             svc.editProjectAtIndex = currentProjectItemIndex
             svc.editProject = editPosition
         }
         else if (segue.identifier == "showFilepoint") {
-            var svc = segue!.destinationViewController as! FilepointViewController
+            let svc = segue!.destinationViewController as! FilepointViewController
             svc.project = project
             svc.oneLevelFromProject = true
         }
         else if (segue.identifier == "showTreeView") {
-            var svc = segue!.destinationViewController as! TreeViewController
+            let svc = segue!.destinationViewController as! TreeViewController
             svc.pdfImages = self.pdfImages
             
         }

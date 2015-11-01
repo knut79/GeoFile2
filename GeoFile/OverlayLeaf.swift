@@ -19,17 +19,20 @@ class OverlayLeaf: UIView
     var titleLabel:UILabel!
     
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     init(overlay:Overlay,viewRef:UIView?)
     {
-        var rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
+        let rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
         super.init(frame: rect)
         
         self.overlay = overlay
-        
+        //test
+        //self.layer.borderWidth = 2
+        //self.layer.borderColor = UIColor.blackColor().CGColor
+        //end test
         
         let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "overlaySelected:")
         imageView = UIImageView(frame: CGRectMake(0, 0, imageInstanceSides, imageInstanceSides))
@@ -37,7 +40,7 @@ class OverlayLeaf: UIView
         imageView.userInteractionEnabled = true
         imageView.layer.borderColor = UIColor.grayColor().CGColor
         imageView.layer.borderWidth = 2.0;
-        var image = UIImage(data: overlay.file)
+        let image = UIImage(data: overlay.file)
         imageView.image = image
         imageView.center =  CGPointMake(self.frame.width / 2, self.frame.height / 2)
         singleTapRec.numberOfTapsRequired = 1

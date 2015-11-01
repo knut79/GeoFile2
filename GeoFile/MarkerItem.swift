@@ -17,7 +17,8 @@ class MarkerItem {
     {
         tags = tagsString
         self.gmsmarker = gmsmarker
-        let arrayOfTags = tagsString.componentsSeparatedByString("#")
+        //let arrayOfTags = tagsString.componentsSeparatedByString("#")
+        tagsString.componentsSeparatedByString("#")
         
     }
 }

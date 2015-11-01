@@ -14,7 +14,7 @@ class PointElement: UIView {
     var filepoint:Filepoint?
     var pointIcon:UILabel!
     var titleLabel:UILabel!
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     

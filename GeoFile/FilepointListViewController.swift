@@ -12,7 +12,7 @@ import Foundation
 import UIKit
 import CoreData
 
-class FilepointListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate ,TopNavigationViewProtocol {
+class FilepointListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate {
     
     
     var imagefile:Imagefile?
@@ -67,9 +67,10 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     }
     
     func save() {
-        var error : NSError?
-        if(managedObjectContext!.save(&error) ) {
-            println(error?.localizedDescription)
+        do{
+            try managedObjectContext!.save()
+        } catch {
+            print(error)
         }
     }
     
@@ -79,34 +80,34 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("RelationCell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("RelationCell")
         //cell.textLabel?.text = "\(indexPath.row)"
         
         // Get the LogItem for this index
         let filepointItem = filepointItems[indexPath.row]
         
-        cell.textLabel?.text = filepointItem.title
-        cell.showsReorderControl = true
+        cell!.textLabel!.text = filepointItem.title
+        cell!.showsReorderControl = true
         //cell.editing = false
         
         if(filepointItem.imagefiles.count > 0)
         {
             //TODO: allobjects[0] will only return a random item
-            var imageData = (filepointItem.imagefiles.allObjects[0] as! Imagefile).file
+            let imageData = (filepointItem.firstImagefile)!.file
             if let image = UIImage(data: imageData)
             {
-                cell.imageView?.image = image
+                cell!.imageView?.image = image
             }
         }
-        return cell
+        return cell!
     }
     
     // MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let filepointItem = filepointItems[indexPath.row]
         //TODO: allobjects[0] will only return a random item
-        imagefile = filepointItem.imagefiles.allObjects[0] as? Imagefile
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
+        imagefile = filepointItem.firstImagefile
+        self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
         self.performSegueWithIdentifier("showFilepoint", sender: nil)
     }
     
@@ -120,7 +121,7 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
         if(editingStyle == .Delete ) {
             let filepointItem = filepointItems[indexPath.row]
             
-            var titlePrompt = UIAlertController(title: "Delete",
+            let titlePrompt = UIAlertController(title: "Delete",
                 message: "Sure you want to delete this image",
                 preferredStyle: .Alert)
 
@@ -165,14 +166,14 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
         
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
     
     func goBack()
     {
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
         self.performSegueWithIdentifier("showFilepoint", sender: nil)
     }
     
@@ -186,12 +187,12 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showProjectInMap") {
-            var svc = segue!.destinationViewController as! MapOverviewViewController
+            let svc = segue!.destinationViewController as! MapOverviewViewController
             svc.project = imagefile!.project ?? findProjectOfFilepoint(imagefile!.filepoint!)
 
         }
         else if (segue.identifier == "showFilepoint") {
-            var svc = segue!.destinationViewController as! FilepointViewController
+            let svc = segue!.destinationViewController as! FilepointViewController
             //TODO: find info imagefile s filepoint
             if imagefile?.filepoint != nil
             {
@@ -205,10 +206,10 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
             
         }
         else if (segue.identifier == "showTreeView") {
-            var svc = segue!.destinationViewController as! TreeViewController
+            let svc = segue!.destinationViewController as! TreeViewController
             svc.pdfImages = self.pdfImages
             //TODO: find info imagefile s filepoint
-            svc.passingFilepoint = (imagefile!.filepoints.allObjects.first as! Imagefile).filepoint
+            svc.passingFilepoint = imagefile?.filepoint
             
         }
 

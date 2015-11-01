@@ -23,6 +23,9 @@ class Imagefile: NSManagedObject {
     @NSManaged var measures: NSSet
     @NSManaged var angles: NSSet
     @NSManaged var texts: NSSet
+    @NSManaged var sort:Int16
+    @NSManaged var dokumenttype:DarwinBoolean
+    @NSManaged var locked:DarwinBoolean
     
     //added on picture with coordinates on parent filepoint
     class func createInManagedObjectContext(moc: NSManagedObjectContext, title: String, file: NSData, tags:String?, worktype:workType) -> Imagefile{
@@ -32,9 +35,16 @@ class Imagefile: NSManagedObject {
         
         newitem.tags = tags
         newitem.worktype = Int16(worktype.rawValue)
-        
+        if worktype == workType.dokument
+        {
+            newitem.dokumenttype = true
+        }
+        else
+        {
+            newitem.dokumenttype = false
+        }
+        newitem.locked = false
         newitem.filepoints = NSMutableSet()
-        
         newitem.lines = NSMutableSet()
         newitem.measures = NSMutableSet()
         newitem.texts = NSMutableSet()
@@ -44,6 +54,24 @@ class Imagefile: NSManagedObject {
 }
 
 extension Imagefile {
+    
+    func setNewSort(currentSort:Int16) {
+        
+        var newSort:Int16 = 1
+        if currentSort == 0
+        {
+            if self.dokumenttype == true
+            {
+                newSort += 1000
+            }
+        }
+        else
+        {
+            newSort = currentSort + 1
+        }
+        
+        self.sort = newSort
+    }
     
     
     func addFilepoint(filepoint:Filepoint) {

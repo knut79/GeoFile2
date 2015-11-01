@@ -62,8 +62,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         initPickerView()
 
         initialTarget = project != nil ? CLLocationCoordinate2D(latitude: project!.latitude, longitude: project!.longitude) : nil
-        var target: CLLocationCoordinate2D = initialTarget ?? CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75)
-        var camera = GMSCameraPosition(target: target, zoom: 10, bearing: 0, viewingAngle: 0)
+        let target: CLLocationCoordinate2D = initialTarget ?? CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75)
+        let camera = GMSCameraPosition(target: target, zoom: 10, bearing: 0, viewingAngle: 0)
         
         
         self.view.backgroundColor = UIColor.whiteColor()
@@ -131,22 +131,22 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     func setNewOverlay(overlay:Overlay)
     {
-        var image = UIImage(data: overlay.file)
+        let image = UIImage(data: overlay.file)
         //var scaleFactor = image!.size.width / UIScreen.mainScreen().bounds.size.width
         //newOverlayToSet = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, image!.size.height / scaleFactor))
         newOverlayToSet = UIImageView(frame: CGRectMake(0, 0, image!.size.width, image!.size.height))
         
-        println("sizes should match \(image!.size.width) \(image!.size.height) and \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height)")
+        print("sizes should match \(image!.size.width) \(image!.size.height) and \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height)")
         newOverlayToSet.center = gmaps!.center
         newOverlayToSet.alpha = 0.5
         newOverlayToSet.image = image
         newOverlayToSet.userInteractionEnabled = true
         newOverlayToSet.multipleTouchEnabled = true
         newOverlayToSet.contentMode = UIViewContentMode.ScaleToFill
-        var pinchRecognizer = UIPinchGestureRecognizer(target: self, action: "scaleImage:")
+        let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: "scaleImage:")
         pinchRecognizer.delegate = self
         newOverlayToSet.addGestureRecognizer(pinchRecognizer)
-        var rotationRecognizer = UIRotationGestureRecognizer(target: self, action: "rotateImage:")
+        let rotationRecognizer = UIRotationGestureRecognizer(target: self, action: "rotateImage:")
         rotationRecognizer.delegate = self
         newOverlayToSet.addGestureRecognizer(rotationRecognizer)
         
@@ -176,11 +176,12 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     {
         let rightLocation = tagsScrollView.center
         tagsScrollView.transform = CGAffineTransformScale(tagsScrollView.transform, 0.1, 0.1)
+        self.tagsScrollView.alpha = 1
         tagsScrollView.center = tagsScrollViewOpenButton.center
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             
             self.tagsScrollView.transform = CGAffineTransformIdentity
-            self.tagsScrollView.alpha = 1
+            
             self.tagsScrollView.center = rightLocation
             }, completion: { (value: Bool) in
                 self.tagsScrollView.transform = CGAffineTransformIdentity
@@ -197,7 +198,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             
             self.tagsScrollView.transform = CGAffineTransformScale(self.tagsScrollView.transform, 0.1, 0.1)
-            self.tagsScrollView.alpha = 0
+
             self.tagsScrollView.center = self.tagsScrollViewOpenButton.center
             }, completion: { (value: Bool) in
                 self.tagsScrollView.transform = CGAffineTransformScale(self.tagsScrollView.transform, 0.1, 0.1)
@@ -213,23 +214,23 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     }
     
     var touchLocationFromCenterInOverlay:CGPoint!
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        var touch = touches.first as? UITouch//touches.anyObject()
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let touch = touches.first
         //var theImageView = touch?.view
         if let ovview = newOverlayToSet
         {
             touchLocationFromCenterInOverlay = touch!.locationInView(ovview)
             touchLocationFromCenterInOverlay = CGPointMake(touchLocationFromCenterInOverlay.x - (ovview.frame.width / 2) , touchLocationFromCenterInOverlay.y - (ovview.frame.height / 2))
-            println("sizes \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height) and positions \(touchLocationFromCenterInOverlay.x) \(touchLocationFromCenterInOverlay.y)")
+            print("sizes \(newOverlayToSet.frame.width) \(newOverlayToSet.frame.height) and positions \(touchLocationFromCenterInOverlay.x) \(touchLocationFromCenterInOverlay.y)")
         }
     }
-    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent)  {
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)  {
         
-        var touch = touches.first as? UITouch //touches.anyObject()
+        let touch = touches.first
         //var theImageView = touch?.view
         if let view = newOverlayToSet
         {
-            var touchLocation = touch!.locationInView(self.gmaps)
+            let touchLocation = touch!.locationInView(self.gmaps)
             view.center = CGPointMake(touchLocation.x - touchLocationFromCenterInOverlay.x, touchLocation.y - touchLocationFromCenterInOverlay.y)
         }
     }
@@ -264,26 +265,26 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         var originalFrame = newOverlayToSet.frame
         */
         
-        var northEast = gmaps!.projection.coordinateForPoint(CGPointMake(newOverlayToSet.frame.minX, newOverlayToSet.frame.minY))
-        var southWest = gmaps!.projection.coordinateForPoint(CGPointMake(newOverlayToSet.frame.maxX, newOverlayToSet.frame.maxY))
+        let northEast = gmaps!.projection.coordinateForPoint(CGPointMake(newOverlayToSet.frame.minX, newOverlayToSet.frame.minY))
+        let southWest = gmaps!.projection.coordinateForPoint(CGPointMake(newOverlayToSet.frame.maxX, newOverlayToSet.frame.maxY))
 
         //let degrees = CGFloat(gmaps!.camera.bearing) * (180 / CGFloat(M_PI) )
         
-        var overlayBounds = GMSCoordinateBounds(coordinate: southWest, coordinate: northEast)
+        let overlayBounds = GMSCoordinateBounds(coordinate: southWest, coordinate: northEast)
 
         if let newOverlayOnMap = overlayToSet
         {
             var icon = UIImage(data: newOverlayOnMap.file)
-            icon = imageResize(icon!, newOverlayToSet.frame.size)
+            icon = imageResize(icon!, sizeChange: newOverlayToSet.frame.size)
             
-            var overlay = GMSGroundOverlay(bounds: overlayBounds, icon: icon)
+            let overlay = GMSGroundOverlay(bounds: overlayBounds, icon: icon)
             //var overlay = GMSGroundOverlay(position: southWest, icon: icon, zoomLevel: 0)
             
             //gmaps!.clear()
             overlay.bearing = CLLocationDirection(degrees) //360.0 - gmaps!.camera.bearing  //CLLocationDirection(degrees)
             overlay.map = gmaps
             
-            newOverlayOnMap.active = 1
+            newOverlayOnMap.active = true
             newOverlayOnMap.bearing = overlay.bearing
             newOverlayOnMap.latitudeSW = southWest.latitude
             newOverlayOnMap.longitudeSW = southWest.longitude
@@ -306,10 +307,10 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     {
         if(r.numberOfTouches() == 2 )
         {
-            var view = r.view;
-            var touch0 = r.locationOfTouch(0, inView: view) //[r locationOfTouch:0 inView:view];
-            var touch1 = r.locationOfTouch(1, inView: view)
-            var tangent = fabsf( Float(touch1.y - touch0.y) / Float(touch1.x - touch0.x) )
+            let view = r.view;
+            let touch0 = r.locationOfTouch(0, inView: view) //[r locationOfTouch:0 inView:view];
+            let touch1 = r.locationOfTouch(1, inView: view)
+            let tangent = fabsf( Float(touch1.y - touch0.y) / Float(touch1.x - touch0.x) )
             return tangent <= 0.2679491924 ? PinchAxis.PinchAxisHorizontal // 15 degrees
             : (tangent >= 3.7320508076 ? PinchAxis.PinchAxisVertical   // 75 degrees
             : PinchAxis.PinchAxisNone)
@@ -324,21 +325,21 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         if(canResize){
             
             let radians = atan2( newOverlayToSet.transform.b, newOverlayToSet.transform.a)
-            let degrees = radians * (180 / CGFloat(M_PI) )
+            //let degrees = radians * (180 / CGFloat(M_PI) )
             newOverlayToSet!.transform = CGAffineTransformRotate(newOverlayToSet!.transform, radians * -1)
             
-            var view = sender.view
-            var axis = pinchGestureRecognizerAxis(sender)
+            let view = sender.view
+            let axis = pinchGestureRecognizerAxis(sender)
             switch(axis)
             {
             case .PinchAxisHorizontal:
-                var center = view!.center
+                let center = view!.center
                 view!.frame.size = CGSizeMake(view!.frame.size.width * sender.scale, view!.frame.size.height)//.width = view!.frame.width * sender.scale
                 view!.center = center
                 //view!.transform = CGAffineTransformScale(view!.transform, sender.scale, 1)
                 break
             case .PinchAxisVertical:
-                var center = view!.center
+                let center = view!.center
                 view!.frame.size = CGSizeMake(view!.frame.size.width, view!.frame.size.height  * sender.scale)
                 view!.center = center
                 //view!.transform = CGAffineTransformScale(view!.transform, 1, sender.scale)
@@ -358,9 +359,9 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         if(canRotate)
         {
-            var rotation = 0.0 - (_lastRotation - sender.rotation)
+            let rotation = 0.0 - (_lastRotation - sender.rotation)
             
-            var view = sender.view
+            let view = sender.view
             view!.transform = CGAffineTransformRotate(view!.transform, rotation)
             //view!.transform = CGAffineTransformMakeTranslation(10, 10)
             //view!.transform = CGAffineTransformRotate(view!.transform, rotation)
@@ -395,11 +396,11 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         
         if(transitionToWide)
         {
-            println("transition to wide")
+            print("transition to wide")
         }
         else
         {
-            println("transition to portrait")
+            print("transition to portrait")
         }
 
         topNavigationBar.frame = CGRectMake(topNavigationBar.frame.size.width , 0 , size.width * 0.33, buttonBarHeight)
@@ -411,13 +412,13 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     }
     //MARK: Locationmanager
     
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
-        println("error \(error.description)")
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("error \(error.description)")
         
     }
 
     
-    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedWhenInUse {
             locationManager.startUpdatingLocation()
             
@@ -428,43 +429,45 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         }
     }
     
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        if let location = locations.first as? CLLocation {
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first
+        {
             if let map = gmaps {
             
-                var target = initialTarget ?? location.coordinate
+                let target = initialTarget ?? location.coordinate
                 map.camera = GMSCameraPosition(target: target, zoom: 15, bearing: 0, viewingAngle: 0)
-                println("location is  \(location.coordinate.latitude) \(location.coordinate.longitude)")
+                print("location is  \(location.coordinate.latitude) \(location.coordinate.longitude)")
                 locationManager.stopUpdatingLocation()
                 
                 // Reverse Geocoding
                 geocoder.reverseGeocodeLocation(location, completionHandler: {(stuff, error)->Void in
                     
                     if (error != nil) {
-                        println("reverse geodcode fail: \(error.localizedDescription)")
+                        print("reverse geodcode fail: \(error!.localizedDescription)")
                         return
                     }
                     
-                    if stuff.count > 0 {
+                    if stuff!.count > 0 {
                         
                         self.currentLocation = location
                         self.localAddressSet = true
                         
-                        self.placemark = CLPlacemark(placemark: stuff[0] as! CLPlacemark)
+                        //_? swift 2 convertion: self.placemark = CLPlacemark(placemark: stuff[0] as! CLPlacemark)
+                        self.placemark = CLPlacemark(placemark: stuff!.first! )
                         
-                        println("\(self.placemark.country)")
-                        println("\(self.placemark.administrativeArea)")
-                        println("\(self.placemark.locality)")
-                        println("\(self.placemark.postalCode)")
-                        println("\(self.placemark.thoroughfare)")
-                        println("\(self.placemark.subThoroughfare)")
+                        print("\(self.placemark.country)")
+                        print("\(self.placemark.administrativeArea)")
+                        print("\(self.placemark.locality)")
+                        print("\(self.placemark.postalCode)")
+                        print("\(self.placemark.thoroughfare)")
+                        print("\(self.placemark.subThoroughfare)")
 
                         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
                         self.localAddressText = ("\(self.placemark.thoroughfare) \(self.placemark.locality) \(timestamp)")
 
                     }
                     else {
-                        println("No Placemarks!")
+                        print("No Placemarks!")
                         return
                     }
                     
@@ -486,7 +489,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         var index = 0
         for item in projectItems
         {
-            var marker = GMSMarker()
+            let marker = GMSMarker()
             marker.title = item.title
             if(edit && atIndex == index)
             {
@@ -543,10 +546,10 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
 
     func getProjectOnTitle(title:String) -> Project?
     {
-        println("searching for project \(title)")
+        print("searching for project \(title)")
         for item in projectItems
         {
-            println("project with title \(item.title)")
+            print("project with title \(item.title)")
             if(item.title == title)
             {
                 return item
@@ -560,7 +563,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     func mapView(mapView: GMSMapView!, didTapAtCoordinate coordinate: CLLocationCoordinate2D) {
         
-        println("tapped at coordinate \(coordinate.latitude) \(coordinate.longitude)")
+        print("tapped at coordinate \(coordinate.latitude) \(coordinate.longitude)")
         if(setPositonForNewProject)
         {
             setPositonForNewProject = false
@@ -577,11 +580,11 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
         
-        println("marker title \(marker.title)")
+        print("marker title \(marker.title)")
         
         project = self.getProjectOnTitle(marker.title)
         
-        println("number of files in project \(project?.imagefiles.count)")
+        print("number of files in project \(project?.imagefiles.count)")
         
         
         //TODO: maby show info worktype at first
@@ -593,12 +596,12 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         else*/
         if(project?.imagefiles.count > 0)
         {
-            let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
+            self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
         }
         else
         {
-            cameraView = CameraView(frame: self.view.frame, image:nil)
+            cameraView = CameraView(frame: self.view.frame, image:nil, worktype:workType.arbeid)
             cameraView.delegate = self
             self.view.addSubview(cameraView)
         }
@@ -647,7 +650,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectmarker.icon = UIImage(named: "flag_icon")
         newProjectmarker.draggable = false
         
-        var tags = newProjectView!.getTags()
+        let tags = newProjectView!.getTags()
         Project.createInManagedObjectContext(self.managedObjectContext!, title: newProjectTitle, lat:newProjectmarker.position.latitude, long: newProjectmarker.position.longitude, tags: tags)
         save()
         fetchProjects()
@@ -660,7 +663,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectmarker.icon = UIImage(named: "flag_icon")
         newProjectmarker.draggable = false
         
-        var tags = newProjectView!.getTags()
+        let tags = newProjectView!.getTags()
         Project.createInManagedObjectContext(self.managedObjectContext!, title: newProjectTitle, lat:currentLocation.coordinate.latitude, long: currentLocation.coordinate.longitude, tags: tags)
         save()
         fetchProjects()
@@ -690,14 +693,14 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectView!.removeFromSuperview()
         addProjectButton.removeFromSuperview()
         
-        var saveNewProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        let saveNewProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveNewProjectButton.setTitle("Save", forState: .Normal)
         saveNewProjectButton.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         saveNewProjectButton.addTarget(self, action: "saveNewProject:", forControlEvents: .TouchUpInside)
         self.view.addSubview(saveNewProjectButton)
         
         
-        var titlePrompt = UIAlertController(title: "Enter",
+        let titlePrompt = UIAlertController(title: "Enter",
             message: "Enter title of new project",
             preferredStyle: .Alert)
         
@@ -715,7 +718,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             handler: { (action) -> Void in
                 self.newProjectTitle = "\(titleTextField!.text)"
                 
-                var tapPrompt = UIAlertController(title: "Tap and drag on map",
+                let tapPrompt = UIAlertController(title: "Tap and drag on map",
                     message: "Tap on map to set position and drag for accuracy",
                     preferredStyle: .Alert)
                 
@@ -754,7 +757,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         newProjectmarker.icon = UIImage(named: "red-pushpin")
         newProjectmarker.map = gmaps
         
-        var saveNewProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        let saveNewProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveNewProjectButton.setTitle("Save", forState: .Normal)
         saveNewProjectButton.backgroundColor = UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0)
         saveNewProjectButton.addTarget(self, action: "saveNewProjectWithCurrentLocation:", forControlEvents: .TouchUpInside)
@@ -765,7 +768,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     func fetchProjects()
     {
         let fetchRequest = NSFetchRequest(entityName: "Project")
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Project] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Project] {
             projectItems = fetchResults
         }
     }
@@ -774,7 +777,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     {
         for project in projectItems
         {
-            println("project id \(project.objectID)")
+            print("project id \(project.objectID)")
             for imagefile in project.imagefiles
             {
                 
@@ -792,11 +795,11 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
             depthstring = depthstring + "-"
         }
         
-        println("\(depthstring) imagefile id \(imagefile.objectID)")
+        print("\(depthstring) imagefile id \(imagefile.objectID)")
         
         for filepoint in imagefile.filepoints
         {
-            println("\(depthstring) filepoint id \(filepoint.objectID)")
+            print("\(depthstring) filepoint id \(filepoint.objectID)")
             for imagefile in filepoint.imagefiles
             {
                 printTestImagefile(imagefile as! Imagefile,depth: depth + 1)
@@ -808,18 +811,18 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     func fetchOverlays()
     {
         let fetchRequest = NSFetchRequest(entityName: "Overlay")
-        if let fetchResults = managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as? [Overlay] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Overlay] {
             for overlay in fetchResults
             {
-                if(overlay.active == 1 && overlay != overlayToSet)
+                if(overlay.active == true && overlay != overlayToSet)
                 {
-                    var sw = CLLocationCoordinate2DMake(overlay.latitudeSW,overlay.longitudeSW)
-                    var ne = CLLocationCoordinate2DMake(overlay.latitudeNE,overlay.longitudeNE)
+                    let sw = CLLocationCoordinate2DMake(overlay.latitudeSW,overlay.longitudeSW)
+                    let ne = CLLocationCoordinate2DMake(overlay.latitudeNE,overlay.longitudeNE)
 
-                    var overlayBounds = GMSCoordinateBounds(coordinate: sw, coordinate: ne)
-                    var icon = UIImage(data: overlay.file)
+                    let overlayBounds = GMSCoordinateBounds(coordinate: sw, coordinate: ne)
+                    let icon = UIImage(data: overlay.file)
                     
-                    var overlayToSet = GMSGroundOverlay(bounds: overlayBounds, icon: icon)
+                    let overlayToSet = GMSGroundOverlay(bounds: overlayBounds, icon: icon)
 
                     overlayToSet.bearing = overlay.bearing
                     overlayToSet.map = gmaps
@@ -831,9 +834,10 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     }
     
     func save() {
-        var error : NSError?
-        if(managedObjectContext!.save(&error) ) {
-            println(error?.localizedDescription)
+        do{
+            try managedObjectContext!.save()
+        } catch {
+            print(error)
         }
     }
     
@@ -858,9 +862,11 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     {
         if(imageData != nil)
         {
-            println("imagedata is not")
-            var newFileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, tags:nil, worktype:worktype)
+            print("imagedata is not")
+            let newFileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, tags:nil, worktype:worktype)
             // Update the array containing the table view row data
+            let sort = project?.getSort()
+            newFileItem.setNewSort(sort!)
             project?.addImagefile(newFileItem)
 
             save()
@@ -868,7 +874,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         }
         else
         {
-            println("imagedata is nil")
+            print("imagedata is nil")
         }
         cameraView.removeFromSuperview()
     }
@@ -882,14 +888,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
         cameraView.removeFromSuperview()
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        var image = info[UIImagePickerControllerOriginalImage] as! UIImage
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         
         dismissViewControllerAnimated(true, completion: nil)
         
-        var imageData =  UIImageJPEGRepresentation(image,1.0) as NSData
+        let imageData =  UIImageJPEGRepresentation(image,1.0)
 
-        var newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData, tags:nil, worktype:worktypeFromCameraView)
+        let newImagefileItem = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title: "a filepoint title", file: imageData!, tags:nil, worktype:worktypeFromCameraView)
+        
+        let sort = project!.getSort()
+        newImagefileItem.setNewSort(sort)
         project?.addImagefile(newImagefileItem)
         
         save()
@@ -903,7 +912,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     //MARK: Storyboard and segue
     func test()
     {
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("TestViewController") as! TestViewController
+        self.storyboard!.instantiateViewControllerWithIdentifier("TestViewController") as! TestViewController
         self.performSegueWithIdentifier("showTestViewController", sender: nil)
     }
 
@@ -921,17 +930,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewPr
     
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showFilepoint") {
-            var svc = segue!.destinationViewController as! FilepointViewController
+            let svc = segue!.destinationViewController as! FilepointViewController
             svc.project = project
             svc.oneLevelFromProject = true
         }
         else if (segue.identifier == "showTreeView") {
-            var svc = segue!.destinationViewController as! TreeViewController
+            let svc = segue!.destinationViewController as! TreeViewController
             svc.pdfImages = self.pdfImages
         }
         else if (segue.identifier == "showFilepointList") {
-            var svc = segue!.destinationViewController as! FilepointListViewController
-            svc.imagefile = project?.imagefiles.allObjects.first as? Imagefile
+            let svc = segue!.destinationViewController as! FilepointListViewController
+            svc.imagefile = project?.firstImagefile
         }
     }
     

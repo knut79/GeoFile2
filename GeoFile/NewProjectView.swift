@@ -25,7 +25,7 @@ class NewProjectView: UIView
     var setPositionButton:CustomButton!
     var workTypes:[TagCheckView]!
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -66,7 +66,7 @@ class NewProjectView: UIView
         setPositionButton.addTarget(self, action: "setPositionNewProject", forControlEvents: .TouchUpInside)
         self.addSubview(setPositionButton)
         
-        var cancelButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*5) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        let cancelButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*5) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         cancelButton.setTitle("Cancel", forState: .Normal)
         cancelButton.addTarget(self, action: "cancelNewProject", forControlEvents: .TouchUpInside)
         self.addSubview(cancelButton)

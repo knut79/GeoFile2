@@ -66,7 +66,7 @@ class DrawView: DrawingBase{
     var zoomscale:CGFloat = 1
 
     //var testLabel:UILabel!
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -242,7 +242,7 @@ class DrawView: DrawingBase{
         tempDtextLabel.backgroundColor = UIColor.clearColor()
         tempDtextLabel.hidden = true
         tempDtextLabel.userInteractionEnabled = true
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setDtextText:")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: "setDtextText:")
         tapRecognizer.numberOfTapsRequired = 1
         tempDtextLabel.addGestureRecognizer(tapRecognizer)
         tempDtextLabel.layer.borderColor = UIColor.grayColor().CGColor
@@ -259,7 +259,7 @@ class DrawView: DrawingBase{
         tempMeasureLabel.backgroundColor = UIColor.clearColor()
         tempMeasureLabel.hidden = true
         tempMeasureLabel.userInteractionEnabled = true
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setMeasurementText:")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: "setMeasurementText:")
         tapRecognizer.numberOfTapsRequired = 1
         tempMeasureLabel.addGestureRecognizer(tapRecognizer)
         self.addSubview(tempMeasureLabel)
@@ -275,7 +275,7 @@ class DrawView: DrawingBase{
         tempAngleLabel.backgroundColor = UIColor.clearColor()
         tempAngleLabel.hidden = true
         tempAngleLabel.userInteractionEnabled = true
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setAngleText:")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: "setAngleText:")
         tapRecognizer.numberOfTapsRequired = 1
         tempAngleLabel.addGestureRecognizer(tapRecognizer)
         self.addSubview(tempAngleLabel)
@@ -293,7 +293,7 @@ class DrawView: DrawingBase{
         tempTextLabel.hidden = true
         tempTextLabel.userInteractionEnabled = true
         tempTextLabel.font = UIFont.boldSystemFontOfSize(drawingTextPointSize * zoomscale)
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "setDrawntextText:")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: "setDrawntextText:")
         tapRecognizer.numberOfTapsRequired = 1
         tempTextLabel.addGestureRecognizer(tapRecognizer)
         self.addSubview(tempTextLabel)
@@ -307,8 +307,8 @@ class DrawView: DrawingBase{
     }
 
     var touchBegan = false
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        lastPoint = (touches.first as? UITouch)?.locationInView(self)  //touches.anyObject()?.locationInView(self)
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        lastPoint = (touches.first)?.locationInView(self)
         hideColorButtons()
         touchBegan = true
         switch(drawType)
@@ -326,19 +326,7 @@ class DrawView: DrawingBase{
             break
         case .text:
             tempDtextLabel.textColor = getUIColor(colorPicked)
-            /*
-            tempTextLabel.textColor = getUIColor(colorPicked)
-            if(drawnTexts.last?.label!.text != tempTextLabel.text)
-            {
-                tempTextLabel.hidden = false
-                tempTextLabel.center = lastPoint
-                //currentMeasure.setLabel(label: tempMeasureLabel)
-                
-                undoArtifactList.append(.text)
-                drawnTexts.append(Drawntext(label: tempTextLabel, color: colorPicked))
-                populateNewTempTextLabel()
-            }
-            */
+
         default:
             break
             
@@ -346,8 +334,8 @@ class DrawView: DrawingBase{
     }
     
     var angleMidpointSat = false
-    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
-        var newPoint = (touches.first as? UITouch)?.locationInView(self)  //touches.anyObject()?.locationInView(self)
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let newPoint = (touches.first)?.locationInView(self)
         switch(drawType)
         {
         case .free:
@@ -382,8 +370,8 @@ class DrawView: DrawingBase{
         self.setNeedsDisplay()
     }
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
-        var newPoint = (touches.first as? UITouch)?.locationInView(self) //touches.anyObject()?.locationInView(self)
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let newPoint = (touches.first)?.locationInView(self) //touches.anyObject()?.locationInView(self)
         switch(drawType)
         {
         case .measure:
@@ -464,18 +452,18 @@ class DrawView: DrawingBase{
             return
         }
 
-        var context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()
         //CGContextDrawImage(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage)
         originalImage.drawInRect(CGRectMake(0, 0, originalImage.size.width, originalImage.size.height))
         
         CGContextBeginPath(context)
-        CGContextSetLineCap(context, kCGLineCapRound)
-        var linewidth = drawingLineWidth * zoomscale
+        CGContextSetLineCap(context, CGLineCap.Round)
+        let linewidth = drawingLineWidth * zoomscale
         //println("linewidth \(linewidth) zoomscale \(zoomscale)")
         CGContextSetLineWidth(context, linewidth)
         for line in lines
         {
-            setStrokeColor(context,color: line.color)
+            setStrokeColor(context!,color: line.color)
             CGContextMoveToPoint(context, line.start.x, line.start.y)
             CGContextAddLineToPoint(context, line.end.x, line.end.y)
 
@@ -483,20 +471,16 @@ class DrawView: DrawingBase{
         }
         for measurement in measures
         {
-            drawMeasumrement(context,measurement: measurement,label: measurement.getLabel(), color: measurement.color)
+            drawMeasumrement(context!,measurement: measurement,label: measurement.getLabel(), color: measurement.color)
         }
         for text in dTexts
         {
-           drawDtext(context,dtext: text,label: text.getLabel(), color: text.color)
+           drawDtext(context!,dtext: text,label: text.getLabel(), color: text.color)
             text.getLabel().layer.borderWidth = 0.0;
         }
         for angle in angles
         {
-            drawAngle(context, angle: angle, label: angle.getLabel(), color: angle.color)
-        }
-        for drawntext in drawnTexts
-        {
-            
+            drawAngle(context!, angle: angle, label: angle.getLabel(), color: angle.color)
         }
         
         
@@ -505,21 +489,21 @@ class DrawView: DrawingBase{
         {
             if(currentMeasure != nil)
             {
-                drawMeasumrement(context,measurement: currentMeasure,label: tempMeasureLabel, color: colorPicked)
+                drawMeasumrement(context!,measurement: currentMeasure,label: tempMeasureLabel, color: colorPicked)
             }
         }
         if(drawType == .text)
         {
             if(currentDtext != nil)
             {
-                drawDtext(context,dtext: currentDtext,label: tempDtextLabel, color: colorPicked)
+                drawDtext(context!,dtext: currentDtext,label: tempDtextLabel, color: colorPicked)
             }
         }
         if(drawType == .angle)
         {
             if(currentAngle != nil)
             {
-                drawAngle(context, angle: currentAngle, label: tempAngleLabel, color: colorPicked)
+                drawAngle(context!, angle: currentAngle, label: tempAngleLabel, color: colorPicked)
             }
         }
     }
@@ -529,7 +513,7 @@ class DrawView: DrawingBase{
         
         CGContextBeginPath(context)
         setStrokeColor(context,color: color)
-        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
         
         CGContextMoveToPoint(context, angle.start.x, angle.start.y)
         CGContextAddLineToPoint(context, angle.mid.x, angle.mid.y)
@@ -542,24 +526,24 @@ class DrawView: DrawingBase{
             CGContextStrokePath(context)
             
             
-            var startAngle = (pointPairToBearingDegrees(angle.start,endingPoint: angle.mid) + 180.0) % 360.0
-            var endAngle = pointPairToBearingDegrees(angle.mid,endingPoint: angle.end!)
+            let startAngle = (pointPairToBearingDegrees(angle.start,endingPoint: angle.mid) + 180.0) % 360.0
+            let endAngle = pointPairToBearingDegrees(angle.mid,endingPoint: angle.end!)
             
             
-            var degToRadEnd = ((CGFloat(M_PI) * endAngle ) / 180.0)
-            var degToRadStart = ((CGFloat(M_PI) * startAngle ) / 180.0)
+            let degToRadEnd = ((CGFloat(M_PI) * endAngle ) / 180.0)
+            let degToRadStart = ((CGFloat(M_PI) * startAngle ) / 180.0)
             
             
             
-            var clockwiseDraw = IsClockwise([angle.start,angle.mid,angle.end!])
+            let clockwiseDraw = IsClockwise([angle.start,angle.mid,angle.end!])
             
-            var radiusForDrawingArc:CGFloat = drawingArcRadius * zoomscale
+            let radiusForDrawingArc:CGFloat = drawingArcRadius * zoomscale
             
-            var arcToDraw = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
+            let arcToDraw = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
             arcToDraw.stroke()
             
             
-            var arcForPositionLabel = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc * 1.5, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
+            let arcForPositionLabel = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc * 1.5, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
             
             
             var _angle = angleOfPointsToFixedPoint(angle.start, p2: angle.end!, fixed:angle.mid)
@@ -571,8 +555,8 @@ class DrawView: DrawingBase{
             //println("angle \(_angle)")
             
             
-            var midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);
-            var approximateMidPointCenter = CGPointMake(CGRectGetMidX(midPointPathFrame), CGRectGetMidY(midPointPathFrame));
+            let midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);
+            let approximateMidPointCenter = CGPointMake(CGRectGetMidX(midPointPathFrame), CGRectGetMidY(midPointPathFrame));
             
             if(angle.hardSetText == false)
             {
@@ -586,21 +570,21 @@ class DrawView: DrawingBase{
     {
         CGContextBeginPath(context)
         setStrokeColor(context,color: color)
-        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
         
         
-        var xDist = (dtext.end.x - dtext.start.x)
-        var yDist = (dtext.end.y - dtext.start.y)
-        var distance = sqrt((xDist * xDist) + (yDist * yDist))
+        let xDist = (dtext.end.x - dtext.start.x)
+        let yDist = (dtext.end.y - dtext.start.y)
+        let distance = sqrt((xDist * xDist) + (yDist * yDist))
         
-        var angle = angleOfPointsToFixedPoint(dtext.start, p2: dtext.end)
+        let angle = angleOfPointsToFixedPoint(dtext.start, p2: dtext.end)
 
         
         label.center = getPointBetweenPoints(dtext.start, p2: dtext.end, offset: CGPointMake(10, -10))
 
         
         
-        println("degrees \(angle)")
+        print("degrees \(angle)")
         label.transform = CGAffineTransformIdentity
         label.frame.size = CGSizeMake(distance,label.frame.size.height)
         label.transform = CGAffineTransformMakeRotation(angle * CGFloat(M_PI) / 180.0)
@@ -612,14 +596,14 @@ class DrawView: DrawingBase{
     {
         CGContextBeginPath(context)
         setStrokeColor(context,color: color)
-        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
         
         CGContextMoveToPoint(context, measurement.start.x, measurement.start.y)
         
         CGContextAddLineToPoint(context, measurement.end.x, measurement.end.y)
         
         CGContextStrokePath(context)
-        var angle = angleOfPointsToFixedPoint(measurement.start, p2: measurement.end)
+        let angle = angleOfPointsToFixedPoint(measurement.start, p2: measurement.end)
         //CGContextRotateCTM(context, angle)
         
         drawDisclosureLine(context, x: measurement.start.x, y: measurement.start.y, angle:angle)
@@ -632,7 +616,7 @@ class DrawView: DrawingBase{
         */
         label.center = getPointBetweenPoints(measurement.start, p2: measurement.end, offset: CGPointMake(10, -10))
         
-        println("degrees \(angle)")
+        print("degrees \(angle)")
         label.transform = CGAffineTransformIdentity
         label.transform = CGAffineTransformMakeRotation(angle * CGFloat(M_PI) / 180.0)
   
@@ -892,10 +876,10 @@ class DrawView: DrawingBase{
     
     func showColorButtons()
     {
-        var whiteCenter = whiteButton.center
-        var blackCenter = blackButton.center
-        var blueCenter = blueButton.center
-        var redCenter = redButton.center
+        let whiteCenter = whiteButton.center
+        let blackCenter = blackButton.center
+        let blueCenter = blueButton.center
+        let redCenter = redButton.center
         
         whiteButton.center = chooseColorButton.center
         blackButton.center = chooseColorButton.center
@@ -918,10 +902,10 @@ class DrawView: DrawingBase{
     func hideColorButtons()
     {
 
-        var whiteCenter = whiteButton.center
-        var blackCenter = blackButton.center
-        var blueCenter = blueButton.center
-        var redCenter = redButton.center
+        let whiteCenter = whiteButton.center
+        let blackCenter = blackButton.center
+        let blueCenter = blueButton.center
+        let redCenter = redButton.center
 
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             self.whiteButton.center = self.chooseColorButton.center

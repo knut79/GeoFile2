@@ -16,11 +16,13 @@ class FilepointView2:DrawingBase
     init(imagefile:Imagefile)
     {
         self.imagefile = imagefile
-        var image = UIImage(data: imagefile.file)
+        let image = UIImage(data: imagefile.file)
+
+        
         super.init(frame: CGRectMake(0, 0, image!.size.width, image!.size.height))
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -29,32 +31,36 @@ class FilepointView2:DrawingBase
     override func drawRect(rect: CGRect)
     {
         
-        var context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()
         //CGContextDrawImage(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage)
         //originalImage.drawInRect(CGRectMake(0, 0, originalImage.size.width, originalImage.size.height))
         var image = UIImage(data: imagefile!.file)
+        if imagefile!.locked == true
+        {
+            image = convertImageToGrayScale(image!)
+        }
         image?.drawInRect(self.bounds)
-        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
         if let imagefileitem = imagefile
         {
 
             
             for item in imagefileitem.measures
             {
-                var measure = item as! Drawingmeasure
-                drawMeasurement(context,measurement: measure)
+                let measure = item as! Drawingmeasure
+                drawMeasurement(context!,measurement: measure)
             }
             
             for item in imagefileitem.angles
             {
-                var angle = item as! Drawingangle
-                drawAngle(context,angle: angle)
+                let angle = item as! Drawingangle
+                drawAngle(context!,angle: angle)
             }
             
             for item in imagefileitem.lines
             {
-                var line = item as! Drawingline
-                setStrokeColor(context,color: drawColorEnum(rawValue: Int(line.color))! )
+                let line = item as! Drawingline
+                setStrokeColor(context!,color: drawColorEnum(rawValue: Int(line.color))! )
                 CGContextSetLineWidth(context, drawingLineWidth);
                 CGContextMoveToPoint(context, CGFloat(line.startX), CGFloat(line.startY))
                 CGContextAddLineToPoint(context, CGFloat(line.endX), CGFloat(line.endY))
@@ -64,8 +70,8 @@ class FilepointView2:DrawingBase
             
             for item in imagefileitem.texts
             {
-                var text = item as! Drawingtext
-                drawText(context,text: text)
+                let text = item as! Drawingtext
+                drawText(context!,text: text)
             }
         }
     }
@@ -83,9 +89,9 @@ class FilepointView2:DrawingBase
         */
         
 
-        var angle = angleOfPointsToFixedPoint(text.start, p2: text.end)
+        let angle = angleOfPointsToFixedPoint(text.start, p2: text.end)
 
-        var label = UILabel(frame: CGRectMake(0,0,100,40))
+        let label = UILabel(frame: CGRectMake(0,0,100,40))
         label.font = UIFont.systemFontOfSize(drawingTextPointSize)
         label.textAlignment = NSTextAlignment.Center
         label.text = text.text
@@ -102,7 +108,7 @@ class FilepointView2:DrawingBase
         CGContextBeginPath(context)
         setStrokeColor(context,color: drawColorEnum(rawValue: Int(angle.color))!)
         CGContextSetLineWidth(context, drawingLineWidth)
-        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
         
         CGContextMoveToPoint(context, angle.start.x, angle.start.y)
         CGContextAddLineToPoint(context, angle.mid.x, angle.mid.y)
@@ -114,24 +120,24 @@ class FilepointView2:DrawingBase
         CGContextStrokePath(context)
         
         
-        var startAngle = (pointPairToBearingDegrees(angle.start,endingPoint: angle.mid) + 180.0) % 360.0
-        var endAngle = pointPairToBearingDegrees(angle.mid,endingPoint: angle.end)
+        let startAngle = (pointPairToBearingDegrees(angle.start,endingPoint: angle.mid) + 180.0) % 360.0
+        let endAngle = pointPairToBearingDegrees(angle.mid,endingPoint: angle.end)
         
         
-        var degToRadEnd = ((CGFloat(M_PI) * endAngle ) / 180.0)
-        var degToRadStart = ((CGFloat(M_PI) * startAngle ) / 180.0)
+        let degToRadEnd = ((CGFloat(M_PI) * endAngle ) / 180.0)
+        let degToRadStart = ((CGFloat(M_PI) * startAngle ) / 180.0)
         
         
         
-        var clockwiseDraw = IsClockwise([angle.start,angle.mid,angle.end])
+        let clockwiseDraw = IsClockwise([angle.start,angle.mid,angle.end])
         
-        var radiusForDrawingArc:CGFloat = drawingArcRadius
+        let radiusForDrawingArc:CGFloat = drawingArcRadius
         
-        var arcToDraw = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
+        let arcToDraw = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
         arcToDraw.stroke()
         
         
-        var arcForPositionLabel = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc * 1.5, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
+        let arcForPositionLabel = UIBezierPath(arcCenter: angle.mid, radius: radiusForDrawingArc * 1.5, startAngle: CGFloat(degToRadStart), endAngle: CGFloat(degToRadEnd), clockwise: clockwiseDraw)
         
         
         var _angle = angleOfPointsToFixedPoint(angle.start, p2: angle.end, fixed:angle.mid)
@@ -143,11 +149,11 @@ class FilepointView2:DrawingBase
         //println("angle \(_angle)")
         
         
-        var midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);
-        var approximateMidPointCenter = CGPointMake(CGRectGetMidX(midPointPathFrame), CGRectGetMidY(midPointPathFrame));
+        let midPointPathFrame = CGPathGetPathBoundingBox(arcForPositionLabel.CGPath);
+        let approximateMidPointCenter = CGPointMake(CGRectGetMidX(midPointPathFrame), CGRectGetMidY(midPointPathFrame));
             
 
-        var label = UILabel(frame: CGRectMake(0,0,100,40))
+        let label = UILabel(frame: CGRectMake(0,0,100,40))
         label.font = UIFont.systemFontOfSize(drawingTextPointSize)
         label.text = angle.text
         label.textAlignment = NSTextAlignment.Center
@@ -166,14 +172,14 @@ class FilepointView2:DrawingBase
         CGContextBeginPath(context)
         setStrokeColor(context,color: drawColorEnum(rawValue: Int(measurement.color))!)
         CGContextSetLineWidth(context, drawingLineWidth)
-        CGContextSetLineCap(context, kCGLineCapRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
         
         CGContextMoveToPoint(context, CGFloat(measurement.startX), CGFloat(measurement.startY))
         
         CGContextAddLineToPoint(context, CGFloat(measurement.endX), CGFloat(measurement.endY))
         
         CGContextStrokePath(context)
-        var angle = angleOfPointsToFixedPoint(measurement.start, p2: measurement.end)
+        let angle = angleOfPointsToFixedPoint(measurement.start, p2: measurement.end)
         
         drawDisclosureLine(context, x: measurement.start.x, y: measurement.start.y, angle:angle)
         
@@ -183,7 +189,7 @@ class FilepointView2:DrawingBase
         drawDisclosureIndicator(context, x: CGFloat(measurement.startX), y: CGFloat(measurement.startY), pointRight: drawingFromLeftToRight ? false : true)
         drawDisclosureIndicator(context, x: CGFloat(measurement.endX), y: CGFloat(measurement.endY), pointRight: drawingFromLeftToRight ? true : false)
         */
-        var label = UILabel(frame: CGRectMake(0,0,100,40))
+        let label = UILabel(frame: CGRectMake(0,0,100,40))
         label.font = UIFont.systemFontOfSize(drawingTextPointSize)
         label.textAlignment = NSTextAlignment.Center
         label.text = measurement.text

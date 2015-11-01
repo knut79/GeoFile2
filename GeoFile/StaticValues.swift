@@ -71,31 +71,29 @@ enum commonTags:Int
             return "vannavløp"
         case .skinnegang:
             return "skinnegang"
-        default:
-            return "skinnegang"
         }
     }
 }
 
 enum workType:Int
 {
-    case info = 0
-    case arbeid
-    case utfortarbeid
-    case godkjent
-    case mangler
-    case dokument
+    //case info = 0
+    case arbeid = 0
+    case utfortarbeid = 1
+    case godkjent = 2
+    case mangler = 3
+    case dokument = 4
     
     static var count: Int {
         var max: Int = 0
-        while let _ = self(rawValue: ++max) {}
+        while let _ = self.init(rawValue: ++max) {}
         return max
     }
     
     var description: String {
         switch self {
-        case .info:
-            return "til informasjon"
+      //  case .info:
+        //    return "til informasjon"
         case .arbeid:
             return "arbeid"
         case .utfortarbeid:
@@ -106,15 +104,14 @@ enum workType:Int
             return "mangler ved ettersyn"
         case .dokument:
             return "dokument"
-        default:
-            return "til informasjon"
         }
     }
     
+    
     var icon: String {
         switch self {
-        case .info:
-            return "ℹ️"
+        //case .info:
+          //  return "ℹ️"
         case .arbeid:
             return "♻️"
         case .utfortarbeid:
@@ -125,8 +122,6 @@ enum workType:Int
             return "❗"
         case .dokument:
             return "📄"
-        default:
-            return "ℹ️"
         }
     }
 }
@@ -161,8 +156,6 @@ func getUIColor(color:drawColorEnum) -> UIColor
         return UIColor.redColor()
     case .blue:
         return UIColor.blueColor()
-    default:
-        return UIColor.blackColor()
     }
 }
 

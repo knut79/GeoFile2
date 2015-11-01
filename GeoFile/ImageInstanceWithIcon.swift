@@ -14,7 +14,7 @@ class ImageInstanceWithIcon:UIView
     var imageView:UIImageView!
     var iconLabel:UILabel!
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -22,7 +22,11 @@ class ImageInstanceWithIcon:UIView
     {
         super.init(frame: frame)
         self.imagefile = imagefile
-        let image = UIImage(data: imagefile.file)
+        var image = UIImage(data: imagefile.file)
+        if imagefile.locked == true
+        {
+            image = convertImageToGrayScale(image!)
+        }
         let imageView = UIImageView(frame: CGRectMake(self.frame.width * 0.05, self.frame.height * 0.05, self.frame.width * 0.9, self.frame.height * 0.9))
         imageView.image = image
         self.addSubview(imageView)
@@ -31,7 +35,7 @@ class ImageInstanceWithIcon:UIView
         iconLabel.font = UIFont.systemFontOfSize(8)
         iconLabel.text = workType(rawValue:Int(imagefile.worktype))?.icon
         iconLabel.textAlignment = NSTextAlignment.Center
-        println("worktype : \(workType(rawValue:Int(imagefile.worktype))?.icon)")
+        print("worktype : \(workType(rawValue:Int(imagefile.worktype))?.icon)")
         self.addSubview(iconLabel)
     }
     

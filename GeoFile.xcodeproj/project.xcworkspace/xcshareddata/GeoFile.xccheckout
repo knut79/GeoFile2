@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>188C79BC-F9D1-462C-80F5-91418824332F</string>
 	<key>IDESourceControlProjectName</key>
-	<string>GeoFile</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>5C89E0648E474A255A6A4CC3AC09CF49BAF92B54</key>
 		<string>https://github.com/knut79/GeoFile2.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>GeoFile.xcodeproj</string>
+	<string>GeoFile.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>5C89E0648E474A255A6A4CC3AC09CF49BAF92B54</key>
