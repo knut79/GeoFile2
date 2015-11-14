@@ -21,6 +21,9 @@
 		721C6FA31B02351000565D0A /* DrawingBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA21B02351000565D0A /* DrawingBase.swift */; };
 		721C6FA51B023D9700565D0A /* SetOverlayButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA41B023D9700565D0A /* SetOverlayButtons.swift */; };
 		721C6FA81B03585100565D0A /* Imagefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6FA71B03585100565D0A /* Imagefile.swift */; };
+		722805191BF6197300A49054 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722805171BF6197300A49054 /* FBSDKCoreKit.framework */; settings = {ASSET_TAGS = (); }; };
+		7228051A1BF6197300A49054 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722805181BF6197300A49054 /* FBSDKLoginKit.framework */; settings = {ASSET_TAGS = (); }; };
+		7228051C1BF619DC00A49054 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7228051B1BF619DC00A49054 /* LoginViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		7249D46E1B0F2D00008AE9CF /* ImageInstanceWithIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7249D46D1B0F2D00008AE9CF /* ImageInstanceWithIcon.swift */; };
 		7249D4701B1011AB008AE9CF /* PointElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7249D46F1B1011AB008AE9CF /* PointElement.swift */; };
 		7249D4751B1B1F2F008AE9CF /* OverlayDropzone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7249D4741B1B1F2F008AE9CF /* OverlayDropzone.swift */; };
@@ -115,6 +118,9 @@
 		721C6FA41B023D9700565D0A /* SetOverlayButtons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetOverlayButtons.swift; sourceTree = "<group>"; };
 		721C6FA61B03537A00565D0A /* image instances.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "image instances.xcdatamodel"; sourceTree = "<group>"; };
 		721C6FA71B03585100565D0A /* Imagefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Imagefile.swift; sourceTree = "<group>"; };
+		722805171BF6197300A49054 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		722805181BF6197300A49054 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		7228051B1BF619DC00A49054 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		7249D46D1B0F2D00008AE9CF /* ImageInstanceWithIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageInstanceWithIcon.swift; sourceTree = "<group>"; };
 		7249D46F1B1011AB008AE9CF /* PointElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointElement.swift; sourceTree = "<group>"; };
 		7249D4741B1B1F2F008AE9CF /* OverlayDropzone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayDropzone.swift; sourceTree = "<group>"; };
@@ -209,6 +215,7 @@
 			files = (
 				72FE6A541AC0280800FF792D /* CoreLocation.framework in Frameworks */,
 				72FE6A691AC02C3C00FF792D /* QuartzCore.framework in Frameworks */,
+				7228051A1BF6197300A49054 /* FBSDKLoginKit.framework in Frameworks */,
 				72FE6A671AC02C2800FF792D /* OpenGLES.framework in Frameworks */,
 				72FE6A651AC02C1D00FF792D /* libz.dylib in Frameworks */,
 				72FE6A631AC02C0C00FF792D /* libicucore.dylib in Frameworks */,
@@ -218,6 +225,7 @@
 				72FE6A581AC0283D00FF792D /* ImageIO.framework in Frameworks */,
 				72FE6A561AC0282200FF792D /* SystemConfiguration.framework in Frameworks */,
 				72FE6A521AC027FF00FF792D /* CoreData.framework in Frameworks */,
+				722805191BF6197300A49054 /* FBSDKCoreKit.framework in Frameworks */,
 				72FE6A501AC027F100FF792D /* AVFoundation.framework in Frameworks */,
 				72FE6A4E1AC0271E00FF792D /* GoogleMaps.framework in Frameworks */,
 			);
@@ -252,6 +260,28 @@
 				720B8C961AC8964D00064B86 /* pdftest.pdf */,
 			);
 			name = pictures;
+			sourceTree = "<group>";
+		};
+		722805161BF618F200A49054 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				722805171BF6197300A49054 /* FBSDKCoreKit.framework */,
+				722805181BF6197300A49054 /* FBSDKLoginKit.framework */,
+				72FE6A681AC02C3C00FF792D /* QuartzCore.framework */,
+				72FE6A661AC02C2800FF792D /* OpenGLES.framework */,
+				72FE6A641AC02C1D00FF792D /* libz.dylib */,
+				72FE6A621AC02C0C00FF792D /* libicucore.dylib */,
+				72FE6A601AC02BFF00FF792D /* libc++.dylib */,
+				72FE6A5E1AC02BC800FF792D /* GLKit.framework */,
+				72FE6A5C1AC02BA300FF792D /* CoreText.framework */,
+				72FE6A571AC0283D00FF792D /* ImageIO.framework */,
+				72FE6A551AC0282200FF792D /* SystemConfiguration.framework */,
+				72FE6A531AC0280800FF792D /* CoreLocation.framework */,
+				72FE6A511AC027FF00FF792D /* CoreData.framework */,
+				72FE6A4F1AC027F100FF792D /* AVFoundation.framework */,
+				72FE6A4D1AC0271E00FF792D /* GoogleMaps.framework */,
+			);
+			name = Framework;
 			sourceTree = "<group>";
 		};
 		7249D4731B15DC8B008AE9CF /* Treeview */ = {
@@ -319,19 +349,7 @@
 		72FE6A1C1AC0234B00FF792D = {
 			isa = PBXGroup;
 			children = (
-				72FE6A681AC02C3C00FF792D /* QuartzCore.framework */,
-				72FE6A661AC02C2800FF792D /* OpenGLES.framework */,
-				72FE6A641AC02C1D00FF792D /* libz.dylib */,
-				72FE6A621AC02C0C00FF792D /* libicucore.dylib */,
-				72FE6A601AC02BFF00FF792D /* libc++.dylib */,
-				72FE6A5E1AC02BC800FF792D /* GLKit.framework */,
-				72FE6A5C1AC02BA300FF792D /* CoreText.framework */,
-				72FE6A571AC0283D00FF792D /* ImageIO.framework */,
-				72FE6A551AC0282200FF792D /* SystemConfiguration.framework */,
-				72FE6A531AC0280800FF792D /* CoreLocation.framework */,
-				72FE6A511AC027FF00FF792D /* CoreData.framework */,
-				72FE6A4F1AC027F100FF792D /* AVFoundation.framework */,
-				72FE6A4D1AC0271E00FF792D /* GoogleMaps.framework */,
+				722805161BF618F200A49054 /* Framework */,
 				72FE6A271AC0234B00FF792D /* GeoFile */,
 				72FE6A401AC0234B00FF792D /* GeoFileTests */,
 				72FE6A261AC0234B00FF792D /* Products */,
@@ -381,6 +399,7 @@
 				720B8C9C1AC8A6B900064B86 /* PictureHelper.swift */,
 				72A598871AD6827A00918CCD /* StaticValues.swift */,
 				727A21321AF042690067BC4A /* StaticFunctions.swift */,
+				7228051B1BF619DC00A49054 /* LoginViewController.swift */,
 			);
 			path = GeoFile;
 			sourceTree = "<group>";
@@ -549,6 +568,7 @@
 				728A1F631B2668E100FEF953 /* TagCheckView.swift in Sources */,
 				729A569A1AEB08250034418E /* CustomButton.swift in Sources */,
 				72A5988F1AD97C0100918CCD /* DrawView.swift in Sources */,
+				7228051C1BF619DC00A49054 /* LoginViewController.swift in Sources */,
 				72A598881AD6827A00918CCD /* StaticValues.swift in Sources */,
 				72A598771AD0ABD400918CCD /* TestViewController.swift in Sources */,
 				720E94E01AFE9618007946FA /* Drawingtext.swift in Sources */,
@@ -713,6 +733,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/GoogleMaps-iOS-1.9.2",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GeoFile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -732,6 +753,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/GoogleMaps-iOS-1.9.2",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = GeoFile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

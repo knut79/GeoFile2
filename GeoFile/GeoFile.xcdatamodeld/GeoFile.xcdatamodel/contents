@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="13F34" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="15A284" minimumToolsVersion="Automatic">
     <entity name="File" representedClassName="GeoFile.File" syncable="YES">
         <attribute name="file" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="fileType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -16,7 +16,7 @@
         <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="File" inverseName="pointFileInverse" inverseEntity="File" syncable="YES"/>
     </entity>
     <elements>
-        <element name="File" positionX="27" positionY="155" width="128" height="148"/>
-        <element name="Point" positionX="358" positionY="234" width="128" height="103"/>
+        <element name="File" positionX="27" positionY="155" width="128" height="150"/>
+        <element name="Point" positionX="358" positionY="234" width="128" height="105"/>
     </elements>
 </model>
