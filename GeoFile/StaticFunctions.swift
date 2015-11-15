@@ -16,7 +16,7 @@ func findMapPointOfFilepoint(filepoint:Filepoint) -> MapPoint
     }
     else
     {
-        //if no project in former imagefiles/filepoint, traverse down in tree
+        //if no mappoint in former imagefiles/filepoint, traverse down in tree
         return findMapPointOfFilepoint(filepoint.imagefile!.filepoint!)
     }
     

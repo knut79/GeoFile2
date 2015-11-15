@@ -14,7 +14,7 @@ protocol TreeViewProtocol
     func jumpToFilepoint()
     func showOverlay()
     func deleteFilepointNode()
-    func deleteProjectNode()
+    func deleteMapPointNode()
     func deleteOverlayNode()
     func setContentsize(size:CGSize)
     func showImageInstancesScrollView(pointLeaf:PointLeaf)
@@ -27,13 +27,12 @@ class TreeView:UIView, PointLeafProtocol
 {
 
     var imageViewTest:UIImageView!
-    //var projectButtons:[UIButton] = []
     var delegate:TreeViewProtocol?
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-    var projectLeafs = [PointLeaf]()
+    var mapPointLeafs = [PointLeaf]()
     var overlayLeafs = [OverlayLeaf]()
     var currentFilepointLeaf:PointLeaf!
-    var currentProjectLeaf:PointLeaf!
+    var currentMapPointLeaf:PointLeaf!
     var currentOverlayLeaf:OverlayLeaf!
     var selectedLeaf:UIView!
     var overlayDropzone:OverlayDropzone!
@@ -57,7 +56,7 @@ class TreeView:UIView, PointLeafProtocol
         
         
         fetchOverlays()
-        fetchProjects()
+        fetchMapPoints()
 
     }
 
@@ -73,9 +72,9 @@ class TreeView:UIView, PointLeafProtocol
 
         let currentContext = UIGraphicsGetCurrentContext()
         CGContextSetLineCap(currentContext, CGLineCap.Round)
-        for item in projectLeafs
+        for item in mapPointLeafs
         {
-            drawFilepointsFromProject(currentContext!,projectLeaf: item)
+            drawFilepointsFromMapPoint(currentContext!,mapPointLeaf: item)
         }
         
         //draw for overlaynodes
@@ -95,22 +94,22 @@ class TreeView:UIView, PointLeafProtocol
         }
     }
     
-    func drawFilepointsFromProject(currentContext:CGContext, projectLeaf:PointLeaf)
+    func drawFilepointsFromMapPoint(currentContext:CGContext, mapPointLeaf:PointLeaf)
     {
         CGContextSetLineCap(currentContext, CGLineCap.Round)
-        if(projectLeaf.pointLeafs.count > 0)
+        if(mapPointLeaf.pointLeafs.count > 0)
         {
             CGContextSetLineWidth(currentContext,3.0)
             //draw horizontal line
-            let x:CGFloat = projectLeaf.center.x
-            let y = projectLeaf.center.y
+            let x:CGFloat = mapPointLeaf.center.x
+            let y = mapPointLeaf.center.y
             let drawToX:CGFloat = x + leafHorizontalMargin //x + (horizontalLineLength/2)
             CGContextMoveToPoint(currentContext,x, y);
             CGContextAddLineToPoint(currentContext,drawToX, y);
             CGContextStrokePath(currentContext);
         }
         
-        for item in projectLeaf.pointLeafs
+        for item in mapPointLeaf.pointLeafs
         {
             //draw horizontal line backwards
             CGContextSetLineWidth(currentContext,3.0)
@@ -128,15 +127,14 @@ class TreeView:UIView, PointLeafProtocol
         }
         
         //vertical line
-        if let item = projectLeaf.pointLeafs.first
+        if let item = mapPointLeaf.pointLeafs.first
         {
             let firstItem = item as PointLeaf
             let fromX = firstItem.frame.minX + (leafHorizontalRestMargin / 2)
             let fromY = firstItem.center.y
             CGContextMoveToPoint(currentContext,fromX, fromY);
             
-            //var lastButtonItem = selectedItem == nil ? projectLeaf.filepointLeafs.last!.button : selectedItem!.button
-            let lastItem = projectLeaf.pointLeafs.last!
+            let lastItem = mapPointLeaf.pointLeafs.last!
             let toX = lastItem.frame.minX + (leafHorizontalRestMargin / 2)
             let toY = lastItem.center.y
             CGContextAddLineToPoint(currentContext,toX, toY)
@@ -266,24 +264,24 @@ class TreeView:UIView, PointLeafProtocol
         }
     }
     
-    func fetchProjects()
+    func fetchMapPoints()
     {
-        projectLeafs = []
-        let fetchRequest = NSFetchRequest(entityName: "Project")
+        mapPointLeafs = []
+        let fetchRequest = NSFetchRequest(entityName: "MapPoint")
         let overlayNodeMargin = overlayDropzone.frame.height * 0.8
         if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [MapPoint] {
             var i = 0
             for item in fetchResults
             {
 
-                let newProjectLeaf = PointLeaf(_mappoint:item, viewRef:self)
-                projectLeafs.append(newProjectLeaf)
+                let newMapPointLeaf = PointLeaf(_mappoint:item, viewRef:self)
+                mapPointLeafs.append(newMapPointLeaf)
 
                 
-                newProjectLeaf.center = CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (leafSize.width/2), (UIScreen.mainScreen().bounds.size.height * 0.2) + (leafVerticalMargin * CGFloat(i)) + overlayNodeMargin)
+                newMapPointLeaf.center = CGPointMake((UIScreen.mainScreen().bounds.size.width * 0.1) + (leafSize.width/2), (UIScreen.mainScreen().bounds.size.height * 0.2) + (leafVerticalMargin * CGFloat(i)) + overlayNodeMargin)
                 
-                expandContentsize(newProjectLeaf.frame)
-                self.addSubview(newProjectLeaf)
+                expandContentsize(newMapPointLeaf.frame)
+                self.addSubview(newMapPointLeaf)
                 i++
             }
 
@@ -306,17 +304,17 @@ class TreeView:UIView, PointLeafProtocol
     }
 
     
-    func fetchFilepointsFromProject()
+    func fetchFilepointsFromMapPoint()
     {
-        let xOffset = currentProjectLeaf.center.x
-        let yOffset = currentProjectLeaf.center.y
+        let xOffset = currentMapPointLeaf.center.x
+        let yOffset = currentMapPointLeaf.center.y
         var i = 0
-        if let currentImagefile = currentProjectLeaf.currentImage //.project!.firstImagefile
+        if let currentImagefile = currentMapPointLeaf.currentImage
         {
             for item in currentImagefile.filepoints
             {
                 let filepointLeaf = PointLeaf(_filePoint:item as! Filepoint,_parent:nil,viewRef:self)
-                currentProjectLeaf.pointLeafs.append(filepointLeaf)
+                currentMapPointLeaf.pointLeafs.append(filepointLeaf)
                 filepointLeaf.center = CGPointMake(leafHorizontalMargin + xOffset, yOffset + (leafVerticalMargin * CGFloat(i)))
                 expandContentsize(filepointLeaf.frame)
                 self.addSubview(filepointLeaf)
@@ -364,11 +362,11 @@ class TreeView:UIView, PointLeafProtocol
     
 
     
-    func unselectAllLeafsOnCurrentProjectLeaf()
+    func unselectAllLeafsOnCurrentMapPointLeaf()
     {
-        if(currentProjectLeaf != nil)
+        if(currentMapPointLeaf != nil)
         {
-            for item in currentProjectLeaf.pointLeafs
+            for item in currentMapPointLeaf.pointLeafs
             {
                 item.unselectLeaf()
                 
@@ -395,7 +393,7 @@ class TreeView:UIView, PointLeafProtocol
     
     func findLeafForFilepointAndSelectIt(filepointToCheck:Filepoint, pointLeafs:[PointLeaf]? = nil)
     {
-        let _pointsLeafs = pointLeafs ?? currentProjectLeaf.pointLeafs!
+        let _pointsLeafs = pointLeafs ?? currentMapPointLeaf.pointLeafs!
 
         for item in _pointsLeafs
         {
@@ -417,9 +415,9 @@ class TreeView:UIView, PointLeafProtocol
         let overlayLeaf = sender.view?.superview as! OverlayLeaf
         
         unselectOverlayLeafs()
-        unselectAllLeafsOnCurrentProjectLeaf()
+        unselectAllLeafsOnCurrentMapPointLeaf()
         
-        for item in projectLeafs
+        for item in mapPointLeafs
         {
             item.unselectLeaf()
         }
@@ -449,20 +447,20 @@ class TreeView:UIView, PointLeafProtocol
     
     
     
-    func projectSelectedAction(sender:UITapGestureRecognizer)
+    func mapPointSelectedAction(sender:UITapGestureRecognizer)
     {
         currentFilepointLeaf = nil
-        let selectedProjectLeaf = (sender as UITapGestureRecognizer).view?.superview
-        projectSelected(selectedProjectLeaf as! PointLeaf)
+        let selectedMapPointLeaf = (sender as UITapGestureRecognizer).view?.superview
+        mapPointSelected(selectedMapPointLeaf as! PointLeaf)
     }
     
-    func projectSelected(pointLeaf:PointLeaf)
+    func mapPointSelected(pointLeaf:PointLeaf)
     {
         //remove all buttons
-        removeProjectLeafChildren()
+        removeMapPointLeafChildren()
         
         unselectOverlayLeafs()
-        for item in projectLeafs
+        for item in mapPointLeafs
         {
             if(item == pointLeaf)
             {
@@ -475,12 +473,12 @@ class TreeView:UIView, PointLeafProtocol
             }
         }
 
-        currentProjectLeaf = pointLeaf
-        fetchFilepointsFromProject()
+        currentMapPointLeaf = pointLeaf
+        fetchFilepointsFromMapPoint()
         setNeedsDisplay()
-        delegate?.showImageInstancesScrollView(currentProjectLeaf)
+        delegate?.showImageInstancesScrollView(currentMapPointLeaf)
         
-        self.bringSubviewToFront(currentProjectLeaf)
+        self.bringSubviewToFront(currentMapPointLeaf)
     }
     
     func filepointSelectedFromFilepointAction(sender:UITapGestureRecognizer)
@@ -496,11 +494,11 @@ class TreeView:UIView, PointLeafProtocol
         currentFilepointLeaf = selectedFilepointLeaf
         
         unselectOverlayLeafs()
-        for item in projectLeafs
+        for item in mapPointLeafs
         {
             item.unselectLeaf()
         }
-        unselectAllLeafsOnCurrentProjectLeaf()
+        unselectAllLeafsOnCurrentMapPointLeaf()
         
         //buildNodesUpToSelectedNode()
         buildForNode(currentFilepointLeaf)
@@ -513,28 +511,28 @@ class TreeView:UIView, PointLeafProtocol
         
     }
 
-    func getProjectleafForFilepoint(_filepoint:Filepoint) -> PointLeaf?
+    func getMapPointleafForFilepoint(_filepoint:Filepoint) -> PointLeaf?
     {
-        for projectLeaf in projectLeafs
+        for mapPointLeaf in mapPointLeafs
         {
-            for filepoint in projectLeaf.currentImage!.filepoints
+            for filepoint in mapPointLeaf.currentImage!.filepoints
             {
                 if(isOnBranchWith(filepoint as! Filepoint, onBranchWith:_filepoint))
                 {
-                    return projectLeaf
+                    return mapPointLeaf
                 }
             }
         }
         return nil
     }
     
-    //base ass in checking from projectleafs
+    //base ass in checking from mappointleafs
     func getFilepointLeafForFilepointBase(_filepoint:Filepoint) -> PointLeaf?
     {
         var filepointLeafToReturn:PointLeaf?
-        for projectLeaf in projectLeafs
+        for mapPointLeaf in mapPointLeafs
         {
-            for filepointLeaf in projectLeaf.pointLeafs
+            for filepointLeaf in mapPointLeaf.pointLeafs
             {
                 filepointLeafToReturn = getFilepointLeafForFilepoint(_filepoint,filepointLeafBase: filepointLeaf)
 
@@ -584,11 +582,11 @@ class TreeView:UIView, PointLeafProtocol
     
     func buildNodesUpToSelectedNode_V2()
     {
-        //find project
-        currentProjectLeaf = getProjectleafForFilepoint(currentFilepointLeaf.filepoint!)
+        //find map point
+        currentMapPointLeaf = getMapPointleafForFilepoint(currentFilepointLeaf.filepoint!)
         
-        fetchFilepointsFromProject()
-        for filepointLeaf in currentProjectLeaf.pointLeafs
+        fetchFilepointsFromMapPoint()
+        for filepointLeaf in currentMapPointLeaf.pointLeafs
         {
             if(isOnBranchWith(filepointLeaf.filepoint!, onBranchWith:currentFilepointLeaf.filepoint!))
             {
@@ -600,14 +598,12 @@ class TreeView:UIView, PointLeafProtocol
         
         selectedLeaf.hidden = false
         selectedLeaf.center = currentFilepointLeaf.center
-        
-        //filepointSelectedFromFilepoint(currentProjectLeaf.button)
     }
     
     func buildNodesUpToSelectedNode()
     {
-        fetchFilepointsFromProject()
-        for filepointLeaf in currentProjectLeaf.pointLeafs
+        fetchFilepointsFromMapPoint()
+        for filepointLeaf in currentMapPointLeaf.pointLeafs
         {
             if(isOnBranchWith(filepointLeaf.filepoint!, onBranchWith:currentFilepointLeaf.filepoint!))
             {
@@ -651,31 +647,16 @@ class TreeView:UIView, PointLeafProtocol
         }
         return false
     }
-
-    func removeProjectLeafs_AndProjectButtons()
-    {
-        for var i = 0 ;  i < projectLeafs.count ; i++
-        {
-            for var y = 0 ;  y < projectLeafs[i].pointLeafs.count ; y++
-            {
-                removePointLeaf(projectLeafs[i].pointLeafs[y])
-            }
-            projectLeafs[i].removeFromSuperview()
-            projectLeafs[i].pointLeafs = []
-        }
-        projectLeafs = []
-        selectedLeaf.hidden = true
-    }
     
-    func removeProjectLeafChildren()
+    func removeMapPointLeafChildren()
     {
-        for var i = 0 ;  i < projectLeafs.count ; i++
+        for var i = 0 ;  i < mapPointLeafs.count ; i++
         {
-            for var y = 0 ;  y < projectLeafs[i].pointLeafs.count ; y++
+            for var y = 0 ;  y < mapPointLeafs[i].pointLeafs.count ; y++
             {
-                removePointLeaf(projectLeafs[i].pointLeafs[y])
+                removePointLeaf(mapPointLeafs[i].pointLeafs[y])
             }
-            projectLeafs[i].pointLeafs = []
+            mapPointLeafs[i].pointLeafs = []
         }
     }
     
@@ -704,15 +685,15 @@ class TreeView:UIView, PointLeafProtocol
     {
         
         var found = false
-        for item in currentProjectLeaf.imageInstances
+        for item in currentMapPointLeaf.imageInstances
         {
             if item.imagefile == imagefile
             {
-                currentProjectLeaf.setImageInstanceOnTop(item)
-                removePointLeafChildren(currentProjectLeaf)
-                fetchFilepointsFromProject()
+                currentMapPointLeaf.setImageInstanceOnTop(item)
+                removePointLeafChildren(currentMapPointLeaf)
+                fetchFilepointsFromMapPoint()
                 found = true
-                self.bringSubviewToFront(currentProjectLeaf)
+                self.bringSubviewToFront(currentMapPointLeaf)
                 break
             }
         }
@@ -757,9 +738,9 @@ class TreeView:UIView, PointLeafProtocol
             
         }
             
-        else if (currentProjectLeaf != nil)
+        else if (currentMapPointLeaf != nil)
         {
-            delegate?.deleteProjectNode()
+            delegate?.deleteMapPointNode()
             
         }
         setNeedsDisplay()

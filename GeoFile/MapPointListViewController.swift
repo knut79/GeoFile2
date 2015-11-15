@@ -20,22 +20,22 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     // Retreive the managedObjectContext from AppDelegate
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     // Create the table view as soon as this class loads
-    var projectsTableView = UITableView(frame: CGRectZero, style: .Plain)
+    var mapPointTableView = UITableView(frame: CGRectZero, style: .Plain)
     
-    var projectItems = [MapPoint]()
+    var mapPointItems = [MapPoint]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         topNavigationBar.showForViewtype(.list)
         
-        projectsTableView.frame = CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2))
-        self.view.addSubview(projectsTableView)
-        projectsTableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "RelationCell")
-        projectsTableView.delegate = self
-        projectsTableView.dataSource = self
+        mapPointTableView.frame = CGRectMake(0, buttonBarHeight, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height - (buttonBarHeight*2))
+        self.view.addSubview(mapPointTableView)
+        mapPointTableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "RelationCell")
+        mapPointTableView.delegate = self
+        mapPointTableView.dataSource = self
         
-        self.fetchProjects()
+        self.fetchMapPoints()
         
     }
     
@@ -50,7 +50,7 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     
     // MARK: UITableViewDataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return projectItems.count
+        return mapPointItems.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -58,14 +58,14 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
         //cell.textLabel?.text = "\(indexPath.row)"
         
         // Get the LogItem for this index
-        let projectItem = projectItems[indexPath.row]
+        let mapPointItem = mapPointItems[indexPath.row]
         
-        cell!.textLabel?.text = projectItem.title
+        cell!.textLabel?.text = mapPointItem.title
         cell!.showsReorderControl = true
         //cell.editing = false
-        if(projectItem.imagefiles.count > 0)
+        if(mapPointItem.imagefiles.count > 0)
         {
-            if let imageData = (projectItem.firstImagefile)?.file
+            if let imageData = (mapPointItem.firstImagefile)?.file
             {
                 if let image = UIImage(data: imageData)
                 {
@@ -78,8 +78,8 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     
     // MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let projectItem = projectItems[indexPath.row]
-        mappoint = projectItem
+        let mapPointItem = mapPointItems[indexPath.row]
+        mappoint = mapPointItem
         if(mappoint?.imagefiles.count > 0)
         {
             self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
@@ -88,7 +88,7 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
         else
         {
             let titlePrompt = UIAlertController(title: "Cant navigate",
-                message: "No image set for project",
+                message: "No image set for map point",
                 preferredStyle: .Alert)
             titlePrompt.addAction(UIAlertAction(title: "OK",
                     style: .Default,
@@ -107,22 +107,22 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if(editingStyle == .Delete ) {
-            let projectItem = projectItems[indexPath.row]
+            let mapPointItem = mapPointItems[indexPath.row]
             
             let titlePrompt = UIAlertController(title: "Delete",
-                message: "Sure you want to delete this project",
+                message: "Sure you want to delete this map point",
                 preferredStyle: .Alert)
             
             titlePrompt.addAction(UIAlertAction(title: "Ok",
                 style: .Default,
                 handler: { (action) -> Void in
-                    self.managedObjectContext!.deleteObject(projectItem)
+                    self.managedObjectContext!.deleteObject(mapPointItem)
                     
                     self.save()
                     
-                    self.fetchProjects()
+                    self.fetchMapPoints()
                     
-                    self.projectsTableView.reloadData()
+                    self.mapPointTableView.reloadData()
                     
             }))
             titlePrompt.addAction(UIAlertAction(title: "Cancel",
@@ -141,22 +141,14 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
         
         let editAction = UITableViewRowAction(style: .Normal, title: "Edit") { (action, indexPath) -> Void in
             tableView.editing = false
-            self.editProjectAtIndex(indexPath)
+            self.editMapPointAtIndex(indexPath)
             //println("shareAction")
         }
         editAction.backgroundColor = UIColor.grayColor()
         
-        /*
-        var doneAction = UITableViewRowAction(style: .Default, title: "Done") { (action, indexPath) -> Void in
-            tableView.editing = false
-            println("readAction")
-        }
-        doneAction.backgroundColor = UIColor.greenColor()*/
-        
         let deleteAction = UITableViewRowAction(style: .Default, title: "Delete") { (action, indexPath) -> Void in
             tableView.editing = false
-            self.deleteProjectAtIndex(indexPath)
-            //println("deleteAction")
+            self.deleteMapPointAtIndex(indexPath)
         }
         
         return [deleteAction, editAction]
@@ -178,22 +170,22 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     }
     
     
-    func deleteProjectAtIndex(indexPath: NSIndexPath)
+    func deleteMapPointAtIndex(indexPath: NSIndexPath)
     {
-        let projectItemToDelete = projectItems[indexPath.row]
-        managedObjectContext?.deleteObject(projectItemToDelete)
-        self.fetchProjects()
-        projectsTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        let mapPointItemToDelete = mapPointItems[indexPath.row]
+        managedObjectContext?.deleteObject(mapPointItemToDelete)
+        self.fetchMapPoints()
+        mapPointTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         save()
     }
     
-    var currentProjectItemIndex:Int = 0
-    func editProjectAtIndex(indexPath: NSIndexPath)
+    var currentMapPointItemIndex:Int = 0
+    func editMapPointAtIndex(indexPath: NSIndexPath)
     {
-        currentProjectItemIndex = indexPath.row
-        let projectItem = projectItems[indexPath.row]
+        currentMapPointItemIndex = indexPath.row
+        let mapPointItem = mapPointItems[indexPath.row]
         editMapPointView = EditMapPointView(frame: self.view.frame)
-        editMapPointView.titleTextBox.text = projectItem.title
+        editMapPointView.titleTextBox.text = mapPointItem.title
         editMapPointView!.delegate = self
         self.view.addSubview(editMapPointView!)
         
@@ -202,8 +194,8 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     var editPosition = false
     func editMapPointPosition()
     {
-        let projectItem = projectItems[currentProjectItemIndex]
-        projectItem.title = editMapPointView.titleTextBox.text!
+        let mapPointItem = mapPointItems[currentMapPointItemIndex]
+        mapPointItem.title = editMapPointView.titleTextBox.text!
         save()
         
         editPosition = true
@@ -219,26 +211,25 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     
     func saveEditMapPoint()
     {
-        let projectItem = projectItems[currentProjectItemIndex]
-        projectItem.title = editMapPointView.titleTextBox.text!
+        let mapPointItem = mapPointItems[currentMapPointItemIndex]
+        mapPointItem.title = editMapPointView.titleTextBox.text!
         save()
-        projectsTableView.reloadData()
+        mapPointTableView.reloadData()
         editMapPointView.removeFromSuperview()
     }
     
     
-    func fetchProjects() {
-        projectItems = []
+    func fetchMapPoints() {
+        mapPointItems = []
         let fetchRequest = NSFetchRequest(entityName: "MapPoint")
 
         if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [MapPoint] {
             
             for item in fetchResults
             {
-                //if(item.filepoints.count > 0)
-                //{
-                    projectItems.append(item)
-                //}
+
+                mapPointItems.append(item)
+
             }
         }
     }
@@ -255,19 +246,6 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
         super.init(coder: aDecoder)
     }
     
-    /*
-    func toMapView()
-    {
-        let filesViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as MapOverviewViewController
-        self.performSegueWithIdentifier("showProjectInMap", sender: nil)
-    }
-
-    func toTreeView()
-    {
-        let treeViewController = self.storyboard!.instantiateViewControllerWithIdentifier("TreeViewController") as TreeViewController
-        self.performSegueWithIdentifier("showTreeView", sender: nil)
-    }
-    */
     
     override func toListView()
     {
@@ -277,8 +255,8 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showProjectInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
-            svc.editProjectAtIndex = currentProjectItemIndex
-            svc.editProject = editPosition
+            svc.editMapPointAtIndex = currentMapPointItemIndex
+            svc.editMapPoint = editPosition
         }
         else if (segue.identifier == "showFilepoint") {
             let svc = segue!.destinationViewController as! FilepointViewController

@@ -11,7 +11,7 @@ import Foundation
 
 protocol PointLeafProtocol
 {
-    func projectSelectedAction(sender:UITapGestureRecognizer)
+    func mapPointSelectedAction(sender:UITapGestureRecognizer)
     func filepointSelectedFromFilepointAction(sender:UITapGestureRecognizer)
 }
 
@@ -54,7 +54,7 @@ class PointLeaf:UIView
         setInitialValues(viewRef!)
         
 
-        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelectedAction:")
+        let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "mapPointSelectedAction:")
         initImagefiles(_mappoint.imagefiles,singleTapRecognizer: singleTapRec)
     }
 
@@ -205,7 +205,7 @@ class PointLeaf:UIView
         }
         else if let mp = mappoint
         {
-            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelectedAction:")
+            let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "mapPointSelectedAction:")
             initImagefiles(mp.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
     }

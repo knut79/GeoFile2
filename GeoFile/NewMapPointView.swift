@@ -58,17 +58,17 @@ class NewMapPointView: UIView
         
         setCurrentPositionButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*3) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         setCurrentPositionButton.setTitle("Set current position", forState: .Normal)
-        setCurrentPositionButton.addTarget(self, action: "setCurrentPositionNewProject", forControlEvents: .TouchUpInside)
+        setCurrentPositionButton.addTarget(self, action: "setCurrentPositionNewMapPoint", forControlEvents: .TouchUpInside)
         self.addSubview(setCurrentPositionButton)
         
         setPositionButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*4) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         setPositionButton.setTitle("Set manual position", forState: .Normal)
-        setPositionButton.addTarget(self, action: "setPositionNewProject", forControlEvents: .TouchUpInside)
+        setPositionButton.addTarget(self, action: "setPositionNewMapPoint", forControlEvents: .TouchUpInside)
         self.addSubview(setPositionButton)
         
         let cancelButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*5) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         cancelButton.setTitle("Cancel", forState: .Normal)
-        cancelButton.addTarget(self, action: "cancelNewProject", forControlEvents: .TouchUpInside)
+        cancelButton.addTarget(self, action: "cancelNewMapPoint", forControlEvents: .TouchUpInside)
         self.addSubview(cancelButton)
     }
     
@@ -85,17 +85,17 @@ class NewMapPointView: UIView
         return returnValue
     }
     
-    func setPositionNewProject()
+    func setPositionNewMapPoint()
     {
         delegate?.setPositionNewMapPoint()
     }
     
-    func setCurrentPositionNewProject()
+    func setCurrentPositionNewMapPoint()
     {
         delegate?.setCurrentPositionNewMapPoint()
     }
     
-    func cancelNewProject()
+    func cancelNewMapPoint()
     {
         delegate?.cancelNewMapPoint()
     }

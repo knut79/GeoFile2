@@ -91,16 +91,6 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     {
         setTreeviewScrollViewSizeSmall()
 
-        /*
-        var imageInstances:[ImageInstanceWithIcon]? = []
-        for imagefile in pointLeaf.project!.imagefiles
-        {
-            let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as Imagefile)
-            imageInstances?.append(imageView)
-        }
-*/
-        
-        
         if(imageInstancesScrollView != nil)
         {
             imageInstancesScrollView.removeFromSuperview()
@@ -118,9 +108,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             {
                 let newImageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imageView.imagefile)
                 newImageView.frame = CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig)
-                //
-                
-                //imageView.transform = CGAffineTransformIdentity
+
                 newImageView.center = CGPointMake((newImageView.frame.width / 2) + (index * imageinstanceSideBig), newImageView.frame.height / 2)
                 index++
                 
@@ -274,15 +262,15 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         
     }
     
-    func addImageToProject(image:UIImage,projectLeaf:PointLeaf)
+    func addImageToMapPoint(image:UIImage,mapPointLeaf:PointLeaf)
     {
         let imageData = UIImageJPEGRepresentation(image,0.0);
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         //(moc: NSManagedObjectContext, title: String, file: NSData, tags:String, worktype:Int)
         let newImagefile = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData!, tags:nil, worktype:workType.dokument)
-        let sort = projectLeaf.mappoint!.getSort(true)
+        let sort = mapPointLeaf.mappoint!.getSort(true)
         newImagefile.setNewSort(sort)
-        projectLeaf.mappoint!.addImagefile(newImagefile)
+        mapPointLeaf.mappoint!.addImagefile(newImagefile)
         save()
     }
     
@@ -297,7 +285,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         save()
     }
     
-    var projectDropLeaf:PointLeaf?
+    var mapPointDropLeaf:PointLeaf?
     var filepointDropLeaf:PointLeaf?
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
@@ -320,11 +308,11 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             return
         }
         
-        //check for project and filepoint nodes
-        for projectItem in visibleContentView.projectLeafs
+        //check for map point and filepoint nodes
+        for mapPointItem in visibleContentView.mapPointLeafs
         {
 
-            let isInnView = CGRectContainsPoint(projectItem.frame,touchLocation)
+            let isInnView = CGRectContainsPoint(mapPointItem.frame,touchLocation)
             if(isInnView)
             {
                 if(currentTouchedImageView == nil)
@@ -332,18 +320,17 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
                     print("no touched imageView")
                     return
                 }
-                print("drop inside project")
-                addImageToProject(currentTouchedImageView!.image!, projectLeaf: projectItem)
-                //imit select of project
+                print("drop inside map point")
+                addImageToMapPoint(currentTouchedImageView!.image!, mapPointLeaf: mapPointItem)
+                //imit select of map point
                 //TODO: reload images
-                //visibleContentView.projectSelected(projectDropLeaf!)
-                projectItem.reloadImageInstances()
+                mapPointItem.reloadImageInstances()
                 currentTouchedImageView?.removeFromSuperview()
                 return
             }
             else
             {
-                for filepointItem in projectItem.pointLeafs
+                for filepointItem in mapPointItem.pointLeafs
                 {
                     let isInnView = CGRectContainsPoint(filepointItem.frame,touchLocation)
                     if(isInnView)
@@ -502,7 +489,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         self.performSegueWithIdentifier("showFilepoint", sender: nil)
     }
     
-    func deleteProjectNode()
+    func deleteMapPointNode()
     {
         let titlePrompt = UIAlertController(title: "Delete",
             message: "Sure you want to delete this image and all its content",
@@ -512,23 +499,21 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             style: .Default,
             handler: { (action) -> Void in
                 //if less than 2 images we might ass well delete the whole node
-                if(self.visibleContentView!.currentProjectLeaf.mappoint?.imagefiles.count < 2)
+                if(self.visibleContentView!.currentMapPointLeaf.mappoint?.imagefiles.count < 2)
                 {
-                    self.visibleContentView!.removePointLeaf(self.visibleContentView!.currentProjectLeaf)
-                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.mappoint!)
+                    self.visibleContentView!.removePointLeaf(self.visibleContentView!.currentMapPointLeaf)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentMapPointLeaf.mappoint!)
                     self.save()
                     
                 }
                 else
                 {
-                    self.visibleContentView!.removePointLeafChildren(self.visibleContentView!.currentProjectLeaf)
-                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.currentImage)
+                    self.visibleContentView!.removePointLeafChildren(self.visibleContentView!.currentMapPointLeaf)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentMapPointLeaf.currentImage)
                     self.save()
-                    self.visibleContentView!.currentProjectLeaf.reloadImageInstances()
+                    self.visibleContentView!.currentMapPointLeaf.reloadImageInstances()
                 }
-                
-                //self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
-                //self.visibleContentView!.fetchProjects()
+
                 self.visibleContentView!.setNeedsDisplay()
                 
                 
@@ -554,21 +539,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         titlePrompt.addAction(UIAlertAction(title: "Ok",
             style: .Default,
             handler: { (action) -> Void in
-                /*
-                var parent = self.visibleContentView!.currentFilepointLeaf.filepoint!.imagefile!.filepoint
-                self.managedObjectContext?.deleteObject(self.visibleContentView!.currentFilepointLeaf.filepoint!)
-                self.save()
-                if(parent == nil)
-                {
-                    //TODO: this will never happen with the new structure
-                    self.visibleContentView!.removeProjectLeafs_AndProjectButtons()
-                    self.visibleContentView!.fetchProjects()
-                }
-                else
-                {
-                    self.visibleContentView!.findLeafForFilepointAndSelectIt(parent!)
-                }
-                */
+
                 //if less than 2 images we might ass well delete the whole node
                 if(self.visibleContentView!.currentFilepointLeaf.imageInstances.count < 2)
                 {
@@ -643,7 +614,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     
     override func toListView()
     {
-        if(self.visibleContentView.currentProjectLeaf != nil || self.visibleContentView.currentFilepointLeaf != nil)
+        if(self.visibleContentView.currentMapPointLeaf != nil || self.visibleContentView.currentFilepointLeaf != nil)
         {
             self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as! FilepointListViewController
             self.performSegueWithIdentifier("showFilepointList", sender: nil)
@@ -664,10 +635,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
                 svc.currentFilepoint = pointLeaf.filepoint
                 svc.currentImagefile = pointLeaf.currentImage
             }
-            else if let projectLeaf = self.visibleContentView.currentProjectLeaf
+            else if let mapPointLeaf = self.visibleContentView.currentMapPointLeaf
             {
-                svc.mappoint = projectLeaf.mappoint
-                svc.currentImagefile = projectLeaf.currentImage
+                svc.mappoint = mapPointLeaf.mappoint
+                svc.currentImagefile = mapPointLeaf.currentImage
                 svc.oneLevelFromMapPoint = true
             }
         }
@@ -681,9 +652,9 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         }
         else if (segue.identifier == "showProjectInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
-            if let projectLeaf = self.visibleContentView.currentProjectLeaf
+            if let mapPointLeaf = self.visibleContentView.currentMapPointLeaf
             {
-                svc.mappoint = projectLeaf.mappoint
+                svc.mappoint = mapPointLeaf.mappoint
    
             }
             if let overlayNode = visibleContentView.getSelectedOverlayNode()

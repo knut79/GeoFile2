@@ -18,15 +18,15 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     var gmaps: GMSMapView?
     var mappoint: MapPoint?
     //var topNavigationBar:TopNavigationView!
-    var addProjectButton:CustomButton!
-    var saveEditProjectButton:CustomButton!
+    var addMapPointButton:CustomButton!
+    var saveEditMapPointButton:CustomButton!
     var newMapPointView:NewMapPointView?
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-    var projectItems = [MapPoint]()
+    var mapPointItems = [MapPoint]()
     
-    var editProject = false
-    var editProjectAtIndex:Int = -1
+    var editMapPoint = false
+    var editMapPointAtIndex:Int = -1
 
     var locationManager:CLLocationManager!
     var geocoder:CLGeocoder!
@@ -70,15 +70,14 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
 
         topNavigationBar.showForViewtype(.map)
         
-        addProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        //addProjectButton.setTitle("Add project", forState: .Normal)
-        addProjectButton.setTitle("Opprett nytt arbeid", forState: .Normal)
-        addProjectButton.addTarget(self, action: "addNewMapPoint", forControlEvents: .TouchUpInside)
-        self.view.addSubview(addProjectButton)
+        addMapPointButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        addMapPointButton.setTitle("Opprett nytt arbeid", forState: .Normal)
+        addMapPointButton.addTarget(self, action: "addNewMapPoint", forControlEvents: .TouchUpInside)
+        self.view.addSubview(addMapPointButton)
 
-        saveEditProjectButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        saveEditProjectButton.setTitle("Save", forState: .Normal)
-        saveEditProjectButton.addTarget(self, action: "saveEditProject", forControlEvents: .TouchUpInside)
+        saveEditMapPointButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        saveEditMapPointButton.setTitle("Save", forState: .Normal)
+        saveEditMapPointButton.addTarget(self, action: "saveEditMapPoint", forControlEvents: .TouchUpInside)
 
         gmaps = GMSMapView(frame: CGRectMake(0, buttonBarHeight , self.view.bounds.width,
             self.view.bounds.height - (buttonBarHeight*2)))
@@ -119,13 +118,13 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         
         
         geocoder = CLGeocoder()
-        fetchProjects()
+        fetchMapPoints()
         
         printTestDatastructure()
         
         fetchOverlays()
         
-        initMarkers(editProject,atIndex: editProjectAtIndex)
+        initMarkers(editMapPoint,atIndex: editMapPointAtIndex)
         setupMarkers(nil)
     }
     
@@ -404,8 +403,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         }
 
         topNavigationBar.frame = CGRectMake(topNavigationBar.frame.size.width , 0 , size.width * 0.33, buttonBarHeight)
-        addProjectButton.frame = CGRectMake(0, size.height - buttonBarHeight ,size.width, buttonBarHeight)
-        saveEditProjectButton.frame = CGRectMake(0, size.height - buttonBarHeight ,size.width, buttonBarHeight)
+        addMapPointButton.frame = CGRectMake(0, size.height - buttonBarHeight ,size.width, buttonBarHeight)
+        saveEditMapPointButton.frame = CGRectMake(0, size.height - buttonBarHeight ,size.width, buttonBarHeight)
 
         gmaps!.frame = CGRectMake(0, buttonBarHeight , size.width,
             size.height - (buttonBarHeight*2))
@@ -487,7 +486,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     {
         marks = []
         var index = 0
-        for item in projectItems
+        for item in mapPointItems
         {
             let marker = GMSMarker()
             marker.title = item.title
@@ -496,8 +495,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
                 marker.draggable = true
                 marker.icon = UIImage(named: "red-pushpin")
                 currentEditableMarker = marker
-                addProjectButton.removeFromSuperview()
-                self.view.addSubview(saveEditProjectButton)
+                addMapPointButton.removeFromSuperview()
+                self.view.addSubview(saveEditMapPointButton)
                 
             }
             else
@@ -544,12 +543,12 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         }
     }
 
-    func getProjectOnTitle(title:String) -> MapPoint?
+    func getMapPointOnTitle(title:String) -> MapPoint?
     {
-        print("searching for project \(title)")
-        for item in projectItems
+        print("searching for mappoint \(title)")
+        for item in mapPointItems
         {
-            print("project with title \(item.title)")
+            print("map point with title \(item.title)")
             if(item.title == title)
             {
                 return item
@@ -559,22 +558,22 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     }
     
     //MARK: gmap functions
-    var newProjectmarker:GMSMarker!
+    var newMapPointMarker:GMSMarker!
     
     func mapView(mapView: GMSMapView!, didTapAtCoordinate coordinate: CLLocationCoordinate2D) {
         
         print("tapped at coordinate \(coordinate.latitude) \(coordinate.longitude)")
-        if(setPositonForNewProject)
+        if(setPositonForNewMapPoint)
         {
-            setPositonForNewProject = false
+            setPositonForNewMapPoint = false
             
-            newProjectmarker = GMSMarker()
-            newProjectmarker.title = newMapPointTitle
-            newProjectmarker.draggable = true
-            newProjectmarker.position = CLLocationCoordinate2DMake(coordinate.latitude,coordinate.longitude)
-            newProjectmarker.appearAnimation = kGMSMarkerAnimationPop
-            newProjectmarker.icon = UIImage(named: "red-pushpin")
-            newProjectmarker.map = gmaps
+            newMapPointMarker = GMSMarker()
+            newMapPointMarker.title = newMapPointTitle
+            newMapPointMarker.draggable = true
+            newMapPointMarker.position = CLLocationCoordinate2DMake(coordinate.latitude,coordinate.longitude)
+            newMapPointMarker.appearAnimation = kGMSMarkerAnimationPop
+            newMapPointMarker.icon = UIImage(named: "red-pushpin")
+            newMapPointMarker.map = gmaps
         }
     }
     
@@ -582,18 +581,10 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         
         print("marker title \(marker.title)")
         
-        mappoint = self.getProjectOnTitle(marker.title)
+        mappoint = self.getMapPointOnTitle(marker.title)
         
-        print("number of files in project \(mappoint?.imagefiles.count)")
-        
-        
-        //TODO: maby show info worktype at first
-        /*if(project?.imagefiles.count > 1)
-        {
-            self.storyboard!.instantiateViewControllerWithIdentifier("FilepointListViewController") as FilepointListViewController
-            self.performSegueWithIdentifier("showFilepointList", sender: nil)
-        }
-        else*/
+        print("number of files in map point \(mappoint?.imagefiles.count)")
+
         if(mappoint?.imagefiles.count > 0)
         {
             self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
@@ -646,39 +637,39 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     func saveNewMapPoint(sender:UIButton!)
     {
         sender.removeFromSuperview()
-        self.view.addSubview(addProjectButton)
-        newProjectmarker.icon = UIImage(named: "flag_icon")
-        newProjectmarker.draggable = false
+        self.view.addSubview(addMapPointButton)
+        newMapPointMarker.icon = UIImage(named: "flag_icon")
+        newMapPointMarker.draggable = false
         
         let tags = newMapPointView!.getTags()
-        MapPoint.createInManagedObjectContext(self.managedObjectContext!, title: newMapPointTitle, lat:newProjectmarker.position.latitude, long: newProjectmarker.position.longitude, tags: tags)
+        MapPoint.createInManagedObjectContext(self.managedObjectContext!, title: newMapPointTitle, lat:newMapPointMarker.position.latitude, long: newMapPointMarker.position.longitude, tags: tags)
         save()
-        fetchProjects()
+        fetchMapPoints()
     }
     
     func saveNewMapPointWithCurrentLocation(sender:UIButton!)
     {
         sender.removeFromSuperview()
-        self.view.addSubview(addProjectButton)
-        newProjectmarker.icon = UIImage(named: "flag_icon")
-        newProjectmarker.draggable = false
+        self.view.addSubview(addMapPointButton)
+        newMapPointMarker.icon = UIImage(named: "flag_icon")
+        newMapPointMarker.draggable = false
         
         let tags = newMapPointView!.getTags()
         MapPoint.createInManagedObjectContext(self.managedObjectContext!, title: newMapPointTitle, lat:currentLocation.coordinate.latitude, long: currentLocation.coordinate.longitude, tags: tags)
         save()
-        fetchProjects()
+        fetchMapPoints()
     }
     
-    func saveEditProject()
+    func saveEditMapPoint()
     {
-        saveEditProjectButton.removeFromSuperview()
-        self.view.addSubview(addProjectButton)
+        saveEditMapPointButton.removeFromSuperview()
+        self.view.addSubview(addMapPointButton)
         
         currentEditableMarker.icon = UIImage(named: "flag_icon")
         currentEditableMarker.draggable = false
         
-        projectItems[editProjectAtIndex].longitude = currentEditableMarker.position.longitude
-        projectItems[editProjectAtIndex].latitude = currentEditableMarker.position.latitude
+        mapPointItems[editMapPointAtIndex].longitude = currentEditableMarker.position.longitude
+        mapPointItems[editMapPointAtIndex].latitude = currentEditableMarker.position.latitude
         save()
     }
     
@@ -687,11 +678,11 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         newMapPointView!.removeFromSuperview()
     }
     
-    var setPositonForNewProject = false
+    var setPositonForNewMapPoint = false
     func setPositionNewMapPoint()
     {
         newMapPointView!.removeFromSuperview()
-        addProjectButton.removeFromSuperview()
+        addMapPointButton.removeFromSuperview()
         
         let saveNewMapPointButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveNewMapPointButton.setTitle("Save", forState: .Normal)
@@ -701,7 +692,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         
         
         let titlePrompt = UIAlertController(title: "Enter",
-            message: "Enter title of new project",
+            message: "Enter title of new map point",
             preferredStyle: .Alert)
         
         var titleTextField: UITextField?
@@ -726,7 +717,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
                 tapPrompt.addAction(UIAlertAction(title: "Ok",
                     style: .Default,
                     handler: { (action) -> Void in
-                        self.setPositonForNewProject = true
+                        self.setPositonForNewMapPoint = true
                 }))
                 
                 
@@ -745,17 +736,17 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     func setCurrentPositionNewMapPoint()
     {
         newMapPointView!.removeFromSuperview()
-        addProjectButton.removeFromSuperview()
+        addMapPointButton.removeFromSuperview()
         
         newMapPointTitle = self.localAddressText
         
-        newProjectmarker = GMSMarker()
-        newProjectmarker.title = newMapPointTitle
-        newProjectmarker.draggable = true
-        newProjectmarker.position = CLLocationCoordinate2DMake(currentLocation.coordinate.latitude,currentLocation.coordinate.longitude)
-        newProjectmarker.appearAnimation = kGMSMarkerAnimationPop
-        newProjectmarker.icon = UIImage(named: "red-pushpin")
-        newProjectmarker.map = gmaps
+        newMapPointMarker = GMSMarker()
+        newMapPointMarker.title = newMapPointTitle
+        newMapPointMarker.draggable = true
+        newMapPointMarker.position = CLLocationCoordinate2DMake(currentLocation.coordinate.latitude,currentLocation.coordinate.longitude)
+        newMapPointMarker.appearAnimation = kGMSMarkerAnimationPop
+        newMapPointMarker.icon = UIImage(named: "red-pushpin")
+        newMapPointMarker.map = gmaps
         
         let saveNewMapPointButton = CustomButton(frame: CGRectMake(0, UIScreen.mainScreen().bounds.size.height - buttonBarHeight ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveNewMapPointButton.setTitle("Save", forState: .Normal)
@@ -765,20 +756,20 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     }
     //MARK: CoreData
     
-    func fetchProjects()
+    func fetchMapPoints()
     {
         let fetchRequest = NSFetchRequest(entityName: "MapPoint")
         if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [MapPoint] {
-            projectItems = fetchResults
+            mapPointItems = fetchResults
         }
     }
     
     func printTestDatastructure()
     {
-        for project in projectItems
+        for mappoint in mapPointItems
         {
-            print("project id \(project.objectID)")
-            for imagefile in project.imagefiles
+            print("mappoint id \(mappoint.objectID)")
+            for imagefile in mappoint.imagefiles
             {
                 
                 printTestImagefile(imagefile as! Imagefile, depth:0)
@@ -818,7 +809,6 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
                 {
                     let sw = CLLocationCoordinate2DMake(overlay.latitudeSW,overlay.longitudeSW)
                     let ne = CLLocationCoordinate2DMake(overlay.latitudeNE,overlay.longitudeNE)
-
                     let overlayBounds = GMSCoordinateBounds(coordinate: sw, coordinate: ne)
                     let icon = UIImage(data: overlay.file)
                     
@@ -826,8 +816,6 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
 
                     overlayToSet.bearing = overlay.bearing
                     overlayToSet.map = gmaps
-
-                    
                 }
             }
         }
@@ -870,7 +858,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
             mappoint?.addImagefile(newFileItem)
 
             save()
-            self.fetchProjects()
+            self.fetchMapPoints()
         }
         else
         {
@@ -903,7 +891,7 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
         
         save()
         
-        self.fetchProjects()
+        self.fetchMapPoints()
         
         cameraView.removeFromSuperview()
     }

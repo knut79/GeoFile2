@@ -46,18 +46,7 @@ class OverlayLeaf: UIView
         singleTapRec.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(singleTapRec)
         self.addSubview(imageView)
-        /*
-        var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "showActionButtonsForOverlay:")
-        doubleTapRecognizer.numberOfTapsRequired = 2
-        node.addGestureRecognizer(doubleTapRecognizer)
-        node.overlay = item
-        */
-        
         setInitialValues(viewRef!)
-        
-        
-        
-        //initImagefiles(_project.imagefiles,singleTapRecognizer: singleTapRec)
     }
 
     

@@ -61,7 +61,7 @@ class LoginViewController: UIViewController,FBSDKLoginButtonDelegate
     
     func initUserData(completion: (() -> (Void)))
     {
-        let graphRequest : FBSDKGraphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "email, friends"])
+        let graphRequest : FBSDKGraphRequest = FBSDKGraphRequest(graphPath: "me", parameters: nil)
         graphRequest.startWithCompletionHandler({ (connection, result, error) -> Void in
             
             if ((error) != nil)

@@ -15,13 +15,13 @@ class TestViewController: UIViewController {
     // Retreive the managedObjectContext from AppDelegate
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
-    var projectItems = [MapPoint]()
+    var mapPointItems = [MapPoint]()
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        fetchProjects()
+        fetchMapPoints()
 
     }
     
@@ -30,18 +30,18 @@ class TestViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func fetchProjects()
+    func fetchMapPoints()
     {
         let fetchRequest = NSFetchRequest(entityName: "MapPoint")
         
         
         if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [MapPoint] {
-            projectItems = fetchResults
+            mapPointItems = fetchResults
         }
     }
 
     
-    func populateProject()
+    func populateMapPoint()
     {
         MapPoint.createInManagedObjectContext(self.managedObjectContext!, title: "a title", lat: -23.3453, long: 12.2323, tags: "")
         
