@@ -44,7 +44,7 @@ class CustomViewController:UIViewController, TopNavigationViewProtocol
     func toMapView()
     {
         self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
-        self.performSegueWithIdentifier("showProjectInMap", sender: nil)
+        self.performSegueWithIdentifier("showMapPointInMap", sender: nil)
     }
     
     func toListView()

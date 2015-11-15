@@ -25,7 +25,7 @@
                     <connections>
                         <segue destination="4l4-Ju-kLt" kind="show" identifier="showFilepoint" id="BA9-BI-9Wb"/>
                         <segue destination="GNS-GD-Dds" kind="show" identifier="showTestViewController" id="NkL-FQ-jSd"/>
-                        <segue destination="cNs-MS-75O" kind="show" identifier="showProjectList" id="jhc-vQ-Eoq"/>
+                        <segue destination="cNs-MS-75O" kind="show" identifier="showMapPointList" id="jhc-vQ-Eoq"/>
                         <segue destination="9al-GM-Bh7" kind="show" identifier="showTreeView" id="hA1-yM-VtX"/>
                         <segue destination="fF0-N1-nun" kind="show" identifier="showFilepointList" id="o5R-wm-hP3"/>
                     </connections>
@@ -72,7 +72,7 @@
                     </view>
                     <connections>
                         <segue destination="4l4-Ju-kLt" kind="show" identifier="showFilepoint" id="La7-od-SaW"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="showProjectInMap" id="axe-Ew-oWN"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="showMapPointInMap" id="axe-Ew-oWN"/>
                         <segue destination="9al-GM-Bh7" kind="show" identifier="showTreeView" id="PLh-DT-0yE"/>
                     </connections>
                 </viewController>
@@ -80,10 +80,10 @@
             </objects>
             <point key="canvasLocation" x="1304" y="-220"/>
         </scene>
-        <!--Project List View Controller-->
+        <!--Map Point List View Controller-->
         <scene sceneID="9VP-jj-Cti">
             <objects>
-                <viewController storyboardIdentifier="ProjectListViewController" id="cNs-MS-75O" customClass="ProjectListViewController" customModule="GeoFile" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapPointListViewController" id="cNs-MS-75O" customClass="MapPointListViewController" customModule="GeoFile" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="iJG-4Y-ye8"/>
                         <viewControllerLayoutGuide type="bottom" id="51D-Bx-CRH"/>
@@ -95,7 +95,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="showProjectInMap" id="dxN-th-eYW"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="showMapPointInMap" id="dxN-th-eYW"/>
                         <segue destination="4l4-Ju-kLt" kind="show" identifier="showFilepoint" id="Nw6-JU-6Me"/>
                         <segue destination="9al-GM-Bh7" kind="showDetail" identifier="showTreeView" id="u2P-Li-SBE"/>
                     </connections>
@@ -176,8 +176,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="showProjectInMap" id="92s-XC-VBn"/>
-                        <segue destination="cNs-MS-75O" kind="show" identifier="showProjectList" id="6gh-SG-2xd"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="showMapPointInMap" id="92s-XC-VBn"/>
+                        <segue destination="cNs-MS-75O" kind="show" identifier="showMapPointList" id="6gh-SG-2xd"/>
                         <segue destination="4l4-Ju-kLt" kind="show" identifier="showFilepoint" id="Tkg-ZN-L7v"/>
                         <segue destination="fF0-N1-nun" kind="show" identifier="showFilepointList" id="Yg3-Vx-2RC"/>
                     </connections>
@@ -203,7 +203,7 @@
                     <tabBarItem key="tabBarItem" title="Item" id="67N-IZ-7Hb"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="showProjectInMap" id="FnI-aK-gKW"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="showMapPointInMap" id="FnI-aK-gKW"/>
                         <segue destination="fF0-N1-nun" kind="show" identifier="showFilepointList" id="nYm-fW-Faa"/>
                         <segue destination="9al-GM-Bh7" kind="show" identifier="showTreeView" id="rUe-P4-rLc"/>
                     </connections>
@@ -215,9 +215,9 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="o5R-wm-hP3"/>
-        <segue reference="p6a-UP-r37"/>
-        <segue reference="jhc-vQ-Eoq"/>
-        <segue reference="BA9-BI-9Wb"/>
-        <segue reference="hA1-yM-VtX"/>
+        <segue reference="FnI-aK-gKW"/>
+        <segue reference="Nw6-JU-6Me"/>
+        <segue reference="6gh-SG-2xd"/>
+        <segue reference="u2P-Li-SBE"/>
     </inferredMetricsTieBreakers>
 </document>

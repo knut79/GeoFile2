@@ -910,8 +910,8 @@ class MapOverviewViewController: CustomViewController, GMSMapViewDelegate, NewMa
     }
     
     override func toListView() {
-        self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as! MapPointListViewController
-        self.performSegueWithIdentifier("showProjectList", sender: nil)
+        self.storyboard!.instantiateViewControllerWithIdentifier("MapPointListViewController") as! MapPointListViewController
+        self.performSegueWithIdentifier("showMapPointList", sender: nil)
     }
     
 

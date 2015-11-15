@@ -1,5 +1,5 @@
 //
-//  NewProjectView.swift
+//  NewMapPointView.swift
 //  GeoFile
 //
 //  Created by knut on 08/04/15.

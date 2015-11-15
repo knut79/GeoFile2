@@ -179,7 +179,7 @@
                   moduleName = "GeoFile"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/TestViewController.swift"
-                  timestampString = "469302276.782127"
+                  timestampString = "469303461.817883"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -194,7 +194,7 @@
                   moduleName = "GeoFile"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/TestViewController.swift"
-                  timestampString = "469302276.782476"
+                  timestampString = "469303461.819326"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -209,7 +209,7 @@
                   moduleName = "GeoFile"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/TestViewController.swift"
-                  timestampString = "469302276.782739"
+                  timestampString = "469303461.819845"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -224,7 +224,7 @@
                   moduleName = "GeoFile"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/TestViewController.swift"
-                  timestampString = "469302276.783255"
+                  timestampString = "469303461.82298"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "18"
@@ -237,7 +237,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GeoFile/TreeViewController.swift"
@@ -247,6 +247,70 @@
             startingLineNumber = "624"
             endingLineNumber = "624"
             landmarkName = "toListView()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GeoFile/LoginViewController.swift"
+            timestampString = "469303072.865014"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "viewDidLoad()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GeoFile.LoginViewController.viewDidLoad (GeoFile.LoginViewController)() -&gt; ()"
+                  moduleName = "GeoFile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/LoginViewController.swift"
+                  timestampString = "469303426.365967"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "199">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GeoFile.LoginViewController.(viewDidLoad (GeoFile.LoginViewController) -&gt; () -&gt; ()).(closure #1)"
+                  moduleName = "GeoFile"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/knut/Documents/repositories/GeoFile2/GeoFile/LoginViewController.swift"
+                  timestampString = "469303426.366309"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "31"
+                  endingLineNumber = "31"
+                  offsetFromSymbolStart = "12">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GeoFile/LoginViewController.swift"
+            timestampString = "469303091.651539"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

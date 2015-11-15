@@ -1349,7 +1349,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             svc.pdfImages = self.pdfImages
 
         }
-        else if (segue.identifier == "showProjectInMap") {
+        else if (segue.identifier == "showMapPointInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
             svc.mappoint = mappoint
 

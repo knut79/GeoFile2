@@ -572,7 +572,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
     func showOverlay()
     {
         self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
-        self.performSegueWithIdentifier("showProjectInMap", sender: nil)
+        self.performSegueWithIdentifier("showMapPointInMap", sender: nil)
     }
     
 
@@ -621,8 +621,8 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         }
         else
         {
-            self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as! MapPointListViewController
-            self.performSegueWithIdentifier("showProjectList", sender: nil)
+            self.storyboard!.instantiateViewControllerWithIdentifier("MapPointListViewController") as! MapPointListViewController
+            self.performSegueWithIdentifier("showMapPointList", sender: nil)
         }
         
     }
@@ -650,7 +650,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             }
 
         }
-        else if (segue.identifier == "showProjectInMap") {
+        else if (segue.identifier == "showMapPointInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
             if let mapPointLeaf = self.visibleContentView.currentMapPointLeaf
             {

@@ -1,5 +1,5 @@
 //
-//  ProjectListViewController.swift
+//  MapPointListViewController.swift
 //  GeoFile
 //
 //  Created by knut on 06/04/15.
@@ -200,7 +200,7 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
         
         editPosition = true
         self.storyboard!.instantiateViewControllerWithIdentifier("MapOverviewViewController") as! MapOverviewViewController
-        self.performSegueWithIdentifier("showProjectInMap", sender: nil)
+        self.performSegueWithIdentifier("showMapPointInMap", sender: nil)
         editPosition = false
     }
     
@@ -253,7 +253,7 @@ class MapPointListViewController: CustomViewController,UITableViewDataSource  , 
     
 
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
-        if (segue.identifier == "showProjectInMap") {
+        if (segue.identifier == "showMapPointInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
             svc.editMapPointAtIndex = currentMapPointItemIndex
             svc.editMapPoint = editPosition
