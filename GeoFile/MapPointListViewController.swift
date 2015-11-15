@@ -9,12 +9,12 @@
 import UIKit
 import CoreData
 
-class ProjectListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate, EditProjectProtocol {
+class MapPointListViewController: CustomViewController,UITableViewDataSource  , UITableViewDelegate, EditMapPointProtocol {
     
 
-    var project: Project?
-    var addProjectButton:UIButton!
-    var editProjectView:EditProjectView!
+    var mappoint: MapPoint?
+    var addMapPointButton:UIButton!
+    var editMapPointView:EditMapPointView!
     //var topNavigationBar:TopNavigationView!
     
     // Retreive the managedObjectContext from AppDelegate
@@ -22,7 +22,7 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     // Create the table view as soon as this class loads
     var projectsTableView = UITableView(frame: CGRectZero, style: .Plain)
     
-    var projectItems = [Project]()
+    var projectItems = [MapPoint]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,8 +79,8 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     // MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let projectItem = projectItems[indexPath.row]
-        project = projectItem
-        if(project?.imagefiles.count > 0)
+        mappoint = projectItem
+        if(mappoint?.imagefiles.count > 0)
         {
             self.storyboard!.instantiateViewControllerWithIdentifier("FilepointViewController") as! FilepointViewController
             self.performSegueWithIdentifier("showFilepoint", sender: nil)
@@ -192,18 +192,18 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
     {
         currentProjectItemIndex = indexPath.row
         let projectItem = projectItems[indexPath.row]
-        editProjectView = EditProjectView(frame: self.view.frame)
-        editProjectView.titleTextBox.text = projectItem.title
-        editProjectView!.delegate = self
-        self.view.addSubview(editProjectView!)
+        editMapPointView = EditMapPointView(frame: self.view.frame)
+        editMapPointView.titleTextBox.text = projectItem.title
+        editMapPointView!.delegate = self
+        self.view.addSubview(editMapPointView!)
         
     }
     
     var editPosition = false
-    func editProjectPosition()
+    func editMapPointPosition()
     {
         let projectItem = projectItems[currentProjectItemIndex]
-        projectItem.title = editProjectView.titleTextBox.text!
+        projectItem.title = editMapPointView.titleTextBox.text!
         save()
         
         editPosition = true
@@ -212,26 +212,26 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         editPosition = false
     }
     
-    func cancelEditProject()
+    func cancelEditMapPoint()
     {
-        editProjectView.removeFromSuperview()
+        editMapPointView.removeFromSuperview()
     }
     
-    func saveEditProject()
+    func saveEditMapPoint()
     {
         let projectItem = projectItems[currentProjectItemIndex]
-        projectItem.title = editProjectView.titleTextBox.text!
+        projectItem.title = editMapPointView.titleTextBox.text!
         save()
         projectsTableView.reloadData()
-        editProjectView.removeFromSuperview()
+        editMapPointView.removeFromSuperview()
     }
     
     
     func fetchProjects() {
         projectItems = []
-        let fetchRequest = NSFetchRequest(entityName: "Project")
+        let fetchRequest = NSFetchRequest(entityName: "MapPoint")
 
-        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Project] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [MapPoint] {
             
             for item in fetchResults
             {
@@ -282,8 +282,8 @@ class ProjectListViewController: CustomViewController,UITableViewDataSource  , U
         }
         else if (segue.identifier == "showFilepoint") {
             let svc = segue!.destinationViewController as! FilepointViewController
-            svc.project = project
-            svc.oneLevelFromProject = true
+            svc.mappoint = mappoint
+            svc.oneLevelFromMapPoint = true
         }
         else if (segue.identifier == "showTreeView") {
             let svc = segue!.destinationViewController as! TreeViewController

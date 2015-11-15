@@ -71,8 +71,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>

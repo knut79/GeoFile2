@@ -7,19 +7,19 @@
 //
 
 import Foundation
-protocol NewProjectProtocol {
+protocol NewMapPointProtocol {
     
-    func setPositionNewProject()
-    func setCurrentPositionNewProject()
-    func addNewProject()
-    func cancelNewProject()
+    func setPositionNewMapPoint()
+    func setCurrentPositionNewMapPoint()
+    func addNewMapPoint()
+    func cancelNewMapPoint()
 }
 
-class NewProjectView: UIView
+class NewMapPointView: UIView
 {
-    var newProjectTitle:UILabel!
+    var newMapPointTitle:UILabel!
 
-    var delegate: NewProjectProtocol?
+    var delegate: NewMapPointProtocol?
     
     var setCurrentPositionButton:CustomButton!
     var setPositionButton:CustomButton!
@@ -52,9 +52,9 @@ class NewProjectView: UIView
             workTypes.append(newTagCheckItem)
         }
         
-        newProjectTitle = UILabel(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
-        newProjectTitle.textAlignment = NSTextAlignment.Center
-          self.addSubview(newProjectTitle)
+        newMapPointTitle = UILabel(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
+        newMapPointTitle.textAlignment = NSTextAlignment.Center
+          self.addSubview(newMapPointTitle)
         
         setCurrentPositionButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*3) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         setCurrentPositionButton.setTitle("Set current position", forState: .Normal)
@@ -87,17 +87,17 @@ class NewProjectView: UIView
     
     func setPositionNewProject()
     {
-        delegate?.setPositionNewProject()
+        delegate?.setPositionNewMapPoint()
     }
     
     func setCurrentPositionNewProject()
     {
-        delegate?.setCurrentPositionNewProject()
+        delegate?.setCurrentPositionNewMapPoint()
     }
     
     func cancelNewProject()
     {
-        delegate?.cancelNewProject()
+        delegate?.cancelNewMapPoint()
     }
     
     

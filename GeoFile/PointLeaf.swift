@@ -21,7 +21,7 @@ class PointLeaf:UIView
     var type:leafType!
     var imageInstances:[ImageInstanceWithIcon]!
     //var filepoint:Filepoint?
-    var project:Project?
+    var mappoint:MapPoint?
     var showButton:UIButton!
     var deleteButton:UIButton!
     var currentImage:Imagefile!
@@ -39,7 +39,7 @@ class PointLeaf:UIView
         super.init(coder: aDecoder)
     }
     
-    init(_project:Project,viewRef:UIView?)
+    init(_mappoint:MapPoint,viewRef:UIView?)
     {
         let rect = CGRectMake(0, 0, leafSize.width, leafSize.height)
         super.init(frame: rect)
@@ -49,13 +49,13 @@ class PointLeaf:UIView
         //self.layer.borderColor = UIColor.blackColor().CGColor
         //end test
         
-        project = _project
+        mappoint = _mappoint
         
         setInitialValues(viewRef!)
         
 
         let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelectedAction:")
-        initImagefiles(_project.imagefiles,singleTapRecognizer: singleTapRec)
+        initImagefiles(_mappoint.imagefiles,singleTapRecognizer: singleTapRec)
     }
 
     
@@ -83,7 +83,7 @@ class PointLeaf:UIView
         
         titleLabel = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height * 0.35))
         titleLabel.numberOfLines = 2
-        titleLabel.text = self.project != nil ? self.project?.title : self.filepoint?.title
+        titleLabel.text = self.mappoint != nil ? self.mappoint?.title : self.filepoint?.title
         //titleLabel.layer.borderColor = UIColor.blackColor().CGColor
         //titleLabel.layer.borderWidth = 2.0;
         titleLabel.textAlignment = NSTextAlignment.Center
@@ -203,10 +203,10 @@ class PointLeaf:UIView
             let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "filepointSelectedFromFilepointAction:")
             initImagefiles(fp.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
-        else if let proj = project
+        else if let mp = mappoint
         {
             let singleTapRec = UITapGestureRecognizer(target: viewRef!, action: "projectSelectedAction:")
-            initImagefiles(proj.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
+            initImagefiles(mp.imagefiles,singleTapRecognizer: singleTapRec, topImageFile:topImageFile)
         }
     }
     

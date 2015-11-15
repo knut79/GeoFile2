@@ -188,7 +188,7 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
     override func prepareForSegue(segue: (UIStoryboardSegue!), sender: AnyObject!) {
         if (segue.identifier == "showProjectInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
-            svc.project = imagefile!.project ?? findProjectOfFilepoint(imagefile!.filepoint!)
+            svc.mappoint = imagefile!.mappoint ?? findMapPointOfFilepoint(imagefile!.filepoint!)
 
         }
         else if (segue.identifier == "showFilepoint") {
@@ -200,7 +200,7 @@ class FilepointListViewController: CustomViewController,UITableViewDataSource  ,
             }
             else
             {
-                svc.project = imagefile?.project
+                svc.mappoint = imagefile?.mappoint
             }
             svc.currentImagefile = imagefile
             

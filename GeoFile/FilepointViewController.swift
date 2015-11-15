@@ -21,7 +21,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     //just because we ned temporary coordinates for a label associated with a filepoint
     var childPointsAndLabels = [PointElement]()
     
-    var project:Project?
+    var mappoint:MapPoint?
     var frontPicture: Bool = false
     var overviewImageView: FilepointView2!
     var overviewScrollView: UIScrollView!
@@ -43,7 +43,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
 
     var addPictureButton: CustomButton!
     
-    var oneLevelFromProject = false
+    var oneLevelFromMapPoint = false
     
     var imageInstances:[ImageInstanceWithIcon]?
     var imageInstancesScrollView:UIScrollView!
@@ -142,7 +142,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         viewFrame.size.height -= (addPointButton.frame.size.height)
 
         self.fetchImagefilesOnSameLevel()
-        if(project != nil)
+        if(mappoint != nil)
         {
             backOneLevelButton.enabled = false
             backOneLevelButton.alpha = 0.5
@@ -150,7 +150,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             //currentImage could be sat from treeview
             if(currentImagefile == nil)
             {
-                currentImagefile = project?.firstImagefile
+                currentImagefile = mappoint?.firstImagefile
             }
         }
 
@@ -256,9 +256,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     
     func getStatus() -> workType
     {
-        if project != nil
+        if mappoint != nil
         {
-            return workType(rawValue: Int(project!.status))!
+            return workType(rawValue: Int(mappoint!.status))!
         }
         else
         {
@@ -302,10 +302,10 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
     func fetchImagefilesOnSameLevel() {
 
         imagefileItems = []
-        if(oneLevelFromProject)
+        if(oneLevelFromMapPoint)
         {
-            print("number of files in project \(project?.imagefiles.count)")
-            for item in project!.imagefiles
+            print("number of files on map point \(mappoint?.imagefiles.count)")
+            for item in mappoint!.imagefiles
             {
                 imagefileItems.append(item as! Imagefile)
             }
@@ -405,9 +405,9 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         removeImageInstances()
         
         imageInstances = []
-        if project?.imagefiles.count > 1
+        if mappoint?.imagefiles.count > 1
         {
-            for imagefile in project!.imagefiles
+            for imagefile in mappoint!.imagefiles
             {
                 let imageView = ImageInstanceWithIcon(frame: CGRectMake(0, 0, imageinstanceSideBig, imageinstanceSideBig),imagefile: imagefile as! Imagefile)
                 imageInstances?.append(imageView)
@@ -691,7 +691,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
                     
                     self.removeImageAndPointLabels()
                     self.currentFilepoint = filepointToNavigateTowards
-                    self.project = nil
+                    self.mappoint = nil
                     self.currentImagefile = self.currentFilepoint!.firstImagefile
                     print("new imagefile id \(self.currentImagefile!.objectID)")
                        self.backOneLevelButton.alpha = 1.0
@@ -792,7 +792,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
             backOneLevelButton.alpha = 0.5
 
             currentFilepoint = nil
-            project = currentImagefile?.project
+            mappoint = currentImagefile?.mappoint
         }
         else
         {
@@ -1237,7 +1237,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         {
             if saveAsNewInstance
             {
-                addImageToCurrentFilepointOrProject(imageData!,sourceText: "From camera",worktype: worktype)
+                addImageToCurrentFilepointOrMapPoint(imageData!,sourceText: "From camera",worktype: worktype)
             }
             else
             {
@@ -1292,7 +1292,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         newFilepoint = nil
     }
     
-    func addImageToCurrentFilepointOrProject(imageData:NSData, sourceText:String, worktype:workType)
+    func addImageToCurrentFilepointOrMapPoint(imageData:NSData, sourceText:String, worktype:workType)
     {
         
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
@@ -1306,11 +1306,11 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
         else
         {
-            let sort = project!.getSort()
+            let sort = mappoint!.getSort()
             newImagefileItem.setNewSort(sort)
-            project!.lockImageFiles()
-            project!.addImagefile(newImagefileItem)
-            project!.status = Int16(worktype.rawValue)
+            mappoint!.lockImageFiles()
+            mappoint!.addImagefile(newImagefileItem)
+            mappoint!.status = Int16(worktype.rawValue)
         }
 
         self.save()
@@ -1327,7 +1327,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         let imageData =  UIImageJPEGRepresentation(image,1.0)
         if saveImageFromLibraryAsNewInstance
         {
-            addImageToCurrentFilepointOrProject(imageData!,sourceText: "From picture library",worktype:saveImageFromLibraryAsWorktype)
+            addImageToCurrentFilepointOrMapPoint(imageData!,sourceText: "From picture library",worktype:saveImageFromLibraryAsWorktype)
         }
         else
         {
@@ -1351,7 +1351,7 @@ class FilepointViewController: CustomViewController, UIScrollViewDelegate, UIIma
         }
         else if (segue.identifier == "showProjectInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
-            svc.project = project
+            svc.mappoint = mappoint
 
         }
     }

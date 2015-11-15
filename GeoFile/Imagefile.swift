@@ -17,7 +17,7 @@ class Imagefile: NSManagedObject {
     @NSManaged var tags: String?
     @NSManaged var worktype: Int16
     @NSManaged var filepoint: Filepoint?
-    @NSManaged var project: Project?
+    @NSManaged var mappoint: MapPoint?
     @NSManaged var filepoints: NSSet
     @NSManaged var lines: NSSet
     @NSManaged var measures: NSSet

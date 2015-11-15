@@ -1,5 +1,5 @@
 //
-//  EditProjectView.swift
+//  EditMapPointView.swift
 //  GeoFile
 //
 //  Created by knut on 09/04/15.
@@ -7,17 +7,17 @@
 //
 
 import Foundation
-protocol EditProjectProtocol {
+protocol EditMapPointProtocol {
     
-    func editProjectPosition()
-    func cancelEditProject()
-    func saveEditProject()
+    func editMapPointPosition()
+    func cancelEditMapPoint()
+    func saveEditMapPoint()
 }
 
-class EditProjectView: UIView
+class EditMapPointView: UIView
 {
     var titleTextBox:UITextField!
-    var delegate: EditProjectProtocol?
+    var delegate: EditMapPointProtocol?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -27,7 +27,7 @@ class EditProjectView: UIView
         super.init(frame: frame)
         
         
-        //newProjectView = UIView(frame: self.view.frame)
+        //newMapPointView = UIView(frame: self.view.frame)
         self.backgroundColor = UIColor.whiteColor()
 
         titleTextBox = UITextField(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + buttonBarHeight, UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
@@ -37,33 +37,33 @@ class EditProjectView: UIView
         
         let setPositionButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*3) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         setPositionButton.setTitle("Edit position", forState: .Normal)
-        setPositionButton.addTarget(self, action: "editProjectPosition", forControlEvents: .TouchUpInside)
+        setPositionButton.addTarget(self, action: "editMapPointPosition", forControlEvents: .TouchUpInside)
         self.addSubview(setPositionButton)
         
         let cancelButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*4) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         cancelButton.setTitle("Cancel", forState: .Normal)
-        cancelButton.addTarget(self, action: "cancelEditProject", forControlEvents: .TouchUpInside)
+        cancelButton.addTarget(self, action: "cancelEditMapPoint", forControlEvents: .TouchUpInside)
         self.addSubview(cancelButton)
         
         let saveButton = CustomButton(frame: CGRectMake(0, (UIScreen.mainScreen().bounds.size.height/2) + (buttonBarHeight*5) ,UIScreen.mainScreen().bounds.size.width, buttonBarHeight))
         saveButton.setTitle("Save", forState: .Normal)
-        saveButton.addTarget(self, action: "saveEditProject", forControlEvents: .TouchUpInside)
+        saveButton.addTarget(self, action: "saveEditMapPoint", forControlEvents: .TouchUpInside)
         self.addSubview(saveButton)
     }
     
-    func editProjectPosition()
+    func editMapPointPosition()
     {
-        delegate?.editProjectPosition()
+        delegate?.editMapPointPosition()
     }
     
-    func cancelEditProject()
+    func cancelEditMapPoint()
     {
-        delegate?.cancelEditProject()
+        delegate?.cancelEditMapPoint()
     }
     
-    func saveEditProject()
+    func saveEditMapPoint()
     {
-        delegate?.saveEditProject()
+        delegate?.saveEditMapPoint()
     }
     
     

@@ -280,9 +280,9 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .ShortStyle)
         //(moc: NSManagedObjectContext, title: String, file: NSData, tags:String, worktype:Int)
         let newImagefile = Imagefile.createInManagedObjectContext(self.managedObjectContext!,title:"Imported image \(timestamp)",file:imageData!, tags:nil, worktype:workType.dokument)
-        let sort = projectLeaf.project!.getSort(true)
+        let sort = projectLeaf.mappoint!.getSort(true)
         newImagefile.setNewSort(sort)
-        projectLeaf.project!.addImagefile(newImagefile)
+        projectLeaf.mappoint!.addImagefile(newImagefile)
         save()
     }
     
@@ -512,10 +512,10 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             style: .Default,
             handler: { (action) -> Void in
                 //if less than 2 images we might ass well delete the whole node
-                if(self.visibleContentView!.currentProjectLeaf.project?.imagefiles.count < 2)
+                if(self.visibleContentView!.currentProjectLeaf.mappoint?.imagefiles.count < 2)
                 {
                     self.visibleContentView!.removePointLeaf(self.visibleContentView!.currentProjectLeaf)
-                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.project!)
+                    self.managedObjectContext?.deleteObject(self.visibleContentView!.currentProjectLeaf.mappoint!)
                     self.save()
                     
                 }
@@ -650,7 +650,7 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
         }
         else
         {
-            self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as! ProjectListViewController
+            self.storyboard!.instantiateViewControllerWithIdentifier("ProjectListViewController") as! MapPointListViewController
             self.performSegueWithIdentifier("showProjectList", sender: nil)
         }
         
@@ -666,9 +666,9 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             }
             else if let projectLeaf = self.visibleContentView.currentProjectLeaf
             {
-                svc.project = projectLeaf.project
+                svc.mappoint = projectLeaf.mappoint
                 svc.currentImagefile = projectLeaf.currentImage
-                svc.oneLevelFromProject = true
+                svc.oneLevelFromMapPoint = true
             }
         }
         else if (segue.identifier == "showFilepointList") {
@@ -677,18 +677,13 @@ class TreeViewController: CustomViewController, UIScrollViewDelegate, TreeViewPr
             {
                 svc.imagefile = self.visibleContentView.currentFilepointLeaf.filepoint!.firstImagefile
             }
-                /*
-            else if(self.visibleContentView.currentProjectLeaf != nil)
-            {
-                svc.project = self.visibleContentView.currentProjectLeaf.project
-            }
-            */
+
         }
         else if (segue.identifier == "showProjectInMap") {
             let svc = segue!.destinationViewController as! MapOverviewViewController
             if let projectLeaf = self.visibleContentView.currentProjectLeaf
             {
-                svc.project = projectLeaf.project
+                svc.mappoint = projectLeaf.mappoint
    
             }
             if let overlayNode = visibleContentView.getSelectedOverlayNode()

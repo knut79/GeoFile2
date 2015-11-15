@@ -271,12 +271,12 @@ class TreeView:UIView, PointLeafProtocol
         projectLeafs = []
         let fetchRequest = NSFetchRequest(entityName: "Project")
         let overlayNodeMargin = overlayDropzone.frame.height * 0.8
-        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [Project] {
+        if let fetchResults = (try? managedObjectContext!.executeFetchRequest(fetchRequest)) as? [MapPoint] {
             var i = 0
             for item in fetchResults
             {
 
-                let newProjectLeaf = PointLeaf(_project:item, viewRef:self)
+                let newProjectLeaf = PointLeaf(_mappoint:item, viewRef:self)
                 projectLeafs.append(newProjectLeaf)
 
                 

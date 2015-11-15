@@ -8,16 +8,16 @@
 
 import Foundation
 
-func findProjectOfFilepoint(filepoint:Filepoint) -> Project
+func findMapPointOfFilepoint(filepoint:Filepoint) -> MapPoint
 {
-    if(filepoint.imagefile!.project != nil)
+    if(filepoint.imagefile!.mappoint != nil)
     {
-        return filepoint.imagefile!.project!
+        return filepoint.imagefile!.mappoint!
     }
     else
     {
         //if no project in former imagefiles/filepoint, traverse down in tree
-        return findProjectOfFilepoint(filepoint.imagefile!.filepoint!)
+        return findMapPointOfFilepoint(filepoint.imagefile!.filepoint!)
     }
     
 }

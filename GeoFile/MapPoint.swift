@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class Project: NSManagedObject {
+class MapPoint: NSManagedObject {
     
     @NSManaged var longitude: Double
     @NSManaged var latitude: Double
@@ -18,8 +18,8 @@ class Project: NSManagedObject {
     @NSManaged var tags: String
     @NSManaged var status: Int16
     
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, lat: Double, long: Double, tags:String ) -> Project{
-        let newitem = NSEntityDescription.insertNewObjectForEntityForName("Project", inManagedObjectContext: moc) as! Project
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, title:String, lat: Double, long: Double, tags:String ) -> MapPoint{
+        let newitem = NSEntityDescription.insertNewObjectForEntityForName("MapPoint", inManagedObjectContext: moc) as! MapPoint
         newitem.latitude = lat
         newitem.longitude = long
         newitem.title = title
@@ -73,7 +73,7 @@ class Project: NSManagedObject {
     }
 }
 
-extension Project {
+extension MapPoint {
     
     func getSort(documentType:Bool = false) -> Int16
     {
